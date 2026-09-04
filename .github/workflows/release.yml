@@ -1,0 +1,61 @@
+name: Publicar ejecutable
+
+# Se lanza al crear una etiqueta como v1.0.0
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r dev-requirements.txt
+
+      - name: Generar icono
+        run: python recursos/crear_icono.py
+
+      - name: Construir ejecutable
+        run: >
+          pyinstaller --noconfirm --onefile --windowed
+          --name "Adaptador Word"
+          --icon recursos/icono.ico
+          --version-file recursos/version_info.txt
+          --collect-all tkinterdnd2
+          app.py
+
+      - name: Suma de comprobación
+        shell: pwsh
+        run: |
+          $h = (Get-FileHash "dist/Adaptador Word.exe" -Algorithm SHA256).Hash
+          "$h  Adaptador Word.exe" | Out-File -Encoding ascii "dist/Adaptador Word.exe.sha256"
+
+      - name: Subir artefacto de la ejecución
+        uses: actions/upload-artifact@v4
+        with:
+          name: adaptador-word-windows
+          path: |
+            dist/Adaptador Word.exe
+            dist/Adaptador Word.exe.sha256
+
+      - name: Publicar en la Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Adaptador Word.exe
+            dist/Adaptador Word.exe.sha256
+          generate_release_notes: true
