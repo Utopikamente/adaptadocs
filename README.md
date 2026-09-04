@@ -1,5 +1,7 @@
 # Adaptador de documentos Word
 
+[![Comprobaciones](https://github.com/Utopikamente/adaptador-word/actions/workflows/ci.yml/badge.svg)](https://github.com/Utopikamente/adaptador-word/actions/workflows/ci.yml)
+
 Aplicación de escritorio para **transformar un documento `.docx` en otro `.docx`
 adaptado**, pensada para crear materiales más accesibles para alumnado con
 dificultades de aprendizaje (dislexia, TDAH, TEA, discapacidad intelectual leve,
@@ -76,6 +78,7 @@ Probar rápidamente:
 ```bash
 python crear_ejemplo.py
 python cli.py ejemplo.docx --perfil Dislexia --resaltar "glucosa, oxígeno"
+python prueba.py          # comprobación automática de que todo funciona
 ```
 
 ---

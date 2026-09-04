@@ -14,12 +14,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - name: Adaptar un documento de ejemplo
-        run: |
-          python crear_ejemplo.py
-          python cli.py ejemplo.docx --perfil Dislexia --resaltar "glucosa, oxígeno"
-      - name: Comprobar el resultado
-        shell: pwsh
-        run: |
-          if (-not (Test-Path "ejemplo (adaptado).docx")) { throw "No se generó el documento adaptado" }
-          python -c "from docx import Document; d=Document('ejemplo (adaptado).docx'); assert d.sections[0].left_margin.cm==3.0; assert d.paragraphs[1].runs[0].font.name=='Verdana'; print('OK')"
+      - name: Ejecutar la comprobación
+        run: python prueba.py
