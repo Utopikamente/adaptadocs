@@ -24,19 +24,21 @@ Tiene dos partes:
 
 Dos formas, ninguna necesita permisos de administrador:
 
-- **Instalador** (recomendado): descarga
-  [`AdaptadocsSetup.exe`](https://github.com/Utopikamente/adaptadocs/releases/latest/download/AdaptadocsSetup.exe),
-  ábrelo y sigue el asistente. Crea un acceso directo en el menú Inicio.
-- **Portable**: descarga
+- **Portable** (recomendado): descarga
   [`Adaptadocs-portable.zip`](https://github.com/Utopikamente/adaptadocs/releases/latest/download/Adaptadocs-portable.zip),
-  descomprímelo y ejecuta `Adaptadocs\Adaptadocs.exe`.
+  descomprímelo (clic derecho → *Extraer todo*) y ejecuta `Adaptadocs\Adaptadocs.exe`.
+- **Instalador** (acceso directo en el menú Inicio): descarga
+  [`AdaptadocsSetup.exe`](https://github.com/Utopikamente/adaptadocs/releases/latest/download/AdaptadocsSetup.exe)
+  y sigue el asistente.
 
 ### Windows avisa: «editor desconocido»
 
 Todavía **no está firmado digitalmente** (un certificado cuesta cientos de euros
-al año), así que SmartScreen mostrará un aviso azul la primera vez: **Más
-información → Ejecutar de todas formas**. No es un aviso de virus, sino de que el
-editor no está verificado.
+al año), así que SmartScreen mostrará un aviso azul la primera vez: pulsa el
+enlace **Más información → Ejecutar de todas formas**. No es un aviso de virus,
+sino de que el editor no está verificado. Si Windows bloquea el instalador sin
+darte esa opción: clic derecho en el archivo → **Propiedades → Desbloquear →
+Aceptar**.
 
 > Hasta la 1.3.0 se distribuía como un único `.exe`, que algunos antivirus
 > marcaban por error (falso positivo típico de PyInstaller, `Wacatac.B!ml`).
