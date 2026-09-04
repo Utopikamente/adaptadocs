@@ -1,5 +1,16 @@
 # Historial de cambios
 
+## [1.3.1] — 2026-09-04
+
+- **Cambio de empaquetado para evitar el falso positivo de antivirus.** Hasta la
+  1.3.0 se distribuía como un único `.exe` (`--onefile`), que Windows Defender
+  marcaba por error como `Trojan:Win32/Wacatac.B!ml` y ponía en cuarentena al
+  descargarlo. Ahora se distribuye como:
+  - `AdaptadocsSetup.exe` — instalador (Inno Setup), con acceso directo.
+  - `Adaptadocs-portable.zip` — carpeta lista para usar sin instalar.
+  Ambos pasan el análisis de Defender sin avisos.
+- Sin cambios de funcionamiento respecto a la 1.3.0.
+
 ## [1.3.0] — 2026-09-04
 
 - **Banco de pictogramas (ARASAAC)** en la pestaña Formato: casilla que añade

@@ -22,26 +22,32 @@ Tiene dos partes:
 
 ## Descargar (Windows)
 
-1. Descarga **[`Adaptadocs.exe`](https://github.com/Utopikamente/adaptadocs/releases/latest/download/Adaptadocs.exe)**
-   (o entra en **[Releases](../../releases)** y coge el `.exe` de la última versión).
-2. Haz doble clic. No necesita instalación ni permisos de administrador.
+Dos formas, ninguna necesita permisos de administrador:
 
-### El navegador y Windows avisan del archivo
+- **Instalador** (recomendado): descarga
+  [`AdaptadocsSetup.exe`](https://github.com/Utopikamente/adaptadocs/releases/latest/download/AdaptadocsSetup.exe),
+  ábrelo y sigue el asistente. Crea un acceso directo en el menú Inicio.
+- **Portable**: descarga
+  [`Adaptadocs-portable.zip`](https://github.com/Utopikamente/adaptadocs/releases/latest/download/Adaptadocs-portable.zip),
+  descomprímelo y ejecuta `Adaptadocs\Adaptadocs.exe`.
 
-El ejecutable **no está firmado digitalmente** (un certificado cuesta cientos de
-euros al año), así que aparecerán dos avisos. Ambos son esperados:
+### Windows avisa: «editor desconocido»
 
-- **Al descargar** (Chrome/Edge): «Adaptadocs.exe puede ser peligroso / no es
-  habitual» → pulsa los tres puntos o la flecha → **Conservar** / **Conservar de
-  todos modos**.
-- **Al abrir** (SmartScreen, aviso azul): **Más información** → **Ejecutar de
-  todas formas**.
+Todavía **no está firmado digitalmente** (un certificado cuesta cientos de euros
+al año), así que SmartScreen mostrará un aviso azul la primera vez: **Más
+información → Ejecutar de todas formas**. No es un aviso de virus, sino de que el
+editor no está verificado.
 
-Para comprobar que el archivo no se ha alterado, compara su huella con la del
-archivo `Adaptadocs.exe.sha256` de la Release:
+> Hasta la 1.3.0 se distribuía como un único `.exe`, que algunos antivirus
+> marcaban por error (falso positivo típico de PyInstaller, `Wacatac.B!ml`).
+> Desde la **1.3.1** se distribuye como carpeta + instalador y ese problema
+> desaparece.
+
+Para comprobar que el archivo no se ha alterado, compara su huella SHA-256 con la
+del archivo `.sha256` correspondiente de la Release:
 
 ```powershell
-Get-FileHash "Adaptadocs.exe" -Algorithm SHA256
+Get-FileHash "AdaptadocsSetup.exe" -Algorithm SHA256
 ```
 
 ---
@@ -144,26 +150,25 @@ python prueba_ia_api.py   # prueba REAL de la IA (usa la API y gasta saldo)
 
 ---
 
-## Construir el ejecutable
+## Construir la distribución
 
 ```bash
 pip install -r dev-requirements.txt
+winget install JRSoftware.InnoSetup    # para el instalador (opcional)
 .\construir.ps1
 ```
 
-El resultado queda en `dist\Adaptadocs.exe` junto a su archivo `.sha256`.
+En `dist\` quedan: la carpeta `Adaptadocs\` (build `--onedir`), el instalador
+`AdaptadocsSetup.exe`, la versión portable `Adaptadocs-portable.zip` y sus
+archivos `.sha256`.
 
-En cada etiqueta `vX.Y.Z` que se sube al repositorio, GitHub Actions construye el
-ejecutable y lo publica automáticamente en la Release
+> Se usa **`--onedir`, no `--onefile`**, a propósito: los ejecutables «todo en
+> uno» de PyInstaller se autoextraen al arrancar y Windows Defender los marca
+> como falso positivo (`Trojan:Win32/Wacatac.B!ml`). La carpeta + instalador no.
+
+En cada etiqueta `vX.Y.Z` que se sube al repositorio, GitHub Actions construye
+todo y lo publica en la Release
 (ver [`.github/workflows/release.yml`](.github/workflows/release.yml)).
-
-Instalador opcional (asistente + acceso directo), con
-[Inno Setup](https://jrsoftware.org/isinfo.php):
-
-```bash
-winget install JRSoftware.InnoSetup
-& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" instalador.iss
-```
 
 ---
 
@@ -190,7 +195,7 @@ adaptadocs/
 ├── app.py              Ventana de escritorio (Tkinter), 2 pestañas: Formato / IA
 ├── cli.py              Uso por línea de comandos y por lotes
 ├── crear_ejemplo.py    Genera un .docx de prueba
-├── construir.ps1       Construye el .exe
+├── construir.ps1       Construye carpeta + instalador + zip portable
 ├── instalador.iss      Script del instalador (Inno Setup)
 ├── core/
 │   ├── transformador.py  Formato (python-docx, sin conexión)

@@ -5,7 +5,7 @@
 ;   & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" instalador.iss
 
 #define NombreApp "Adaptadocs"
-#define VersionApp "1.3.0"
+#define VersionApp "1.3.1"
 #define EjecutableApp "Adaptadocs.exe"
 
 [Setup]
@@ -16,7 +16,7 @@ DefaultDirName={autopf}\Adaptadocs
 DefaultGroupName=Adaptadocs
 DisableProgramGroupPage=yes
 OutputDir=dist
-OutputBaseFilename=Instalar Adaptadocs {#VersionApp}
+OutputBaseFilename=AdaptadocsSetup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -33,7 +33,8 @@ Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "desktopicon"; Description: "Crear un acceso directo en el escritorio"; GroupDescription: "Accesos directos:"
 
 [Files]
-Source: "dist\{#EjecutableApp}"; DestDir: "{app}"; Flags: ignoreversion
+; Carpeta completa del build --onedir de PyInstaller (Adaptadocs.exe + _internal\)
+Source: "dist\Adaptadocs\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 
 [Icons]
 Name: "{group}\{#NombreApp}"; Filename: "{app}\{#EjecutableApp}"
