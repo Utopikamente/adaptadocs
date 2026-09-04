@@ -36,6 +36,17 @@ def main() -> None:
     )
     p2.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
+    doc.add_heading("Actividad", level=2)
+    doc.add_paragraph(
+        "PASOS: Coge una planta pequeña. Ponla cerca de la ventana. "
+        "Riégala con un poco de agua. Observa las hojas cada día durante una semana."
+    )
+    doc.add_paragraph(
+        "Primero, dibuja una planta en tu cuaderno. Luego colorea las hojas de verde. "
+        "Después escribe debajo la palabra fotosíntesis. Por último, enseña el dibujo "
+        "a un compañero."
+    )
+
     doc.save("ejemplo.docx")
     print("Creado ejemplo.docx")
 

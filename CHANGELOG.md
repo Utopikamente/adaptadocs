@@ -1,5 +1,15 @@
 # Historial de cambios
 
+## [1.2.0] — 2026-09-04
+
+- **Separar procedimientos en pasos numerados sin IA**, en la pestaña Formato:
+  desplegable «No separar» / «Solo los marcados con PASOS:» / «Detectar
+  automáticamente». Trocea el párrafo por frases y por conectores de secuencia
+  y le aplica el estilo de lista numerada; no reescribe el texto.
+- `cli.py`: opción `--separar-pasos {no,marcados,auto}`.
+- La antigua casilla «Convertir viñetas en lista numerada» se renombra a
+  «Numerar las listas con viñetas» (misma función).
+
 ## [1.1.1] — 2026-09-04
 
 - El proyecto pasa a llamarse **Adaptadocs** (antes «Adaptador de documentos

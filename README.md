@@ -52,7 +52,11 @@ Get-FileHash "Adaptadocs.exe" -Algorithm SHA256
 - Amplía los **márgenes** y fuerza **una sola columna**.
 - Pone el texto en **negro** (alto contraste).
 - Pone los **títulos en negrita**.
-- Convierte las **viñetas en una lista numerada** (pasos), opcional.
+- Convierte las **viñetas en una lista numerada**, opcional.
+- **Separa en pasos numerados** los párrafos que describen un procedimiento
+  (sin IA): solo los que marques con «PASOS:» al principio, o por detección
+  automática. Trocea por frases y por conectores («luego», «después»…); no
+  reescribe el texto.
 - **Resalta** las palabras clave que indiques, con el color que elijas.
 - Respeta imágenes, tablas y la estructura de apartados del documento.
 - Crea un archivo nuevo con el sufijo `(adaptado)`; **el original no se toca**.

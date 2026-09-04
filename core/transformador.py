@@ -56,6 +56,12 @@ class OpcionesAdaptacion:
     # Ayudas visuales
     negrita_titulos: bool = True
     convertir_vinetas_en_pasos: bool = False
+    # Separar en pasos numerados los párrafos que describen un procedimiento.
+    #   "no"        -> no hacer nada
+    #   "marcados"  -> solo los que empiecen por la marca (p. ej. «PASOS:»)
+    #   "auto"      -> detectar por heurística (conectores de secuencia, verbos)
+    separar_en_pasos: str = "no"
+    marca_pasos: str = "PASOS:"
     resaltar_palabras: list[str] = field(default_factory=list)
     color_resaltado: str = "AMARILLO"
 
@@ -138,6 +144,147 @@ def _formatear_parrafo(parrafo: Paragraph, o: OpcionesAdaptacion) -> None:
         pf.space_after = Pt(o.espacio_despues_pt)
     if o.alinear_izquierda and parrafo.alignment == WD_ALIGN_PARAGRAPH.JUSTIFY:
         parrafo.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+
+# --------------------------------------------------------------------------- #
+# Procedimientos -> pasos numerados (sin IA, determinista)
+# --------------------------------------------------------------------------- #
+
+_CONECTORES_SECUENCIA = (
+    r"luego", r"despu[eé]s", r"a continuaci[oó]n", r"entonces", r"seguidamente",
+    r"acto seguido", r"m[aá]s tarde", r"por [uú]ltimo", r"finalmente", r"tras esto",
+    r"en primer lugar", r"en segundo lugar", r"en tercer lugar", r"primero",
+)
+_RE_CONECTOR = re.compile(
+    r"\s*[,;.]?\s*\b(?:" + "|".join(_CONECTORES_SECUENCIA) + r")\b[\s,]*",
+    re.IGNORECASE,
+)
+_RE_NUMERADO = re.compile(r"(?:^|\s)\d{1,2}[.)]\s+")
+_RE_FIN_FRASE = re.compile(r"(?<=[.;:])\s+")
+
+_MARCAS_SECUENCIA = (
+    "primero", "en primer lugar", "en segundo lugar", "en tercer lugar",
+    "luego", "después", "despues", "a continuación", "a continuacion",
+    "seguidamente", "acto seguido", "por último", "por ultimo", "finalmente",
+    "paso 1", "paso 2", "1.", "2.", "3.",
+)
+_VERBOS_INSTRUCCION = {
+    "abre", "pulsa", "haz", "ve", "coge", "escribe", "marca", "selecciona",
+    "elige", "escoge", "guarda", "cierra", "copia", "pega", "dibuja", "colorea",
+    "lee", "rodea", "subraya", "tacha", "completa", "une", "ordena", "clasifica",
+    "calcula", "resuelve", "observa", "anota", "repasa", "recorta", "relaciona",
+    "identifica", "señala", "senala", "indica", "busca", "corrige", "comprueba",
+    "repite", "suma", "resta", "multiplica", "divide", "traza", "rellena",
+    "contesta", "responde", "explica", "describe", "nombra", "enumera",
+}
+
+
+def _re_marca_pasos(marca: str) -> re.Pattern:
+    base = re.escape(marca.strip().rstrip(":.-–").strip())
+    return re.compile(r"^\s*" + base + r"\s*[:.\-–]\s*", re.IGNORECASE)
+
+
+def _parece_procedimiento(texto: str) -> bool:
+    bajo = texto.lower()
+    if sum(1 for m in _MARCAS_SECUENCIA if m in bajo) >= 2:
+        return True
+    frases = [f.strip() for f in _RE_FIN_FRASE.split(texto) if f.strip()]
+    if len(frases) >= 3:
+        imperativas = 0
+        for frase in frases:
+            primera = re.split(r"[^0-9A-Za-zÁÉÍÓÚÑáéíóúñ]+", frase.strip(), maxsplit=1)[0]
+            if primera.lower() in _VERBOS_INSTRUCCION:
+                imperativas += 1
+        if imperativas >= max(2, len(frases) // 2):
+            return True
+    return False
+
+
+def _partir_en_pasos(texto: str) -> list[str]:
+    """Trocea un texto en pasos. No reescribe: solo corta y limpia."""
+    t = re.sub(r"\s+", " ", texto).strip()
+
+    numerado = [p.strip() for p in _RE_NUMERADO.split(t) if p.strip()]
+    if len(numerado) >= 2:
+        crudos = numerado
+    else:
+        t = _RE_CONECTOR.sub("\n", t)
+        t = _RE_FIN_FRASE.sub("\n", t)
+        crudos = [p for p in t.split("\n")]
+
+    pasos: list[str] = []
+    for trozo in crudos:
+        p = trozo.strip(" .;:,\t")
+        if len(p) < 3:
+            continue
+        p = p[0].upper() + p[1:]
+        if p[-1] not in ".!?":
+            p += "."
+        pasos.append(p)
+    return pasos
+
+
+def _separar_procedimientos(doc, o: OpcionesAdaptacion) -> int:
+    """Convierte en listas numeradas los párrafos de primer nivel que sean
+    (o estén marcados como) un procedimiento. Devuelve cuántos ha convertido."""
+    if o.separar_en_pasos not in ("marcados", "auto"):
+        return 0
+
+    re_marca = _re_marca_pasos(o.marca_pasos)
+    convertidos = 0
+
+    for parrafo in list(doc.paragraphs):
+        if _es_titulo(parrafo) or _es_vineta(parrafo):
+            continue
+        texto = parrafo.text.strip()
+        if not texto:
+            continue
+
+        m = re_marca.match(texto)
+        if m:
+            cuerpo = texto[m.end():].strip()
+        elif o.separar_en_pasos == "auto" and _parece_procedimiento(texto):
+            cuerpo = texto
+        else:
+            continue
+
+        pasos = _partir_en_pasos(cuerpo)
+        if len(pasos) < 2:
+            continue
+
+        _reemplazar_texto_parrafo(parrafo, pasos[0])
+        try:
+            parrafo.style = doc.styles["List Number"]
+        except KeyError:
+            pass
+        ancla = parrafo
+        for paso in pasos[1:]:
+            ancla = _nuevo_parrafo_despues(ancla, paso, "List Number")
+        convertidos += 1
+
+    return convertidos
+
+
+def _reemplazar_texto_parrafo(parrafo: Paragraph, texto: str) -> None:
+    if parrafo.runs:
+        parrafo.runs[0].text = texto
+        for run in parrafo.runs[1:]:
+            run._element.getparent().remove(run._element)
+    else:
+        parrafo.add_run(texto)
+
+
+def _nuevo_parrafo_despues(parrafo: Paragraph, texto: str, estilo: str | None) -> Paragraph:
+    nuevo_el = OxmlElement("w:p")
+    parrafo._p.addnext(nuevo_el)
+    nuevo = Paragraph(nuevo_el, parrafo._parent)
+    if estilo:
+        try:
+            nuevo.style = estilo
+        except KeyError:
+            pass
+    nuevo.add_run(texto)
+    return nuevo
 
 
 # --------------------------------------------------------------------------- #
@@ -257,11 +404,18 @@ def aplicar_formato(
     """Aplica las opciones de formato sobre un `Document` ya abierto.
     Devuelve un resumen de lo hecho. No guarda el archivo."""
 
-    resumen = {"parrafos": 0, "runs": 0, "resaltados": 0, "vinetas_convertidas": 0}
+    resumen = {
+        "parrafos": 0, "runs": 0, "resaltados": 0,
+        "vinetas_convertidas": 0, "procedimientos_en_pasos": 0,
+    }
 
     _ajustar_estilo_normal(doc, opciones)
     for seccion in doc.sections:
         _ajustar_seccion(seccion, opciones)
+
+    # Antes de formatear: trocear procedimientos en pasos (crea párrafos nuevos
+    # que el bucle de abajo recogerá al releer doc.paragraphs).
+    resumen["procedimientos_en_pasos"] = _separar_procedimientos(doc, opciones)
 
     patron = _compilar_patron(opciones.resaltar_palabras)
     color = COLORES_RESALTADO.get(opciones.color_resaltado.upper(), WD_COLOR_INDEX.YELLOW)

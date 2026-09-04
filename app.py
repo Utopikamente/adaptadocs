@@ -38,6 +38,13 @@ COLOR_A_CLAVE = {
     "Rosa": "ROSA", "Gris": "GRIS",
 }
 CLAVE_A_COLOR = {v: k for k, v in COLOR_A_CLAVE.items()}
+SEPARAR_OPCIONES = ["No separar", "Solo los marcados con «PASOS:»", "Detectar automáticamente"]
+SEPARAR_A_CLAVE = {
+    "No separar": "no",
+    "Solo los marcados con «PASOS:»": "marcados",
+    "Detectar automáticamente": "auto",
+}
+CLAVE_A_SEPARAR = {v: k for k, v in SEPARAR_A_CLAVE.items()}
 MODELO_A_ID = dict(MODELOS)
 ID_A_MODELO = {v: k for k, v in MODELOS.items()}
 
@@ -84,6 +91,7 @@ class Aplicacion(_Raiz):
         self.var_contraste = tk.BooleanVar()
         self.var_negrita_titulos = tk.BooleanVar()
         self.var_vinetas = tk.BooleanVar()
+        self.var_separar = tk.StringVar(value="No separar")
         self.var_palabras = tk.StringVar()
         self.var_color = tk.StringVar(value="Amarillo")
         # IA
@@ -196,12 +204,18 @@ class Aplicacion(_Raiz):
         ttk.Checkbutton(marco_o, text="Títulos en negrita",
                         variable=self.var_negrita_titulos).grid(
             row=8, column=0, columnspan=2, sticky="w", padx=8, pady=2)
-        ttk.Checkbutton(marco_o, text="Convertir viñetas en lista numerada (pasos)",
+        ttk.Checkbutton(marco_o, text="Numerar las listas con viñetas",
                         variable=self.var_vinetas).grid(
             row=9, column=0, columnspan=2, sticky="w", padx=8, pady=2)
 
+        marco_pasos = ttk.Frame(marco_o)
+        marco_pasos.grid(row=10, column=0, columnspan=2, sticky="w", padx=8, pady=(4, 2))
+        ttk.Label(marco_pasos, text="Separar procedimientos en pasos:").pack(side="left")
+        ttk.Combobox(marco_pasos, textvariable=self.var_separar, values=SEPARAR_OPCIONES,
+                     state="readonly", width=28).pack(side="left", padx=6)
+
         marco_r = ttk.Frame(marco_o)
-        marco_r.grid(row=10, column=0, columnspan=2, sticky="ew", padx=8, pady=(8, 4))
+        marco_r.grid(row=11, column=0, columnspan=2, sticky="ew", padx=8, pady=(8, 4))
         marco_r.columnconfigure(1, weight=1)
         ttk.Label(marco_r, text="Resaltar palabras (separadas por comas)").grid(
             row=0, column=0, columnspan=3, sticky="w")
@@ -282,6 +296,7 @@ class Aplicacion(_Raiz):
         self.var_contraste.set(o.alto_contraste)
         self.var_negrita_titulos.set(o.negrita_titulos)
         self.var_vinetas.set(o.convertir_vinetas_en_pasos)
+        self.var_separar.set(CLAVE_A_SEPARAR.get(o.separar_en_pasos, "No separar"))
         self.var_color.set(CLAVE_A_COLOR.get(o.color_resaltado, "Amarillo"))
 
     def _cargar_clave_guardada(self) -> None:
@@ -321,6 +336,7 @@ class Aplicacion(_Raiz):
             alto_contraste=self.var_contraste.get(),
             negrita_titulos=self.var_negrita_titulos.get(),
             convertir_vinetas_en_pasos=self.var_vinetas.get(),
+            separar_en_pasos=SEPARAR_A_CLAVE.get(self.var_separar.get(), "no"),
             resaltar_palabras=palabras,
             color_resaltado=COLOR_A_CLAVE.get(self.var_color.get(), "AMARILLO"),
         )

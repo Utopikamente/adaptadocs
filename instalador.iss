@@ -5,7 +5,7 @@
 ;   & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" instalador.iss
 
 #define NombreApp "Adaptadocs"
-#define VersionApp "1.1.1"
+#define VersionApp "1.2.0"
 #define EjecutableApp "Adaptadocs.exe"
 
 [Setup]

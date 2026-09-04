@@ -49,6 +49,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--resaltar", default="", help="Palabras a resaltar separadas por comas")
     parser.add_argument("--color", default="AMARILLO",
                         choices=["AMARILLO", "VERDE", "TURQUESA", "ROSA", "GRIS"])
+    parser.add_argument("--separar-pasos", default="no", choices=["no", "marcados", "auto"],
+                        help="Separar procedimientos en pasos numerados (sin IA): "
+                        "'marcados' = solo párrafos que empiezan por «PASOS:»; 'auto' = heurística")
     parser.add_argument(
         "--ia", default="",
         help="Tareas de IA separadas por comas: " + ", ".join(_TAREAS_IA)
@@ -64,6 +67,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     opciones = opciones_de_perfil(args.perfil)
+    opciones.separar_en_pasos = args.separar_pasos
     if args.resaltar:
         opciones.resaltar_palabras = [p.strip() for p in args.resaltar.split(",") if p.strip()]
         opciones.color_resaltado = args.color
