@@ -1,5 +1,16 @@
 # Historial de cambios
 
+## [1.3.0] — 2026-09-04
+
+- **Banco de pictogramas (ARASAAC)** en la pestaña Formato: casilla que añade
+  al final del documento una tabla «palabra + pictograma» con las palabras de
+  «Resaltar palabras». Requiere conexión; envía a ARASAAC solo esas palabras.
+  Incluye la atribución (CC BY-NC-SA, Sergio Palao, Gobierno de Aragón).
+- Nuevo perfil **«TEL/TDL (apoyo visual)»**, con el banco de pictogramas
+  activado.
+- `cli.py`: opción `--pictogramas`.
+- `core/pictogramas.py`: cliente de la API de ARASAAC con caché en disco.
+
 ## [1.2.0] — 2026-09-04
 
 - **Separar procedimientos en pasos numerados sin IA**, en la pestaña Formato:

@@ -10,7 +10,9 @@ baja visión…).
 Tiene dos partes:
 
 - **Formato y presentación** (siempre disponible, gratis, sin conexión): todo
-  ocurre en tu ordenador y no se envía nada a internet.
+  ocurre en tu ordenador. La única excepción es el **banco de pictogramas**: si lo
+  activas, se piden a ARASAAC los dibujos de las palabras a ilustrar (solo esas
+  palabras, no el documento).
 - **Contenido con IA** (opcional): reescribe el texto a un nivel de lectura más
   sencillo, añade glosario, resumen y preguntas de comprensión. Necesita una
   clave de API de Anthropic y **envía el texto del documento a Claude** para
@@ -58,11 +60,17 @@ Get-FileHash "Adaptadocs.exe" -Algorithm SHA256
   automática. Trocea por frases y por conectores («luego», «después»…); no
   reescribe el texto.
 - **Resalta** las palabras clave que indiques, con el color que elijas.
+- Añade al final un **banco de pictogramas** ([ARASAAC](https://arasaac.org)) con
+  las palabras que resaltes: apoyo visual para alumnado con TEL/TDL, TEA, etc.
+  Necesita conexión. Los pictogramas tienen licencia **CC BY-NC-SA** (autor
+  Sergio Palao; Gobierno de Aragón): la atribución se incluye en el documento
+  y su uso comercial requiere permiso de ARASAAC.
 - Respeta imágenes, tablas y la estructura de apartados del documento.
 - Crea un archivo nuevo con el sufijo `(adaptado)`; **el original no se toca**.
 
 Incluye **perfiles** predefinidos (General, Dislexia, TDAH, TEA, Discapacidad
-intelectual leve, Baja visión) que puedes retocar antes de generar el documento.
+intelectual leve, Baja visión, TEL/TDL con apoyo visual) que puedes retocar antes
+de generar el documento.
 
 ---
 
@@ -189,6 +197,7 @@ adaptadocs/
 │   ├── perfiles.py       Perfiles de formato predefinidos
 │   ├── ia.py             Llamada a la API de Anthropic (adaptación de contenido)
 │   ├── aplicar_ia.py     Vuelca el resultado de la IA en el documento
+│   ├── pictogramas.py    Pictogramas de ARASAAC (banco de apoyo visual)
 │   ├── claves.py         Guardado seguro de la clave de API (keyring)
 │   └── pipeline.py       Orquesta IA + formato
 ├── recursos/           Icono y datos de versión del .exe

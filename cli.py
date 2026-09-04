@@ -52,6 +52,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--separar-pasos", default="no", choices=["no", "marcados", "auto"],
                         help="Separar procedimientos en pasos numerados (sin IA): "
                         "'marcados' = solo párrafos que empiezan por «PASOS:»; 'auto' = heurística")
+    parser.add_argument("--pictogramas", action="store_true",
+                        help="Añadir al final un banco de pictogramas de ARASAAC para las "
+                        "palabras de --resaltar (necesita conexión)")
     parser.add_argument(
         "--ia", default="",
         help="Tareas de IA separadas por comas: " + ", ".join(_TAREAS_IA)
@@ -68,6 +71,8 @@ def main(argv: list[str] | None = None) -> int:
 
     opciones = opciones_de_perfil(args.perfil)
     opciones.separar_en_pasos = args.separar_pasos
+    if args.pictogramas:
+        opciones.pictogramas = "resaltadas"
     if args.resaltar:
         opciones.resaltar_palabras = [p.strip() for p in args.resaltar.split(",") if p.strip()]
         opciones.color_resaltado = args.color
@@ -114,7 +119,11 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  Formato: {res['formato']['parrafos']} párrafos\n")
             else:
                 resumen = adaptar_documento(entrada, salida, opciones, registrar=print)
-                print(f"  {resumen['parrafos']} párrafos · {resumen['resaltados']} resaltados\n")
+                print(
+                    f"  {resumen['parrafos']} párrafos · {resumen['resaltados']} resaltados · "
+                    f"{resumen['procedimientos_en_pasos']} en pasos · "
+                    f"{resumen['pictogramas']} pictogramas\n"
+                )
         except Exception as exc:  # noqa: BLE001
             print(f"ERROR con «{entrada}»: {exc}\n", file=sys.stderr)
             errores += 1

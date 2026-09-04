@@ -80,6 +80,21 @@ PERFILES: dict[str, OpcionesAdaptacion] = {
         alto_contraste=True,
         negrita_titulos=True,
     ),
+    "TEL/TDL (apoyo visual)": OpcionesAdaptacion(
+        fuente="Arial",
+        tamano_pt=15,
+        interlineado=1.8,
+        espacio_despues_pt=14,
+        alinear_izquierda=True,
+        margenes_cm=3.0,
+        una_columna=True,
+        alto_contraste=True,
+        negrita_titulos=True,
+        convertir_vinetas_en_pasos=True,
+        # Añade un banco de pictogramas para las palabras que se resalten
+        # (necesita conexión). Escribe esas palabras en «Resaltar palabras».
+        pictogramas="resaltadas",
+    ),
 }
 
 

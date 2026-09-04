@@ -1,8 +1,8 @@
 """Transformaciones de formato sobre documentos .docx.
 
-Todo lo que hay aquí es determinista: no llama a ningún servicio externo ni
-modifica el contenido del texto (salvo resaltar palabras). Solo cambia el
-aspecto del documento para hacerlo más legible.
+Casi todo lo que hay aquí es determinista y sin conexión. La única excepción
+es el banco de pictogramas: si se activa, se piden a ARASAAC los dibujos de
+las palabras a ilustrar (no se envía el documento).
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ import os
 import re
 from copy import deepcopy
 from dataclasses import dataclass, field
+from io import BytesIO
 from typing import Callable, Iterable, Iterator
 
 from docx import Document
@@ -64,6 +65,11 @@ class OpcionesAdaptacion:
     marca_pasos: str = "PASOS:"
     resaltar_palabras: list[str] = field(default_factory=list)
     color_resaltado: str = "AMARILLO"
+    # Banco de pictogramas (ARASAAC) al final del documento.
+    #   "no"          -> no añadir
+    #   "resaltadas"  -> un pictograma por cada palabra de `resaltar_palabras`
+    # Requiere conexión: envía a ARASAAC solo esas palabras, no el documento.
+    pictogramas: str = "no"
 
     def copia(self) -> "OpcionesAdaptacion":
         return deepcopy(self)
@@ -288,6 +294,73 @@ def _nuevo_parrafo_despues(parrafo: Paragraph, texto: str, estilo: str | None) -
 
 
 # --------------------------------------------------------------------------- #
+# Banco de pictogramas (ARASAAC) — requiere conexión
+# --------------------------------------------------------------------------- #
+
+def _obtener_pictograma_real(palabra: str) -> bytes | None:
+    from .pictogramas import obtener  # import diferido: solo si se usa
+
+    return obtener(palabra)
+
+
+def _anadir_banco_pictogramas(
+    doc,
+    palabras: list[str],
+    obtener: Callable[[str], bytes | None],
+    registrar: Callable[[str], None],
+    columnas: int = 4,
+) -> int:
+    """Añade al final una tabla «palabra + pictograma» con las palabras dadas.
+    Devuelve cuántos pictogramas ha colocado."""
+    limpias: list[str] = []
+    vistos: set[str] = set()
+    for p in palabras:
+        c = p.strip()
+        if c and c.lower() not in vistos:
+            vistos.add(c.lower())
+            limpias.append(c)
+    if not limpias:
+        return 0
+
+    registrar("Buscando pictogramas en ARASAAC…")
+    encontrados: list[tuple[str, bytes]] = []
+    for palabra in limpias:
+        png = obtener(palabra)
+        if png:
+            encontrados.append((palabra, png))
+        else:
+            registrar(f"Sin pictograma para «{palabra}».")
+
+    if not encontrados:
+        registrar("No se añadió ningún pictograma (¿sin conexión?).")
+        return 0
+
+    doc.add_heading("Pictogramas", level=1)
+    filas = (len(encontrados) + columnas - 1) // columnas
+    tabla = doc.add_table(rows=filas, cols=columnas)
+    for i, (palabra, png) in enumerate(encontrados):
+        celda = tabla.cell(i // columnas, i % columnas)
+        p_img = celda.paragraphs[0]
+        p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        try:
+            p_img.add_run().add_picture(BytesIO(png), width=Cm(3))
+        except Exception:  # noqa: BLE001 - una imagen ilegible no debe abortar
+            registrar(f"No se pudo insertar el pictograma de «{palabra}».")
+            continue
+        p_txt = celda.add_paragraph(palabra)
+        p_txt.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    from .pictogramas import ATRIBUCION
+
+    nota = doc.add_paragraph(ATRIBUCION)
+    for run in nota.runs:
+        run.italic = True
+        run.font.size = Pt(8)
+
+    return len(encontrados)
+
+
+# --------------------------------------------------------------------------- #
 # Resaltado de palabras clave
 # --------------------------------------------------------------------------- #
 
@@ -400,13 +473,14 @@ def aplicar_formato(
     doc,
     opciones: OpcionesAdaptacion,
     registrar: Callable[[str], None] = lambda mensaje: None,
+    obtener_pictograma: Callable[[str], bytes | None] | None = None,
 ) -> dict:
     """Aplica las opciones de formato sobre un `Document` ya abierto.
     Devuelve un resumen de lo hecho. No guarda el archivo."""
 
     resumen = {
         "parrafos": 0, "runs": 0, "resaltados": 0,
-        "vinetas_convertidas": 0, "procedimientos_en_pasos": 0,
+        "vinetas_convertidas": 0, "procedimientos_en_pasos": 0, "pictogramas": 0,
     }
 
     _ajustar_estilo_normal(doc, opciones)
@@ -442,6 +516,14 @@ def aplicar_formato(
 
             if patron is not None:
                 resumen["resaltados"] += _resaltar_en_parrafo(parrafo, patron, color)
+
+    if opciones.pictogramas == "resaltadas" and opciones.resaltar_palabras:
+        resumen["pictogramas"] = _anadir_banco_pictogramas(
+            doc,
+            opciones.resaltar_palabras,
+            obtener_pictograma or _obtener_pictograma_real,
+            registrar,
+        )
 
     return resumen
 
