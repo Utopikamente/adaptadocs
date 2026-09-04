@@ -20,18 +20,20 @@ Tiene dos partes:
 
 ## Descargar (Windows)
 
-1. Ve a la página de **[Releases](../../releases)** y descarga
-   `Adaptadocs.exe` de la última versión.
+1. Descarga **[`Adaptadocs.exe`](https://github.com/Utopikamente/adaptadocs/releases/latest/download/Adaptadocs.exe)**
+   (o entra en **[Releases](../../releases)** y coge el `.exe` de la última versión).
 2. Haz doble clic. No necesita instalación ni permisos de administrador.
 
-### "Windows protegió su PC"
+### El navegador y Windows avisan del archivo
 
 El ejecutable **no está firmado digitalmente** (un certificado cuesta cientos de
-euros al año), así que la primera vez Windows SmartScreen mostrará un aviso azul.
-Es esperado:
+euros al año), así que aparecerán dos avisos. Ambos son esperados:
 
-1. Pulsa **Más información**.
-2. Pulsa **Ejecutar de todas formas**.
+- **Al descargar** (Chrome/Edge): «Adaptadocs.exe puede ser peligroso / no es
+  habitual» → pulsa los tres puntos o la flecha → **Conservar** / **Conservar de
+  todos modos**.
+- **Al abrir** (SmartScreen, aviso azul): **Más información** → **Ejecutar de
+  todas formas**.
 
 Para comprobar que el archivo no se ha alterado, compara su huella con la del
 archivo `Adaptadocs.exe.sha256` de la Release:
