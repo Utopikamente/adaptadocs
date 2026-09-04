@@ -5,7 +5,7 @@
 ;   & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" instalador.iss
 
 #define NombreApp "Adaptador de documentos Word"
-#define VersionApp "1.0.0"
+#define VersionApp "1.1.0"
 #define EjecutableApp "Adaptador Word.exe"
 
 [Setup]

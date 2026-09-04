@@ -7,8 +7,14 @@ adaptado**, pensada para crear materiales más accesibles para alumnado con
 dificultades de aprendizaje (dislexia, TDAH, TEA, discapacidad intelectual leve,
 baja visión…).
 
-Esta versión trabaja **solo sobre el formato y la presentación**. No cambia el
-contenido del texto ni envía nada a internet: todo ocurre en tu ordenador.
+Tiene dos partes:
+
+- **Formato y presentación** (siempre disponible, gratis, sin conexión): todo
+  ocurre en tu ordenador y no se envía nada a internet.
+- **Contenido con IA** (opcional): reescribe el texto a un nivel de lectura más
+  sencillo, añade glosario, resumen y preguntas de comprensión. Necesita una
+  clave de API de Anthropic y **envía el texto del documento a Claude** para
+  procesarlo. Ver la sección [Adaptación de contenido con IA](#adaptación-de-contenido-con-ia-opcional).
 
 ---
 
@@ -54,6 +60,45 @@ intelectual leve, Baja visión) que puedes retocar antes de generar el documento
 
 ---
 
+## Adaptación de contenido con IA (opcional)
+
+En la pestaña **«Contenido con IA»** de la ventana puedes pedir, además del
+formato:
+
+- **Simplificar el texto** a un nivel de lectura (de 1º de Primaria a 2º de ESO,
+  o pautas de Lectura Fácil), conservando datos, cifras y nombres propios.
+- **Convertir procedimientos en pasos numerados.**
+- **Glosario** de términos difíciles, al final del documento.
+- **Resumen** por apartados, al principio.
+- **Preguntas de comprensión**, al final.
+
+### Requisitos y privacidad
+
+- Necesitas una **clave de API de Anthropic**: créala en
+  <https://console.anthropic.com> → *API Keys*. Tiene coste por uso (ver abajo).
+- Al usar estas funciones, **el texto del documento se envía a Anthropic
+  (Claude)** por internet. Úsalo solo con materiales que no contengan datos
+  personales del alumnado.
+- La clave se guarda en el **Administrador de credenciales de Windows** (no en un
+  archivo de texto ni en el repositorio). Puedes borrarla desde la propia app.
+
+### Coste aproximado
+
+Con el modelo por defecto (**Opus 5**), adaptar una ficha de 1–2 páginas con
+todas las opciones cuesta del orden de **0,05–0,15 €**. Con **Sonnet 5** es
+alrededor de un tercio, y con **Haiku 4.5** aún menos. Puedes elegir el modelo en
+la misma pestaña.
+
+### Por línea de comandos
+
+```bash
+setx ANTHROPIC_API_KEY "sk-ant-..."   # una sola vez (reinicia la terminal)
+python cli.py ficha.docx --ia simplificar,glosario,preguntas --nivel "3º-4º de Primaria"
+python cli.py ficha.docx --ia simplificar --modelo-ia claude-sonnet-5
+```
+
+---
+
 ## Usar desde el código fuente
 
 Requiere **Python 3.10 o superior** (<https://www.python.org/downloads/>,
@@ -78,7 +123,9 @@ Probar rápidamente:
 ```bash
 python crear_ejemplo.py
 python cli.py ejemplo.docx --perfil Dislexia --resaltar "glucosa, oxígeno"
-python prueba.py          # comprobación automática de que todo funciona
+python prueba.py          # comprobación de formato
+python prueba_ia.py       # comprobación de la capa de IA (sin conexión)
+python prueba_ia_api.py   # prueba REAL de la IA (usa la API y gasta saldo)
 ```
 
 ---
@@ -115,6 +162,10 @@ winget install JRSoftware.InnoSetup
   donde se abra el documento; si no, Word mostrará una fuente sustituta.
 - La conversión de viñetas a lista numerada depende de que el documento use los
   estilos de lista estándar de Word.
+- La adaptación con IA trabaja sobre los párrafos de primer nivel; el texto
+  dentro de tablas no se reescribe (sí se le aplica el formato).
+- La IA puede cometer errores: **revisa siempre** el documento adaptado antes de
+  usarlo con el alumnado.
 
 ---
 
@@ -122,14 +173,18 @@ winget install JRSoftware.InnoSetup
 
 ```
 adaptador-docx/
-├── app.py              Ventana de escritorio (Tkinter)
+├── app.py              Ventana de escritorio (Tkinter), 2 pestañas: Formato / IA
 ├── cli.py              Uso por línea de comandos y por lotes
 ├── crear_ejemplo.py    Genera un .docx de prueba
 ├── construir.ps1       Construye el .exe
 ├── instalador.iss      Script del instalador (Inno Setup)
 ├── core/
-│   ├── transformador.py  Lógica de transformación (python-docx)
-│   └── perfiles.py       Perfiles predefinidos
+│   ├── transformador.py  Formato (python-docx, sin conexión)
+│   ├── perfiles.py       Perfiles de formato predefinidos
+│   ├── ia.py             Llamada a la API de Anthropic (adaptación de contenido)
+│   ├── aplicar_ia.py     Vuelca el resultado de la IA en el documento
+│   ├── claves.py         Guardado seguro de la clave de API (keyring)
+│   └── pipeline.py       Orquesta IA + formato
 ├── recursos/           Icono y datos de versión del .exe
 └── .github/workflows/  CI y publicación automática
 ```

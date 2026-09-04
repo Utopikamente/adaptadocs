@@ -1,6 +1,12 @@
 # Dependencia principal: lectura y escritura de .docx
 python-docx>=1.1.0
 
+# Adaptación de contenido con IA (funciones "Pro"): cliente de la API de Anthropic
+anthropic>=0.69
+
+# Guardar la clave de API en el almacén de credenciales del sistema
+keyring>=24
+
 # Opcional: arrastrar y soltar archivos sobre la ventana.
 # Si no se instala, la app sigue funcionando con el botón "Examinar".
 tkinterdnd2>=0.4.0

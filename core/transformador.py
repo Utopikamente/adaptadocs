@@ -236,15 +236,7 @@ def _ajustar_estilo_normal(doc, o: OpcionesAdaptacion) -> None:
 # Punto de entrada
 # --------------------------------------------------------------------------- #
 
-def adaptar_documento(
-    ruta_entrada: str,
-    ruta_salida: str,
-    opciones: OpcionesAdaptacion,
-    registrar: Callable[[str], None] = lambda mensaje: None,
-) -> dict:
-    """Lee `ruta_entrada`, aplica `opciones` y guarda el resultado en
-    `ruta_salida`. Devuelve un pequeño resumen de lo que se ha hecho."""
-
+def _validar_rutas(ruta_entrada: str, ruta_salida: str) -> None:
     ext = os.path.splitext(ruta_entrada)[1].lower()
     if ext == ".doc":
         raise ValueError(
@@ -256,8 +248,14 @@ def adaptar_documento(
     if os.path.abspath(ruta_entrada) == os.path.abspath(ruta_salida):
         raise ValueError("El archivo de salida no puede ser el mismo que el de entrada.")
 
-    registrar(f"Abriendo «{os.path.basename(ruta_entrada)}»…")
-    doc = Document(ruta_entrada)
+
+def aplicar_formato(
+    doc,
+    opciones: OpcionesAdaptacion,
+    registrar: Callable[[str], None] = lambda mensaje: None,
+) -> dict:
+    """Aplica las opciones de formato sobre un `Document` ya abierto.
+    Devuelve un resumen de lo hecho. No guarda el archivo."""
 
     resumen = {"parrafos": 0, "runs": 0, "resaltados": 0, "vinetas_convertidas": 0}
 
@@ -290,6 +288,25 @@ def adaptar_documento(
 
             if patron is not None:
                 resumen["resaltados"] += _resaltar_en_parrafo(parrafo, patron, color)
+
+    return resumen
+
+
+def adaptar_documento(
+    ruta_entrada: str,
+    ruta_salida: str,
+    opciones: OpcionesAdaptacion,
+    registrar: Callable[[str], None] = lambda mensaje: None,
+) -> dict:
+    """Lee `ruta_entrada`, aplica `opciones` de formato y guarda el resultado
+    en `ruta_salida`. Devuelve un pequeño resumen de lo que se ha hecho."""
+
+    _validar_rutas(ruta_entrada, ruta_salida)
+
+    registrar(f"Abriendo «{os.path.basename(ruta_entrada)}»…")
+    doc = Document(ruta_entrada)
+
+    resumen = aplicar_formato(doc, opciones, registrar)
 
     carpeta = os.path.dirname(os.path.abspath(ruta_salida))
     os.makedirs(carpeta, exist_ok=True)

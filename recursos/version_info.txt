@@ -1,8 +1,8 @@
 # Información de versión incrustada en el .exe (formato PyInstaller).
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 0, 0, 0),
-    prodvers=(1, 0, 0, 0),
+    filevers=(1, 1, 0, 0),
+    prodvers=(1, 1, 0, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -18,12 +18,12 @@ VSVersionInfo(
           [
             StringStruct("CompanyName", "Adaptador de documentos Word"),
             StringStruct("FileDescription", "Adapta documentos de Word para alumnado con dificultades"),
-            StringStruct("FileVersion", "1.0.0.0"),
+            StringStruct("FileVersion", "1.1.0.0"),
             StringStruct("InternalName", "AdaptadorWord"),
             StringStruct("LegalCopyright", "Licencia MIT"),
             StringStruct("OriginalFilename", "Adaptador Word.exe"),
             StringStruct("ProductName", "Adaptador de documentos Word"),
-            StringStruct("ProductVersion", "1.0.0.0"),
+            StringStruct("ProductVersion", "1.1.0.0"),
           ],
         )
       ]

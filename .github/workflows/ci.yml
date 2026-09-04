@@ -14,5 +14,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - name: Ejecutar la comprobación
+      - name: Comprobación de formato
         run: python prueba.py
+      - name: Comprobación de la capa de IA (sin red)
+        run: python prueba_ia.py

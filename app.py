@@ -11,7 +11,10 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
+from core import claves
+from core.ia import MODELOS, MODELO_POR_DEFECTO, NIVELES, NIVEL_POR_DEFECTO, OpcionesIA
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
+from core.pipeline import adaptar_documento_completo
 from core.transformador import OpcionesAdaptacion, adaptar_documento
 
 # Arrastrar y soltar es opcional: si tkinterdnd2 no está instalado, se usa
@@ -35,6 +38,8 @@ COLOR_A_CLAVE = {
     "Rosa": "ROSA", "Gris": "GRIS",
 }
 CLAVE_A_COLOR = {v: k for k, v in COLOR_A_CLAVE.items()}
+MODELO_A_ID = dict(MODELOS)
+ID_A_MODELO = {v: k for k, v in MODELOS.items()}
 
 
 def _ruta_salida_por_defecto(entrada: str) -> str:
@@ -47,7 +52,7 @@ class Aplicacion(_Raiz):
     def __init__(self) -> None:
         super().__init__()
         self.title("Adaptador de documentos Word")
-        self.minsize(640, 640)
+        self.minsize(660, 720)
         self.columnconfigure(0, weight=1)
 
         self._cola: queue.Queue[tuple[str, object]] = queue.Queue()
@@ -56,6 +61,7 @@ class Aplicacion(_Raiz):
         self._construir_variables()
         self._construir_interfaz()
         self._cargar_perfil()
+        self._cargar_clave_guardada()
         self.after(100, self._vaciar_cola)
 
     # ------------------------------------------------------------------ #
@@ -66,6 +72,7 @@ class Aplicacion(_Raiz):
         self.var_entrada = tk.StringVar()
         self.var_salida = tk.StringVar()
         self.var_perfil = tk.StringVar(value=PERFIL_POR_DEFECTO)
+        # Formato
         self.var_fuente = tk.StringVar()
         self.var_tamano = tk.DoubleVar()
         self.var_interlineado = tk.StringVar()
@@ -79,12 +86,23 @@ class Aplicacion(_Raiz):
         self.var_vinetas = tk.BooleanVar()
         self.var_palabras = tk.StringVar()
         self.var_color = tk.StringVar(value="Amarillo")
+        # IA
+        self.var_ia_clave = tk.StringVar()
+        self.var_ia_estado = tk.StringVar(value="sin clave guardada")
+        self.var_ia_modelo = tk.StringVar(value=MODELO_POR_DEFECTO)
+        self.var_ia_nivel = tk.StringVar(value=NIVEL_POR_DEFECTO)
+        self.var_ia_simplificar = tk.BooleanVar()
+        self.var_ia_glosario = tk.BooleanVar()
+        self.var_ia_resumen = tk.BooleanVar()
+        self.var_ia_preguntas = tk.BooleanVar()
+        self.var_ia_pasos = tk.BooleanVar()
+        self.var_ia_npreguntas = tk.IntVar(value=5)
 
     def _construir_interfaz(self) -> None:
         pad = {"padx": 8, "pady": 4}
         fila = 0
 
-        # --- Archivo de entrada -------------------------------------- #
+        # --- 1. Archivo de entrada -------------------------------- #
         marco_e = ttk.LabelFrame(self, text="1. Documento original (.docx)")
         marco_e.grid(row=fila, column=0, sticky="ew", **pad)
         marco_e.columnconfigure(0, weight=1)
@@ -101,8 +119,8 @@ class Aplicacion(_Raiz):
                 w.dnd_bind("<<Drop>>", self._soltar_archivo)
         fila += 1
 
-        # --- Perfil ------------------------------------------------- #
-        marco_p = ttk.LabelFrame(self, text="2. Perfil de adaptación")
+        # --- 2. Perfil ------------------------------------------- #
+        marco_p = ttk.LabelFrame(self, text="2. Perfil de adaptación (formato)")
         marco_p.grid(row=fila, column=0, sticky="ew", **pad)
         marco_p.columnconfigure(0, weight=1)
         combo_p = ttk.Combobox(marco_p, textvariable=self.var_perfil,
@@ -111,9 +129,34 @@ class Aplicacion(_Raiz):
         combo_p.bind("<<ComboboxSelected>>", lambda _e: self._cargar_perfil())
         fila += 1
 
-        # --- Opciones de formato ---------------------------------- #
-        marco_o = ttk.LabelFrame(self, text="3. Opciones de formato")
-        marco_o.grid(row=fila, column=0, sticky="ew", **pad)
+        # --- 3. Opciones (pestañas) ----------------------------- #
+        cuaderno = ttk.Notebook(self)
+        cuaderno.grid(row=fila, column=0, sticky="nsew", **pad)
+        cuaderno.add(self._pestana_formato(cuaderno), text="  Formato  ")
+        cuaderno.add(self._pestana_ia(cuaderno), text="  Contenido con IA  ")
+        fila += 1
+
+        # --- 4. Salida ----------------------------------------- #
+        marco_s = ttk.LabelFrame(self, text="4. Guardar documento adaptado como")
+        marco_s.grid(row=fila, column=0, sticky="ew", **pad)
+        marco_s.columnconfigure(0, weight=1)
+        ttk.Entry(marco_s, textvariable=self.var_salida).grid(
+            row=0, column=0, sticky="ew", padx=8, pady=8)
+        ttk.Button(marco_s, text="Examinar…", command=self._elegir_salida).grid(
+            row=0, column=1, padx=8, pady=8)
+        fila += 1
+
+        # --- Acción y registro -------------------------------- #
+        self.boton = ttk.Button(self, text="Adaptar documento", command=self._lanzar)
+        self.boton.grid(row=fila, column=0, sticky="ew", padx=8, pady=(8, 4))
+        fila += 1
+
+        self.registro = tk.Text(self, height=7, state="disabled", wrap="word")
+        self.registro.grid(row=fila, column=0, sticky="nsew", padx=8, pady=(0, 8))
+        self.rowconfigure(fila, weight=1)
+
+    def _pestana_formato(self, padre) -> ttk.Frame:
+        marco_o = ttk.Frame(padre, padding=8)
         marco_o.columnconfigure(1, weight=1)
 
         ttk.Label(marco_o, text="Fuente").grid(row=0, column=0, sticky="w", padx=8, pady=4)
@@ -166,29 +209,64 @@ class Aplicacion(_Raiz):
             row=1, column=0, columnspan=2, sticky="ew", pady=4)
         ttk.Combobox(marco_r, textvariable=self.var_color, values=COLORES,
                      state="readonly", width=10).grid(row=1, column=2, padx=(6, 0), pady=4)
-        fila += 1
+        return marco_o
 
-        # --- Salida ---------------------------------------------- #
-        marco_s = ttk.LabelFrame(self, text="4. Guardar documento adaptado como")
-        marco_s.grid(row=fila, column=0, sticky="ew", **pad)
-        marco_s.columnconfigure(0, weight=1)
-        ttk.Entry(marco_s, textvariable=self.var_salida).grid(
-            row=0, column=0, sticky="ew", padx=8, pady=8)
-        ttk.Button(marco_s, text="Examinar…", command=self._elegir_salida).grid(
-            row=0, column=1, padx=8, pady=8)
-        fila += 1
+    def _pestana_ia(self, padre) -> ttk.Frame:
+        m = ttk.Frame(padre, padding=8)
+        m.columnconfigure(1, weight=1)
 
-        # --- Acción y registro -------------------------------- #
-        self.boton = ttk.Button(self, text="Adaptar documento", command=self._lanzar)
-        self.boton.grid(row=fila, column=0, sticky="ew", padx=8, pady=(8, 4))
-        fila += 1
+        aviso = ttk.Label(
+            m,
+            text="⚠  Al usar estas funciones, el texto del documento se envía a "
+            "Anthropic (Claude) por internet para procesarlo. Úsalo solo con "
+            "materiales sin datos personales del alumnado.",
+            wraplength=560, foreground="#8a5a00", justify="left",
+        )
+        aviso.grid(row=0, column=0, columnspan=3, sticky="w", padx=8, pady=(2, 8))
 
-        self.registro = tk.Text(self, height=7, state="disabled", wrap="word")
-        self.registro.grid(row=fila, column=0, sticky="nsew", padx=8, pady=(0, 8))
-        self.rowconfigure(fila, weight=1)
+        ttk.Label(m, text="Clave de API").grid(row=1, column=0, sticky="w", padx=8, pady=4)
+        ent_clave = ttk.Entry(m, textvariable=self.var_ia_clave, show="•")
+        ent_clave.grid(row=1, column=1, sticky="ew", padx=8, pady=4)
+        botones = ttk.Frame(m)
+        botones.grid(row=1, column=2, padx=(0, 8))
+        ttk.Button(botones, text="Guardar", width=8, command=self._guardar_clave).pack(side="left")
+        ttk.Button(botones, text="Borrar", width=7, command=self._borrar_clave).pack(side="left", padx=(4, 0))
+        ttk.Label(m, textvariable=self.var_ia_estado, foreground="#666").grid(
+            row=2, column=1, columnspan=2, sticky="w", padx=8)
+
+        ttk.Label(m, text="Modelo").grid(row=3, column=0, sticky="w", padx=8, pady=4)
+        ttk.Combobox(m, textvariable=self.var_ia_modelo, values=list(MODELOS),
+                     state="readonly").grid(row=3, column=1, columnspan=2, sticky="ew", padx=8, pady=4)
+
+        ttk.Label(m, text="Nivel de lectura").grid(row=4, column=0, sticky="w", padx=8, pady=4)
+        ttk.Combobox(m, textvariable=self.var_ia_nivel, values=list(NIVELES),
+                     state="readonly").grid(row=4, column=1, columnspan=2, sticky="ew", padx=8, pady=4)
+
+        ttk.Separator(m).grid(row=5, column=0, columnspan=3, sticky="ew", pady=8)
+
+        ttk.Checkbutton(m, text="Simplificar el texto al nivel elegido",
+                        variable=self.var_ia_simplificar).grid(
+            row=6, column=0, columnspan=3, sticky="w", padx=8, pady=2)
+        ttk.Checkbutton(m, text="Convertir procedimientos en pasos numerados",
+                        variable=self.var_ia_pasos).grid(
+            row=7, column=0, columnspan=3, sticky="w", padx=8, pady=2)
+        ttk.Checkbutton(m, text="Añadir glosario de términos difíciles (al final)",
+                        variable=self.var_ia_glosario).grid(
+            row=8, column=0, columnspan=3, sticky="w", padx=8, pady=2)
+        ttk.Checkbutton(m, text="Añadir resumen por apartados (al principio)",
+                        variable=self.var_ia_resumen).grid(
+            row=9, column=0, columnspan=3, sticky="w", padx=8, pady=2)
+
+        fila_q = ttk.Frame(m)
+        fila_q.grid(row=10, column=0, columnspan=3, sticky="w", padx=8, pady=2)
+        ttk.Checkbutton(fila_q, text="Añadir preguntas de comprensión (al final):",
+                        variable=self.var_ia_preguntas).pack(side="left")
+        ttk.Spinbox(fila_q, from_=3, to=15, width=4, textvariable=self.var_ia_npreguntas).pack(
+            side="left", padx=6)
+        return m
 
     # ------------------------------------------------------------------ #
-    # Perfil <-> controles
+    # Perfil / clave <-> controles
     # ------------------------------------------------------------------ #
 
     def _cargar_perfil(self) -> None:
@@ -206,6 +284,30 @@ class Aplicacion(_Raiz):
         self.var_vinetas.set(o.convertir_vinetas_en_pasos)
         self.var_color.set(CLAVE_A_COLOR.get(o.color_resaltado, "Amarillo"))
 
+    def _cargar_clave_guardada(self) -> None:
+        guardada = claves.leer_clave()
+        if guardada:
+            self.var_ia_clave.set(guardada)
+            origen = "guardada" if claves.hay_almacen() else "de la variable de entorno"
+            self.var_ia_estado.set(f"clave cargada ({origen})")
+        elif not claves.hay_almacen():
+            self.var_ia_estado.set("no se puede guardar en este equipo; se usará solo esta sesión")
+
+    def _guardar_clave(self) -> None:
+        clave = self.var_ia_clave.get().strip()
+        if not clave:
+            messagebox.showinfo("Clave vacía", "Escribe la clave de API antes de guardarla.")
+            return
+        if claves.guardar_clave(clave):
+            self.var_ia_estado.set("clave guardada en el almacén del sistema")
+        else:
+            self.var_ia_estado.set("no se pudo guardar; se usará solo en esta sesión")
+
+    def _borrar_clave(self) -> None:
+        claves.borrar_clave()
+        self.var_ia_clave.set("")
+        self.var_ia_estado.set("clave borrada")
+
     def _recoger_opciones(self) -> OpcionesAdaptacion:
         palabras = [p.strip() for p in self.var_palabras.get().split(",") if p.strip()]
         return OpcionesAdaptacion(
@@ -222,6 +324,19 @@ class Aplicacion(_Raiz):
             resaltar_palabras=palabras,
             color_resaltado=COLOR_A_CLAVE.get(self.var_color.get(), "AMARILLO"),
         )
+
+    def _recoger_opciones_ia(self) -> OpcionesIA | None:
+        o = OpcionesIA(
+            simplificar=self.var_ia_simplificar.get(),
+            glosario=self.var_ia_glosario.get(),
+            resumen=self.var_ia_resumen.get(),
+            preguntas=self.var_ia_preguntas.get(),
+            pasos=self.var_ia_pasos.get(),
+            nivel=self.var_ia_nivel.get(),
+            modelo=MODELO_A_ID.get(self.var_ia_modelo.get(), "claude-opus-5"),
+            n_preguntas=int(self.var_ia_npreguntas.get()),
+        )
+        return o if o.alguna() else None
 
     # ------------------------------------------------------------------ #
     # Selección de archivos
@@ -294,20 +409,60 @@ class Aplicacion(_Raiz):
             messagebox.showerror("Valores no válidos", "Revisa los números de tamaño, espaciado y márgenes.")
             return
 
+        opciones_ia = self._recoger_opciones_ia()
+        clave = self.var_ia_clave.get().strip() or None
+        if opciones_ia is not None:
+            if not clave:
+                messagebox.showerror(
+                    "Falta la clave de API",
+                    "Has marcado opciones de IA. Introduce tu clave de API de Anthropic "
+                    "en la pestaña «Contenido con IA».",
+                )
+                return
+            if not messagebox.askyesno(
+                "Enviar texto a la IA",
+                "El texto del documento se enviará a Anthropic (Claude) para adaptarlo.\n\n"
+                "¿Continuar?",
+            ):
+                return
+
         self._procesando = True
         self.boton.configure(state="disabled", text="Procesando…")
         self._log("─" * 40)
         threading.Thread(
-            target=self._trabajo, args=(entrada, salida, opciones), daemon=True
+            target=self._trabajo, args=(entrada, salida, opciones, opciones_ia, clave),
+            daemon=True,
         ).start()
 
-    def _trabajo(self, entrada: str, salida: str, opciones: OpcionesAdaptacion) -> None:
+    def _trabajo(self, entrada, salida, opciones, opciones_ia, clave) -> None:
+        registrar = lambda m: self._cola.put(("log", m))  # noqa: E731
         try:
-            resumen = adaptar_documento(
-                entrada, salida, opciones,
-                registrar=lambda m: self._cola.put(("log", m)),
-            )
-            self._cola.put(("ok", (salida, resumen)))
+            if opciones_ia is not None:
+                res = adaptar_documento_completo(
+                    entrada, salida, opciones, opciones_ia, api_key=clave, registrar=registrar
+                )
+                ia, fmt = res["ia"], res["formato"]
+                partes = []
+                if ia:
+                    partes.append(
+                        f"IA: {ia.get('simplificados', 0)} párrafos reescritos, "
+                        f"{ia.get('en_pasos', 0)} en pasos, {ia.get('glosario', 0)} términos, "
+                        f"{ia.get('preguntas', 0)} preguntas"
+                    )
+                    uso = ia.get("_uso") or {}
+                    if uso:
+                        partes.append(
+                            f"tokens: {uso.get('entrada', 0)} entrada / {uso.get('salida', 0)} salida"
+                        )
+                partes.append(f"Formato: {fmt['parrafos']} párrafos, {fmt['resaltados']} resaltados")
+                texto = "Listo. " + " · ".join(partes)
+            else:
+                r = adaptar_documento(entrada, salida, opciones, registrar=registrar)
+                texto = (
+                    f"Listo. {r['parrafos']} párrafos, {r['resaltados']} palabras resaltadas, "
+                    f"{r['vinetas_convertidas']} viñetas convertidas."
+                )
+            self._cola.put(("ok", (salida, texto)))
         except Exception as exc:  # noqa: BLE001 - queremos mostrar cualquier fallo
             self._cola.put(("error", str(exc)))
 
@@ -318,13 +473,8 @@ class Aplicacion(_Raiz):
                 if tipo == "log":
                     self._log(str(carga))
                 elif tipo == "ok":
-                    salida, resumen = carga
-                    self._log(
-                        "Listo. "
-                        f"{resumen['parrafos']} párrafos, "
-                        f"{resumen['resaltados']} palabras resaltadas, "
-                        f"{resumen['vinetas_convertidas']} viñetas convertidas."
-                    )
+                    salida, texto = carga
+                    self._log(texto)
                     self._fin()
                     if messagebox.askyesno("Documento adaptado",
                                            "Se ha creado el documento adaptado.\n\n¿Abrir la carpeta?"):

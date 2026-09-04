@@ -34,6 +34,9 @@ $work = Join-Path $env:LOCALAPPDATA "adaptador-word-build"
     --icon ".\recursos\icono.ico" `
     --version-file ".\recursos\version_info.txt" `
     --collect-all tkinterdnd2 `
+    --collect-all anthropic `
+    --collect-all keyring `
+    --collect-submodules keyring.backends `
     --workpath $work `
     --distpath ".\dist" `
     app.py
