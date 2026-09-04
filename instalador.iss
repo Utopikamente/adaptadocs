@@ -4,19 +4,19 @@
 ; Uso:  compilar este archivo con Inno Setup tras haber ejecutado construir.ps1
 ;   & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" instalador.iss
 
-#define NombreApp "Adaptador de documentos Word"
-#define VersionApp "1.1.0"
-#define EjecutableApp "Adaptador Word.exe"
+#define NombreApp "Adaptadocs"
+#define VersionApp "1.1.1"
+#define EjecutableApp "Adaptadocs.exe"
 
 [Setup]
 AppName={#NombreApp}
 AppVersion={#VersionApp}
-AppPublisher=Adaptador de documentos Word
-DefaultDirName={autopf}\Adaptador Word
-DefaultGroupName=Adaptador Word
+AppPublisher=Máximo Escribano Diéguez
+DefaultDirName={autopf}\Adaptadocs
+DefaultGroupName=Adaptadocs
 DisableProgramGroupPage=yes
 OutputDir=dist
-OutputBaseFilename=Instalar Adaptador Word {#VersionApp}
+OutputBaseFilename=Instalar Adaptadocs {#VersionApp}
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern

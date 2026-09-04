@@ -1,4 +1,4 @@
-# Construye el ejecutable de Windows (dist\Adaptador Word.exe).
+# Construye el ejecutable de Windows (dist\Adaptadocs.exe).
 #
 # Uso:  .\construir.ps1
 #
@@ -20,17 +20,17 @@ if (-not (Test-Path ".\recursos\icono.ico")) {
 }
 
 # Cierra una instancia previa que pudiera estar bloqueando el .exe
-Stop-Process -Name "Adaptador Word" -Force -ErrorAction SilentlyContinue
+Stop-Process -Name "Adaptadocs" -Force -ErrorAction SilentlyContinue
 
 # Limpieza de builds anteriores
 Remove-Item -Recurse -Force build, dist -ErrorAction SilentlyContinue
-Remove-Item -Force "Adaptador Word.spec" -ErrorAction SilentlyContinue
+Remove-Item -Force "Adaptadocs.spec" -ErrorAction SilentlyContinue
 
 # El trabajo intermedio va fuera de OneDrive para no saturar la sincronizacion
-$work = Join-Path $env:LOCALAPPDATA "adaptador-word-build"
+$work = Join-Path $env:LOCALAPPDATA "adaptadocs-build"
 
 & $py -m PyInstaller --noconfirm --onefile --windowed `
-    --name "Adaptador Word" `
+    --name "Adaptadocs" `
     --icon ".\recursos\icono.ico" `
     --version-file ".\recursos\version_info.txt" `
     --collect-all tkinterdnd2 `
@@ -44,9 +44,9 @@ $work = Join-Path $env:LOCALAPPDATA "adaptador-word-build"
 if ($LASTEXITCODE -ne 0) { throw "PyInstaller ha fallado." }
 
 # Suma de comprobación para publicar junto al ejecutable
-$exe = ".\dist\Adaptador Word.exe"
+$exe = ".\dist\Adaptadocs.exe"
 $hash = (Get-FileHash $exe -Algorithm SHA256).Hash
-"$hash  Adaptador Word.exe" | Out-File -Encoding ascii ".\dist\Adaptador Word.exe.sha256"
+"$hash  Adaptadocs.exe" | Out-File -Encoding ascii ".\dist\Adaptadocs.exe.sha256"
 
 Write-Host ""
 Write-Host "Listo:" (Resolve-Path $exe)

@@ -51,7 +51,7 @@ def _ruta_salida_por_defecto(entrada: str) -> str:
 class Aplicacion(_Raiz):
     def __init__(self) -> None:
         super().__init__()
-        self.title("Adaptador de documentos Word")
+        self.title("Adaptadocs")
         self.minsize(660, 720)
         self.columnconfigure(0, weight=1)
 

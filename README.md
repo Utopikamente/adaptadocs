@@ -1,6 +1,6 @@
-# Adaptador de documentos Word
+# Adaptadocs
 
-[![Comprobaciones](https://github.com/Utopikamente/adaptador-word/actions/workflows/ci.yml/badge.svg)](https://github.com/Utopikamente/adaptador-word/actions/workflows/ci.yml)
+[![Comprobaciones](https://github.com/Utopikamente/adaptadocs/actions/workflows/ci.yml/badge.svg)](https://github.com/Utopikamente/adaptadocs/actions/workflows/ci.yml)
 
 Aplicación de escritorio para **transformar un documento `.docx` en otro `.docx`
 adaptado**, pensada para crear materiales más accesibles para alumnado con
@@ -21,7 +21,7 @@ Tiene dos partes:
 ## Descargar (Windows)
 
 1. Ve a la página de **[Releases](../../releases)** y descarga
-   `Adaptador Word.exe` de la última versión.
+   `Adaptadocs.exe` de la última versión.
 2. Haz doble clic. No necesita instalación ni permisos de administrador.
 
 ### "Windows protegió su PC"
@@ -34,10 +34,10 @@ Es esperado:
 2. Pulsa **Ejecutar de todas formas**.
 
 Para comprobar que el archivo no se ha alterado, compara su huella con la del
-archivo `Adaptador Word.exe.sha256` de la Release:
+archivo `Adaptadocs.exe.sha256` de la Release:
 
 ```powershell
-Get-FileHash "Adaptador Word.exe" -Algorithm SHA256
+Get-FileHash "Adaptadocs.exe" -Algorithm SHA256
 ```
 
 ---
@@ -137,7 +137,7 @@ pip install -r dev-requirements.txt
 .\construir.ps1
 ```
 
-El resultado queda en `dist\Adaptador Word.exe` junto a su archivo `.sha256`.
+El resultado queda en `dist\Adaptadocs.exe` junto a su archivo `.sha256`.
 
 En cada etiqueta `vX.Y.Z` que se sube al repositorio, GitHub Actions construye el
 ejecutable y lo publica automáticamente en la Release
@@ -172,7 +172,7 @@ winget install JRSoftware.InnoSetup
 ## Estructura
 
 ```
-adaptador-docx/
+adaptadocs/
 ├── app.py              Ventana de escritorio (Tkinter), 2 pestañas: Formato / IA
 ├── cli.py              Uso por línea de comandos y por lotes
 ├── crear_ejemplo.py    Genera un .docx de prueba

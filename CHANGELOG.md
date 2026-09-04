@@ -1,5 +1,12 @@
 # Historial de cambios
 
+## [1.1.1] — 2026-09-04
+
+- El proyecto pasa a llamarse **Adaptadocs** (antes «Adaptador de documentos
+  Word»). El ejecutable ahora es `Adaptadocs.exe`. Repositorio movido a
+  `Utopikamente/adaptadocs` (GitHub mantiene la redirección desde el anterior).
+- Sin cambios de funcionamiento respecto a la 1.1.0.
+
 ## [1.1.0] — 2026-09-04
 
 Adaptación de **contenido con IA** (opcional, funciones "Pro").

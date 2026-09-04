@@ -22,7 +22,7 @@ import crear_ejemplo
 def main() -> int:
     fallos: list[str] = []
 
-    trabajo = tempfile.mkdtemp(prefix="adaptador-ia-")
+    trabajo = tempfile.mkdtemp(prefix="adaptadocs-ia-")
     import os
 
     cwd = os.getcwd()

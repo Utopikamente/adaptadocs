@@ -1,4 +1,4 @@
-"""Genera un documento de ejemplo para probar el adaptador.
+"""Genera un documento de ejemplo para probar Adaptadocs.
 
     python crear_ejemplo.py
 """

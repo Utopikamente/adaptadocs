@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import os
 
-_SERVICIO = "adaptador-word"
+_SERVICIO = "adaptadocs"
 _USUARIO = "anthropic-api-key"
 
 try:  # keyring es opcional

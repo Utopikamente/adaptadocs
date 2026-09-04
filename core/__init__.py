@@ -1,4 +1,4 @@
-"""Núcleo del adaptador de documentos Word."""
+"""Núcleo de Adaptadocs (adaptación de documentos .docx)."""
 
 from .perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 from .transformador import OpcionesAdaptacion, adaptar_documento, aplicar_formato

@@ -26,7 +26,7 @@ def _aprox(valor: float, esperado: float, tol: float = 0.02) -> bool:
 
 def main() -> int:
     fallos: list[str] = []
-    trabajo = tempfile.mkdtemp(prefix="adaptador-prueba-")
+    trabajo = tempfile.mkdtemp(prefix="adaptadocs-prueba-")
     origen = os.path.join(trabajo, "ejemplo.docx")
 
     cwd = os.getcwd()
