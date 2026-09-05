@@ -95,6 +95,8 @@ class Aplicacion(_Raiz):
         self.var_pictogramas = tk.BooleanVar()
         self.var_palabras = tk.StringVar()
         self.var_color = tk.StringVar(value="Amarillo")
+        self.var_numerar_preguntas = tk.BooleanVar()
+        self.var_espacio_respuestas = tk.IntVar(value=0)
         # IA
         self.var_ia_clave = tk.StringVar()
         self.var_ia_estado = tk.StringVar(value="sin clave guardada")
@@ -229,6 +231,18 @@ class Aplicacion(_Raiz):
             text="Añadir banco de pictogramas (ARASAAC) para esas palabras — necesita conexión",
             variable=self.var_pictogramas,
         ).grid(row=2, column=0, columnspan=3, sticky="w", pady=(2, 0))
+
+        marco_preg = ttk.Frame(marco_o)
+        marco_preg.grid(row=12, column=0, columnspan=2, sticky="w", padx=8, pady=(8, 2))
+        ttk.Checkbutton(marco_preg, text="Numerar las preguntas del documento",
+                        variable=self.var_numerar_preguntas).pack(side="left")
+
+        marco_esp = ttk.Frame(marco_o)
+        marco_esp.grid(row=13, column=0, columnspan=2, sticky="w", padx=8, pady=2)
+        ttk.Label(marco_esp, text="Líneas en blanco para responder tras cada pregunta").pack(
+            side="left")
+        ttk.Spinbox(marco_esp, from_=0, to=20, width=4,
+                    textvariable=self.var_espacio_respuestas).pack(side="left", padx=6)
         return marco_o
 
     def _pestana_ia(self, padre) -> ttk.Frame:
@@ -305,6 +319,8 @@ class Aplicacion(_Raiz):
         self.var_separar.set(CLAVE_A_SEPARAR.get(o.separar_en_pasos, "No separar"))
         self.var_pictogramas.set(o.pictogramas == "resaltadas")
         self.var_color.set(CLAVE_A_COLOR.get(o.color_resaltado, "Amarillo"))
+        self.var_numerar_preguntas.set(o.numerar_preguntas)
+        self.var_espacio_respuestas.set(o.espacio_respuestas)
 
     def _cargar_clave_guardada(self) -> None:
         guardada = claves.leer_clave()
@@ -347,6 +363,8 @@ class Aplicacion(_Raiz):
             pictogramas="resaltadas" if self.var_pictogramas.get() else "no",
             resaltar_palabras=palabras,
             color_resaltado=COLOR_A_CLAVE.get(self.var_color.get(), "AMARILLO"),
+            numerar_preguntas=self.var_numerar_preguntas.get(),
+            espacio_respuestas=int(self.var_espacio_respuestas.get()),
         )
 
     def _recoger_opciones_ia(self) -> OpcionesIA | None:
@@ -485,7 +503,9 @@ class Aplicacion(_Raiz):
                 texto = (
                     f"Listo. {r['parrafos']} párrafos, {r['resaltados']} palabras resaltadas, "
                     f"{r['procedimientos_en_pasos']} procedimientos en pasos, "
-                    f"{r['pictogramas']} pictogramas."
+                    f"{r['pictogramas']} pictogramas, "
+                    f"{r['preguntas_numeradas']} preguntas numeradas, "
+                    f"{r['preguntas_con_espacio']} con espacio para responder."
                 )
             self._cola.put(("ok", (salida, texto)))
         except Exception as exc:  # noqa: BLE001 - queremos mostrar cualquier fallo

@@ -47,6 +47,10 @@ def main() -> None:
         "a un compañero."
     )
 
+    doc.add_heading("Preguntas", level=2)
+    doc.add_paragraph("¿Qué necesita una planta para hacer la fotosíntesis?")
+    doc.add_paragraph("¿Qué produce la planta como resultado de este proceso?")
+
     doc.save("ejemplo.docx")
     print("Creado ejemplo.docx")
 

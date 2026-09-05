@@ -55,6 +55,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--pictogramas", action="store_true",
                         help="Añadir al final un banco de pictogramas de ARASAAC para las "
                         "palabras de --resaltar (necesita conexión)")
+    parser.add_argument("--numerar-preguntas", action="store_true",
+                        help="Renumerar de forma consecutiva los párrafos que sean preguntas "
+                        "(terminan en «?»)")
+    parser.add_argument("--espacio-respuestas", type=int, default=0,
+                        help="Líneas en blanco a insertar tras cada pregunta detectada "
+                        "para que el alumnado responda (0 = ninguna)")
     parser.add_argument(
         "--ia", default="",
         help="Tareas de IA separadas por comas: " + ", ".join(_TAREAS_IA)
@@ -73,6 +79,8 @@ def main(argv: list[str] | None = None) -> int:
     opciones.separar_en_pasos = args.separar_pasos
     if args.pictogramas:
         opciones.pictogramas = "resaltadas"
+    opciones.numerar_preguntas = args.numerar_preguntas
+    opciones.espacio_respuestas = args.espacio_respuestas
     if args.resaltar:
         opciones.resaltar_palabras = [p.strip() for p in args.resaltar.split(",") if p.strip()]
         opciones.color_resaltado = args.color
@@ -122,7 +130,9 @@ def main(argv: list[str] | None = None) -> int:
                 print(
                     f"  {resumen['parrafos']} párrafos · {resumen['resaltados']} resaltados · "
                     f"{resumen['procedimientos_en_pasos']} en pasos · "
-                    f"{resumen['pictogramas']} pictogramas\n"
+                    f"{resumen['pictogramas']} pictogramas · "
+                    f"{resumen['preguntas_numeradas']} preguntas numeradas · "
+                    f"{resumen['preguntas_con_espacio']} con espacio para responder\n"
                 )
         except Exception as exc:  # noqa: BLE001
             print(f"ERROR con «{entrada}»: {exc}\n", file=sys.stderr)

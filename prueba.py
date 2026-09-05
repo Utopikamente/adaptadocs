@@ -135,6 +135,37 @@ def main() -> int:
     if r_pic_no["pictogramas"] != 0 or "Pictogramas" in [p.text for p in d_pic_no.paragraphs]:
         fallos.append("sin pictogramas: no debería haberse añadido la sección")
 
+    # --- Numerar preguntas y dejar espacio para responder ----------- #
+    d_preg_off = Document(origen)
+    r_preg_off = aplicar_formato(d_preg_off, OpcionesAdaptacion())
+    if r_preg_off["preguntas_numeradas"] != 0 or r_preg_off["preguntas_con_espacio"] != 0:
+        fallos.append("por defecto no debería tocarse ninguna pregunta")
+
+    d_preg_num = Document(origen)
+    r_preg_num = aplicar_formato(d_preg_num, OpcionesAdaptacion(numerar_preguntas=True))
+    if r_preg_num["preguntas_numeradas"] != 2:
+        fallos.append(
+            f"preguntas_numeradas = {r_preg_num['preguntas_numeradas']} (esperado 2)"
+        )
+    preguntas_numeradas = [
+        p.text for p in d_preg_num.paragraphs if "Number" in (p.style.name or "")
+    ]
+    if not any(t.startswith("¿Qué necesita una planta") for t in preguntas_numeradas):
+        fallos.append("no se numeró la primera pregunta")
+
+    parrafos_antes = len(Document(origen).paragraphs)
+    d_preg_esp = Document(origen)
+    r_preg_esp = aplicar_formato(d_preg_esp, OpcionesAdaptacion(espacio_respuestas=2))
+    if r_preg_esp["preguntas_con_espacio"] != 2:
+        fallos.append(
+            f"preguntas_con_espacio = {r_preg_esp['preguntas_con_espacio']} (esperado 2)"
+        )
+    if len(d_preg_esp.paragraphs) != parrafos_antes + 4:
+        fallos.append(
+            f"no se añadieron las líneas en blanco esperadas "
+            f"({len(d_preg_esp.paragraphs)} párrafos, esperado {parrafos_antes + 4})"
+        )
+
     # --- El original no se toca ------------------------------------- #
     if _aprox(Document(origen).sections[0].left_margin.cm, 3.0):
         fallos.append("¡el documento original ha sido modificado!")
@@ -145,7 +176,10 @@ def main() -> int:
             print("  -", f)
         return 1
 
-    print("PRUEBA OK — formato, resaltado, viñetas, pasos, pictogramas y original intacto.")
+    print(
+        "PRUEBA OK — formato, resaltado, viñetas, pasos, pictogramas, preguntas "
+        "y original intacto."
+    )
     return 0
 
 

@@ -70,6 +70,9 @@ class OpcionesAdaptacion:
     #   "resaltadas"  -> un pictograma por cada palabra de `resaltar_palabras`
     # Requiere conexión: envía a ARASAAC solo esas palabras, no el documento.
     pictogramas: str = "no"
+    # Preguntas de examen/ficha: se detectan los párrafos que terminan en «?».
+    numerar_preguntas: bool = False   # renumera esos párrafos como lista numerada
+    espacio_respuestas: int = 0       # líneas en blanco tras cada pregunta (0 = ninguna)
 
     def copia(self) -> "OpcionesAdaptacion":
         return deepcopy(self)
@@ -294,6 +297,47 @@ def _nuevo_parrafo_despues(parrafo: Paragraph, texto: str, estilo: str | None) -
 
 
 # --------------------------------------------------------------------------- #
+# Preguntas: numerarlas y dejar espacio para responder
+# --------------------------------------------------------------------------- #
+
+def _es_pregunta(texto: str) -> bool:
+    """Un párrafo se considera pregunta si termina en «?» (admite un cierre
+    de comilla o paréntesis después del interrogante)."""
+    t = texto.strip().rstrip("»\"')]")
+    return t.endswith("?")
+
+
+def _procesar_preguntas(doc, o: OpcionesAdaptacion) -> dict:
+    """Detecta los párrafos que son preguntas y, según las opciones, los
+    numera de forma consecutiva y/o añade líneas en blanco para responder."""
+    resumen = {"preguntas_numeradas": 0, "preguntas_con_espacio": 0}
+    if not o.numerar_preguntas and not o.espacio_respuestas:
+        return resumen
+
+    for parrafo in list(doc.paragraphs):
+        if _es_titulo(parrafo):
+            continue
+        texto = parrafo.text.strip()
+        if not texto or not _es_pregunta(texto):
+            continue
+
+        if o.espacio_respuestas > 0:
+            ancla = parrafo
+            for _ in range(o.espacio_respuestas):
+                ancla = _nuevo_parrafo_despues(ancla, "", None)
+            resumen["preguntas_con_espacio"] += 1
+
+        if o.numerar_preguntas:
+            try:
+                parrafo.style = doc.styles["List Number"]
+                resumen["preguntas_numeradas"] += 1
+            except KeyError:
+                pass
+
+    return resumen
+
+
+# --------------------------------------------------------------------------- #
 # Banco de pictogramas (ARASAAC) — requiere conexión
 # --------------------------------------------------------------------------- #
 
@@ -481,15 +525,18 @@ def aplicar_formato(
     resumen = {
         "parrafos": 0, "runs": 0, "resaltados": 0,
         "vinetas_convertidas": 0, "procedimientos_en_pasos": 0, "pictogramas": 0,
+        "preguntas_numeradas": 0, "preguntas_con_espacio": 0,
     }
 
     _ajustar_estilo_normal(doc, opciones)
     for seccion in doc.sections:
         _ajustar_seccion(seccion, opciones)
 
-    # Antes de formatear: trocear procedimientos en pasos (crea párrafos nuevos
-    # que el bucle de abajo recogerá al releer doc.paragraphs).
+    # Antes de formatear: trocear procedimientos en pasos y tratar las
+    # preguntas (crean párrafos nuevos que el bucle de abajo recogerá al
+    # releer doc.paragraphs).
     resumen["procedimientos_en_pasos"] = _separar_procedimientos(doc, opciones)
+    resumen.update(_procesar_preguntas(doc, opciones))
 
     patron = _compilar_patron(opciones.resaltar_palabras)
     color = COLORES_RESALTADO.get(opciones.color_resaltado.upper(), WD_COLOR_INDEX.YELLOW)

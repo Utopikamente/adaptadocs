@@ -67,6 +67,9 @@ Get-FileHash "AdaptadocsSetup.exe" -Algorithm SHA256
   (sin IA): solo los que marques con «PASOS:» al principio, o por detección
   automática. Trocea por frases y por conectores («luego», «después»…); no
   reescribe el texto.
+- **Numera las preguntas** del documento (párrafos que terminan en «?») de
+  forma clara y consecutiva, y añade una **cantidad fija de líneas en
+  blanco** tras cada una para que el alumnado responda.
 - **Resalta** las palabras clave que indiques, con el color que elijas.
 - Añade al final un **banco de pictogramas** ([ARASAAC](https://arasaac.org)) con
   las palabras que resaltes: apoyo visual para alumnado con TEL/TDL, TEA, etc.

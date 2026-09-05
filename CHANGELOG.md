@@ -1,5 +1,16 @@
 # Historial de cambios
 
+## [1.4.0] — 2026-09-05
+
+- **Numerar preguntas**, en la pestaña Formato: casilla que renumera de forma
+  clara y consecutiva los párrafos detectados como preguntas (terminan en
+  «?»), aplicándoles el estilo de lista numerada.
+- **Espacio para responder**, en la pestaña Formato: campo numérico con la
+  cantidad fija de líneas en blanco que se insertan después de cada pregunta
+  detectada, para que el alumnado tenga sitio donde escribir la respuesta.
+- `cli.py`: opciones `--numerar-preguntas` y `--espacio-respuestas N`.
+- Sin cambios en la adaptación de contenido con IA.
+
 ## [1.3.1] — 2026-09-04
 
 - **Cambio de empaquetado para evitar el falso positivo de antivirus.** Hasta la
