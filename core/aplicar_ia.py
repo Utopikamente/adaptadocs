@@ -123,9 +123,13 @@ def aplicar_resultado(
         "glosario": 0,
         "preguntas": 0,
         "resumen": 0,
+        "preguntas_divididas": 0,
     }
 
     ids_en_pasos = {int(x["id"]) for x in datos.get("parrafos_en_pasos", []) if "id" in x}
+    ids_preguntas_divididas = {
+        int(x["id"]) for x in datos.get("preguntas_divididas", []) if "id" in x
+    }
 
     # 1) Reescritura de párrafos
     for item in datos.get("parrafos_simplificados", []):
@@ -133,7 +137,7 @@ def aplicar_resultado(
             pid = int(item["id"])
         except (KeyError, ValueError, TypeError):
             continue
-        if pid in ids_en_pasos:
+        if pid in ids_en_pasos or pid in ids_preguntas_divididas:
             continue
         parrafo = parrafos_por_id.get(pid)
         texto = str(item.get("texto", "")).strip()
@@ -147,6 +151,8 @@ def aplicar_resultado(
         try:
             pid = int(item["id"])
         except (KeyError, ValueError, TypeError):
+            continue
+        if pid in ids_preguntas_divididas:
             continue
         parrafo = parrafos_por_id.get(pid)
         pasos = [str(s).strip() for s in item.get("pasos", []) if str(s).strip()]
@@ -162,6 +168,22 @@ def aplicar_resultado(
         for paso in pasos[1:]:
             ancla = _insertar_despues(ancla, paso, estilo_pasos)
         resumen["en_pasos"] += 1
+
+    # 2b) Preguntas compuestas divididas en varias más cortas
+    for item in datos.get("preguntas_divididas", []):
+        try:
+            pid = int(item["id"])
+        except (KeyError, ValueError, TypeError):
+            continue
+        parrafo = parrafos_por_id.get(pid)
+        subpreguntas = [str(s).strip() for s in item.get("subpreguntas", []) if str(s).strip()]
+        if parrafo is None or not subpreguntas:
+            continue
+        _reemplazar_texto(parrafo, subpreguntas[0])
+        ancla = parrafo
+        for subpregunta in subpreguntas[1:]:
+            ancla = _insertar_despues(ancla, subpregunta)
+        resumen["preguntas_divididas"] += 1
 
     # 3) Resumen al principio (antes de tocar el final del documento)
     if datos.get("resumen"):

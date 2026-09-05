@@ -1,5 +1,14 @@
 # Historial de cambios
 
+## [1.5.0] — 2026-09-05
+
+- **Dividir preguntas compuestas** (con IA), en la pestaña «Contenido con IA»:
+  las preguntas largas o que piden varias cosas a la vez se dividen en varias
+  preguntas más cortas y consecutivas, sin añadir nada ni responderlas. Se
+  puede combinar con «Numerar preguntas» (sin IA, ya existente) para
+  renumerar el resultado.
+- `cli.py`: nueva tarea `dividir_preguntas` para `--ia`.
+
 ## [1.4.0] — 2026-09-05
 
 - **Numerar preguntas**, en la pestaña Formato: casilla que renumera de forma

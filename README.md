@@ -93,6 +93,8 @@ formato:
 - **Simplificar el texto** a un nivel de lectura (de 1º de Primaria a 2º de ESO,
   o pautas de Lectura Fácil), conservando datos, cifras y nombres propios.
 - **Convertir procedimientos en pasos numerados.**
+- **Dividir preguntas largas o compuestas** en varias preguntas más cortas y
+  consecutivas, sin cambiar lo que preguntan.
 - **Glosario** de términos difíciles, al final del documento.
 - **Resumen** por apartados, al principio.
 - **Preguntas de comprensión**, al final.

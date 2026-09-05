@@ -108,6 +108,7 @@ class Aplicacion(_Raiz):
         self.var_ia_preguntas = tk.BooleanVar()
         self.var_ia_pasos = tk.BooleanVar()
         self.var_ia_npreguntas = tk.IntVar(value=5)
+        self.var_ia_dividir_preguntas = tk.BooleanVar()
 
     def _construir_interfaz(self) -> None:
         pad = {"padx": 8, "pady": 4}
@@ -297,6 +298,12 @@ class Aplicacion(_Raiz):
                         variable=self.var_ia_preguntas).pack(side="left")
         ttk.Spinbox(fila_q, from_=3, to=15, width=4, textvariable=self.var_ia_npreguntas).pack(
             side="left", padx=6)
+
+        ttk.Checkbutton(
+            m,
+            text="Dividir preguntas largas o compuestas en varias más cortas",
+            variable=self.var_ia_dividir_preguntas,
+        ).grid(row=11, column=0, columnspan=3, sticky="w", padx=8, pady=2)
         return m
 
     # ------------------------------------------------------------------ #
@@ -374,6 +381,7 @@ class Aplicacion(_Raiz):
             resumen=self.var_ia_resumen.get(),
             preguntas=self.var_ia_preguntas.get(),
             pasos=self.var_ia_pasos.get(),
+            dividir_preguntas=self.var_ia_dividir_preguntas.get(),
             nivel=self.var_ia_nivel.get(),
             modelo=MODELO_A_ID.get(self.var_ia_modelo.get(), "claude-opus-5"),
             n_preguntas=int(self.var_ia_npreguntas.get()),
@@ -489,7 +497,8 @@ class Aplicacion(_Raiz):
                     partes.append(
                         f"IA: {ia.get('simplificados', 0)} párrafos reescritos, "
                         f"{ia.get('en_pasos', 0)} en pasos, {ia.get('glosario', 0)} términos, "
-                        f"{ia.get('preguntas', 0)} preguntas"
+                        f"{ia.get('preguntas', 0)} preguntas, "
+                        f"{ia.get('preguntas_divididas', 0)} preguntas divididas"
                     )
                     uso = ia.get("_uso") or {}
                     if uso:

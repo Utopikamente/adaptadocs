@@ -18,7 +18,7 @@ import sys
 from core.ia import MODELOS, NIVELES, NIVEL_POR_DEFECTO, OpcionesIA
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 
-_TAREAS_IA = ("simplificar", "glosario", "resumen", "preguntas", "pasos")
+_TAREAS_IA = ("simplificar", "glosario", "resumen", "preguntas", "pasos", "dividir_preguntas")
 
 
 def _ruta_salida(entrada: str) -> str:
@@ -98,6 +98,7 @@ def main(argv: list[str] | None = None) -> int:
             resumen="resumen" in tareas,
             preguntas="preguntas" in tareas,
             pasos="pasos" in tareas,
+            dividir_preguntas="dividir_preguntas" in tareas,
             nivel=args.nivel,
             modelo=args.modelo_ia,
             n_preguntas=args.preguntas,
@@ -122,7 +123,8 @@ def main(argv: list[str] | None = None) -> int:
                 ia = res["ia"]
                 print(
                     f"  IA: {ia.get('simplificados', 0)} reescritos · "
-                    f"{ia.get('glosario', 0)} términos · {ia.get('preguntas', 0)} preguntas"
+                    f"{ia.get('glosario', 0)} términos · {ia.get('preguntas', 0)} preguntas · "
+                    f"{ia.get('preguntas_divididas', 0)} preguntas divididas"
                 )
                 print(f"  Formato: {res['formato']['parrafos']} párrafos\n")
             else:

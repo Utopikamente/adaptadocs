@@ -105,13 +105,54 @@ def main() -> int:
             f"pasos: {len(doc2.paragraphs)} párrafos (esperado {n_parrafos_antes + 2})"
         )
 
+    # Prueba de 'preguntas_divididas': una pregunta compuesta se parte en varias
+    doc3 = Document(f"{trabajo}/ejemplo.docx")
+    bloques3, por_id3 = _extraer_bloques(doc3)
+    id_pregunta = next(
+        b.id for b in bloques3 if b.tipo == "parrafo" and b.texto.strip().endswith("?")
+    )
+    n_parrafos_antes3 = len(doc3.paragraphs)
+    r3 = aplicar_resultado(
+        doc3,
+        {
+            "parrafos_simplificados": [],
+            "parrafos_en_pasos": [],
+            "glosario": [],
+            "resumen": [],
+            "preguntas": [],
+            "preguntas_divididas": [
+                {
+                    "id": id_pregunta,
+                    "subpreguntas": [
+                        "¿Qué usa la planta del suelo?",
+                        "¿Qué usa la planta del aire?",
+                    ],
+                }
+            ],
+        },
+        por_id3,
+    )
+    if r3["preguntas_divididas"] != 1:
+        fallos.append(f"preguntas_divididas = {r3['preguntas_divididas']} (esperado 1)")
+    if len(doc3.paragraphs) != n_parrafos_antes3 + 1:
+        fallos.append(
+            f"preguntas_divididas: {len(doc3.paragraphs)} párrafos "
+            f"(esperado {n_parrafos_antes3 + 1})"
+        )
+    textos3 = [p.text for p in doc3.paragraphs]
+    if "¿Qué usa la planta del suelo?" not in textos3 or "¿Qué usa la planta del aire?" not in textos3:
+        fallos.append("no se ven las dos subpreguntas en el documento")
+
     if fallos:
         print("PRUEBA IA (sin red) FALLIDA:")
         for f in fallos:
             print("  -", f)
         return 1
 
-    print("PRUEBA IA (sin red) OK — reescritura, pasos, glosario, resumen y preguntas.")
+    print(
+        "PRUEBA IA (sin red) OK — reescritura, pasos, glosario, resumen, preguntas "
+        "y preguntas divididas."
+    )
     return 0
 
 

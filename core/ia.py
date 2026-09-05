@@ -49,13 +49,15 @@ class OpcionesIA:
     resumen: bool = False
     preguntas: bool = False
     pasos: bool = False
+    dividir_preguntas: bool = False
     nivel: str = NIVEL_POR_DEFECTO
     modelo: str = "claude-opus-5"
     n_preguntas: int = 5
 
     def alguna(self) -> bool:
         return any(
-            (self.simplificar, self.glosario, self.resumen, self.preguntas, self.pasos)
+            (self.simplificar, self.glosario, self.resumen, self.preguntas,
+             self.pasos, self.dividir_preguntas)
         )
 
 
@@ -121,6 +123,16 @@ def _esquema() -> dict:
                     ),
                 },
                 "preguntas": {"type": "array", "items": {"type": "string"}},
+                "preguntas_divididas": {
+                    "type": "array",
+                    "items": obj(
+                        {
+                            "id": {"type": "integer"},
+                            "subpreguntas": {"type": "array", "items": {"type": "string"}},
+                        },
+                        ["id", "subpreguntas"],
+                    ),
+                },
             },
             [
                 "parrafos_simplificados",
@@ -128,6 +140,7 @@ def _esquema() -> dict:
                 "glosario",
                 "resumen",
                 "preguntas",
+                "preguntas_divididas",
             ],
         ),
     }
@@ -187,6 +200,17 @@ def _mensaje_usuario(bloques: list[Bloque], o: OpcionesIA) -> str:
             "contenido, ordenadas de más fácil a más difícil, que se puedan "
             "responder leyendo el documento."
         )
+    if o.dividir_preguntas:
+        lineas.append(
+            "- preguntas_divididas: para los bloques (parrafo) que sean una "
+            "pregunta (terminan en «?») y pregunten varias cosas a la vez o sean "
+            "muy largas, divídelas en varias preguntas más cortas y consecutivas, "
+            "en el mismo orden, sin añadir preguntas nuevas ni responderlas. "
+            "Devuelve id y la lista de subpreguntas, cada una terminada en «?». "
+            "Si una pregunta ya es corta y pregunta una sola cosa, no la incluyas. "
+            "Un bloque no puede estar a la vez en parrafos_simplificados, "
+            "parrafos_en_pasos y aquí."
+        )
     return "\n".join(lineas)
 
 
@@ -225,6 +249,7 @@ def adaptar_contenido(
             "glosario": [],
             "resumen": [],
             "preguntas": [],
+            "preguntas_divididas": [],
             "_uso": {"entrada": 0, "salida": 0},
         }
 
@@ -269,6 +294,7 @@ def adaptar_contenido(
         "glosario",
         "resumen",
         "preguntas",
+        "preguntas_divididas",
     ):
         datos.setdefault(clave_lista, [])
 
