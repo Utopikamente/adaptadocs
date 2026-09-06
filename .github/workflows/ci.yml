@@ -20,3 +20,5 @@ jobs:
         run: python prueba_ia.py
       - name: Comprobación de la hoja de registro
         run: python prueba_registro.py
+      - name: Comprobación del Anexo III.b (ACIS)
+        run: python prueba_acis.py

@@ -34,6 +34,7 @@ $work = Join-Path $env:LOCALAPPDATA "adaptadocs-build"
     --icon ".\recursos\icono.ico" `
     --version-file ".\recursos\version_info.txt" `
     --add-data "core\registro.json;core" `
+    --add-data "core\acis.json;core" `
     --collect-all tkinterdnd2 `
     --collect-all anthropic `
     --collect-all keyring `

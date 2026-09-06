@@ -1,0 +1,53 @@
+{
+  "anexo": "ANEXO III.b",
+  "titulo": "ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA (ACIS)",
+  "marca_borrador": "BORRADOR — pendiente de validación por el equipo docente. Documento generado por Adaptadocs; debe revisarse antes de incorporarlo al expediente académico.",
+  "pendiente": "[PENDIENTE — lo determina el equipo docente]",
+  "sombra": "F2F2F2",
+  "datos_alumno": {
+    "titulo": "DATOS PERSONALES DEL ALUMNO",
+    "apellidos": "Apellidos:",
+    "nombre": "Nombre:",
+    "nia": "NIA:",
+    "fecha_nac": "Fecha de nacimiento:",
+    "curso": "Curso:",
+    "grupo": "Grupo:"
+  },
+  "cuerpo": {
+    "titulo": "ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA (ACIS)",
+    "materia": "Materia:",
+    "profesor": "Profesor:",
+    "departamento": "Departamento didáctico:",
+    "competencias_tit": "Competencias específicas de la materia",
+    "elementos_tit": "Elementos curriculares orientados a la consecución de los objetivos de la etapa y del perfil de salida de la ESO",
+    "criterios_tit": "Criterios de evaluación",
+    "contenidos_tit": "Contenidos",
+    "metodologia_tit": "Metodología",
+    "instrumentos_tit": "Instrumentos de evaluación y criterios de calificación.",
+    "unidades_tit": "Unidades didácticas.",
+    "secuenciacion_tit": "Secuenciación y temporalización.",
+    "ud_col": "Unidad didáctica",
+    "trimestre_col": "Trimestre"
+  },
+  "firmas": {
+    "lugar_fecha": "En {localidad}, a {fecha}",
+    "profesor_de": "EL PROFESOR DE {profesor_de}",
+    "visto_bueno": "V.º B.º",
+    "jefe_departamento": "EL/LA JEFE/A DE DEPARTAMENTO",
+    "jefe_departamento_de": "DE {departamento_vb}",
+    "fdo": "Fdo.: ",
+    "jefe_estudios": "SR./SRA. JEFE/A DE ESTUDIOS",
+    "expediente": "ESTA ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA DEL ALUMNO QUEDARÁ ADJUNTA A SU EXPEDIENTE ACADÉMICO."
+  },
+  "footer": "ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA",
+  "aviso_sin_acs": "No se incluye el bloque de «{materia}»: no consta que el equipo de orientación haya determinado una adaptación curricular significativa para esta materia (evaluación psicopedagógica). La ACS está legalmente reservada al alumnado con necesidades educativas especiales (art. 10 del Decreto 23/2023, de 22 de marzo; art. 10.3.a de la Orden 1712/2023).",
+  "ayudas_formulario": {
+    "competencias": "Por defecto, las competencias específicas son las del Decreto 65/2022, de 20 de julio. Solo se concreta aquí una adaptación cuando resulte estrictamente necesario (p. ej. discapacidad motórica en Educación Física, o auditiva en Lengua Extranjera). Nunca se prescinde de una competencia específica completa; se adapta buscando el máximo desarrollo.",
+    "criterios": "Adaptaciones de los criterios de evaluación orientados a los objetivos de la etapa y el perfil de salida. De cada criterio se señala el curso de la ESO al que corresponde. Estos criterios son la referencia para la evaluación del alumno. Si el nivel curricular requiere elementos del currículo de Primaria, se toman del Decreto 61/2022, de 13 de julio, indicando área y ciclo.",
+    "contenidos": "Adaptaciones de los contenidos de los aspectos básicos del currículo que trabajará el alumno, para su progreso y máximo desarrollo. De cada contenido se indica el curso de la ESO o, en su caso, el área y ciclo de Primaria (Decreto 61/2022).",
+    "metodologia": "Aspectos de la metodología que varían respecto a la programación didáctica del resto del alumnado. Si recibe apoyo de profesorado especialista (PT/AL): horas lectivas, elementos curriculares y actividades principales de esas sesiones. Efecto de las medidas de acceso sobre temporalización y secuenciación.",
+    "instrumentos": "Adaptaciones sobre los instrumentos de evaluación y los criterios de calificación de la programación didáctica. Deben permitir que los resultados reflejen si el alumno ha alcanzado las competencias de la etapa para la titulación. Los criterios de calificación fijan el peso de cada actividad en la nota final.",
+    "unidades": "Unidades didácticas previstas en la programación de la materia con las adaptaciones que procedan y, si es necesario, unidades diseñadas ex profeso para la adaptación curricular.",
+    "secuenciacion": "Para cada unidad didáctica, el trimestre en que se trabajará."
+  }
+}
