@@ -126,10 +126,6 @@ class Aplicacion(_Raiz):
         self.var_acis_departamento = tk.StringVar()
         self.var_acis_acs_determinada = tk.BooleanVar()
         self.var_acis_categoria = tk.StringVar()
-        self.var_acis_localidad = tk.StringVar()
-        self.var_acis_fecha = tk.StringVar()
-        self.var_acis_profesor_de = tk.StringVar()
-        self.var_acis_departamento_vb = tk.StringVar()
 
     def _construir_interfaz(self) -> None:
         pad = {"padx": 8, "pady": 4}
@@ -466,19 +462,6 @@ class Aplicacion(_Raiz):
             self.acis_txt[clave] = t
             sub.add(f, text=f"  {etiqueta}  ")
 
-        # --- 5. Centro y firma ---------------------------------- #
-        m5 = ttk.LabelFrame(raiz_scroll, text="5. Centro y firma (opcional)")
-        m5.grid(row=5, column=0, sticky="ew", pady=4)
-        m5.columnconfigure((1, 3), weight=1)
-        ttk.Label(m5, text="Localidad").grid(row=0, column=0, sticky="w", padx=6, pady=4)
-        ttk.Entry(m5, textvariable=self.var_acis_localidad).grid(row=0, column=1, sticky="ew", pady=4)
-        ttk.Label(m5, text="Fecha").grid(row=0, column=2, sticky="w", padx=6, pady=4)
-        ttk.Entry(m5, textvariable=self.var_acis_fecha).grid(row=0, column=3, sticky="ew", pady=4)
-        ttk.Label(m5, text="El profesor de").grid(row=1, column=0, sticky="w", padx=6, pady=4)
-        ttk.Entry(m5, textvariable=self.var_acis_profesor_de).grid(row=1, column=1, sticky="ew", pady=4)
-        ttk.Label(m5, text="Vº Bº Jefatura de Dpto. de").grid(row=1, column=2, sticky="w", padx=6, pady=4)
-        ttk.Entry(m5, textvariable=self.var_acis_departamento_vb).grid(row=1, column=3, sticky="ew", pady=4)
-
         # --- barra inferior fija (siempre visible) ---------------- #
         barra = ttk.Frame(raiz, padding=(8, 6))
         barra.grid(row=1, column=0, columnspan=2, sticky="ew")
@@ -580,13 +563,7 @@ class Aplicacion(_Raiz):
             unidades=_txt("unidades"),
             secuenciacion=secuenciacion,
         )
-        datos = DatosACIS(
-            localidad=self.var_acis_localidad.get().strip(),
-            fecha=self.var_acis_fecha.get().strip(),
-            profesor_de=self.var_acis_profesor_de.get().strip(),
-            departamento_vb=self.var_acis_departamento_vb.get().strip(),
-            materias=[materia],
-        )
+        datos = DatosACIS(materias=[materia])
 
         inicial = f"ACIS {materia.materia or 'borrador'}.docx".replace("/", "-")
         ruta = filedialog.asksaveasfilename(

@@ -63,10 +63,6 @@ class MateriaACIS:
 
 @dataclass
 class DatosACIS:
-    localidad: str = ""
-    fecha: str = ""                   # p. ej. "15 de octubre de 2026"
-    profesor_de: str = ""             # "EL PROFESOR DE ___"
-    departamento_vb: str = ""         # "DE ___" (jefatura de departamento)
     materias: list[MateriaACIS] = field(default_factory=list)
 
 
@@ -120,10 +116,6 @@ def datos_desde_dict(d: dict) -> DatosACIS:
             secuenciacion=secu,
         ))
     return DatosACIS(
-        localidad=d.get("localidad", ""),
-        fecha=d.get("fecha", ""),
-        profesor_de=d.get("profesor_de", ""),
-        departamento_vb=d.get("departamento_vb", ""),
         materias=materias,
     )
 
@@ -266,37 +258,9 @@ def _tabla_datos_alumno(doc, textos: dict) -> None:
     _texto_celda(grupo, f"{d['grupo']} {'_' * 8}")
 
 
-def _bloque_firmas(doc, datos: DatosACIS, textos: dict) -> None:
-    f = textos["firmas"]
+def _nota_expediente(doc, textos: dict) -> None:
     _parrafo(doc)
-    _parrafo(
-        doc,
-        f["lugar_fecha"].format(
-            localidad=_linea(datos.localidad, 25), fecha=_linea(datos.fecha, 25)
-        ),
-        alineacion=WD_ALIGN_PARAGRAPH.RIGHT,
-    )
-    _parrafo(doc)
-    p = doc.add_paragraph()
-    r = p.add_run(f["profesor_de"].format(profesor_de=_linea(datos.profesor_de, 22)))
-    r.font.size = Pt(10)
-    r = p.add_run("\t\t\t    " + f["visto_bueno"])
-    r.font.size = Pt(10)
-    _parrafo(doc, f["jefe_departamento"], alineacion=WD_ALIGN_PARAGRAPH.RIGHT)
-    _parrafo(
-        doc,
-        f["jefe_departamento_de"].format(departamento_vb=_linea(datos.departamento_vb, 22)),
-        alineacion=WD_ALIGN_PARAGRAPH.RIGHT,
-    )
-    for _ in range(3):
-        _parrafo(doc)
-    p = doc.add_paragraph()
-    r = p.add_run(f["fdo"] + "_" * 24 + "\t\t\t\t\t" + f["fdo"] + "_" * 24)
-    r.font.size = Pt(10)
-    for _ in range(4):
-        _parrafo(doc)
-    _parrafo(doc, f["jefe_estudios"], negrita=True)
-    _parrafo(doc, f["expediente"], size=8)
+    _parrafo(doc, textos["nota_expediente"], size=8)
 
 
 def _poner_pie(doc, texto: str) -> None:
@@ -362,7 +326,7 @@ def generar_acis(ruta_salida: str, datos: DatosACIS) -> tuple[str, list[str]]:
             for run in item.runs:
                 run.font.size = Pt(9)
 
-    _bloque_firmas(doc, datos, textos)
+    _nota_expediente(doc, textos)
 
     carpeta = os.path.dirname(os.path.abspath(ruta_salida))
     os.makedirs(carpeta, exist_ok=True)

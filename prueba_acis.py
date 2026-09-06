@@ -42,16 +42,12 @@ def main() -> int:
 
     textos = cargar_textos()
     for clave in ("anexo", "titulo", "marca_borrador", "pendiente", "cuerpo",
-                  "firmas", "footer", "aviso_sin_acs"):
+                  "nota_expediente", "footer", "aviso_sin_acs"):
         if clave not in textos:
             fallos.append(f"falta la clave «{clave}» en acis.json")
 
     # --- El diccionario de datos se convierte bien ------------------- #
     datos = datos_desde_dict({
-        "localidad": "Madrid",
-        "fecha": "15 de octubre de 2026",
-        "profesor_de": "Biología y Geología",
-        "departamento_vb": "Biología y Geología",
         "materias": [
             {
                 "materia": "Biología y Geología",
@@ -94,13 +90,17 @@ def main() -> int:
         "la secuenciación": "UD 1. La célula" in cuerpo and "1er trimestre" in cuerpo,
         "las competencias vacías como pendiente": textos["pendiente"] in cuerpo,
         "la materia sin ACS en «no incluidas»": "Materias no incluidas" in cuerpo,
-        "la firma de jefatura de estudios": "JEFE/A DE ESTUDIOS" in cuerpo,
         "la nota de expediente": "EXPEDIENTE ACADÉMICO" in cuerpo,
         "el pie de página": textos["footer"] in doc.sections[0].footer.paragraphs[0].text,
     }
     for que, ok in comprobaciones.items():
         if not ok:
             fallos.append(f"el documento no incluye {que}")
+
+    # No lleva bloque de firmas (el documento se copia en Raíces).
+    for marca in ("Fdo.:", "V.º B.º", "JEFE/A DE ESTUDIOS", "EL PROFESOR DE"):
+        if marca in cuerpo:
+            fallos.append(f"el documento no debería llevar «{marca}» (bloque de firmas eliminado)")
 
     # No se deben escribir datos del alumno: la tabla de datos son solo
     # etiquetas y líneas en blanco.

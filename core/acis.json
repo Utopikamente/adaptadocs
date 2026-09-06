@@ -29,16 +29,7 @@
     "ud_col": "Unidad didáctica",
     "trimestre_col": "Trimestre"
   },
-  "firmas": {
-    "lugar_fecha": "En {localidad}, a {fecha}",
-    "profesor_de": "EL PROFESOR DE {profesor_de}",
-    "visto_bueno": "V.º B.º",
-    "jefe_departamento": "EL/LA JEFE/A DE DEPARTAMENTO",
-    "jefe_departamento_de": "DE {departamento_vb}",
-    "fdo": "Fdo.: ",
-    "jefe_estudios": "SR./SRA. JEFE/A DE ESTUDIOS",
-    "expediente": "ESTA ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA DEL ALUMNO QUEDARÁ ADJUNTA A SU EXPEDIENTE ACADÉMICO."
-  },
+  "nota_expediente": "ESTA ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA DEL ALUMNO QUEDARÁ ADJUNTA A SU EXPEDIENTE ACADÉMICO.",
   "footer": "ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA",
   "aviso_sin_acs": "No se incluye el bloque de «{materia}»: no consta que el equipo de orientación haya determinado una adaptación curricular significativa para esta materia (evaluación psicopedagógica). La ACS está legalmente reservada al alumnado con necesidades educativas especiales (art. 10 del Decreto 23/2023, de 22 de marzo; art. 10.3.a de la Orden 1712/2023).",
   "ayudas_formulario": {

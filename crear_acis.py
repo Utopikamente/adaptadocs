@@ -8,10 +8,6 @@ El JSON tiene esta forma (los campos vacíos salen como pendientes en el
 documento, y una materia sin «acs_determinada: true» no se incluye):
 
     {
-      "localidad": "Madrid",
-      "fecha": "15 de octubre de 2026",
-      "profesor_de": "Biología y Geología",
-      "departamento_vb": "Biología y Geología",
       "materias": [
         {
           "materia": "Biología y Geología",
@@ -37,10 +33,6 @@ import sys
 from core.acis import datos_desde_dict, generar_acis
 
 _EJEMPLO = {
-    "localidad": "Madrid",
-    "fecha": "15 de octubre de 2026",
-    "profesor_de": "Biología y Geología",
-    "departamento_vb": "Biología y Geología",
     "materias": [
         {
             "materia": "Biología y Geología",
