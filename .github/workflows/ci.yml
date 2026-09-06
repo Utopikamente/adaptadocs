@@ -24,3 +24,5 @@ jobs:
         run: python prueba_acis.py
       - name: Comprobación del lector de programaciones
         run: python prueba_programacion.py
+      - name: Comprobación de la adaptación curricular con IA (sin red)
+        run: python prueba_acis_ia.py
