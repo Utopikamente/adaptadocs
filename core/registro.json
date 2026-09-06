@@ -1,0 +1,39 @@
+{
+  "titulo": "REGISTRO DE ADAPTACIONES APLICADAS A LA PRUEBA",
+  "subtitulo": "Documento interno de trabajo. Recoge qué ajustes de formato y de contenido se han aplicado a este material. No sustituye al Anexo VI (ESO) ni al Anexo III de la Orden 130/2023 (Primaria), que son los documentos oficiales para el expediente académico.",
+  "marco_legal": "Marco normativo: Decreto 23/2023, de 22 de marzo, art. 23; Orden 1712/2023 (ESO), art. 10.3.b y 10.3.c; Orden 130/2023 (Primaria), art. 17.1.",
+  "etiqueta_documento": "Documento adaptado:",
+  "etiqueta_fecha": "Fecha:",
+  "etiqueta_alumno": "Alumno/a:",
+  "etiqueta_barreras": "Barreras que motivan la adaptación (redacción no clínica):",
+  "titulo_formato": "Adecuación en los procesos de evaluación — Adaptación del formato",
+  "titulo_ia": "Contenido adaptado con IA",
+  "sin_adaptaciones": "No se ha registrado ninguna adaptación de formato.",
+  "nota_pie": "Documento interno generado por Adaptadocs. No contiene datos de salud ni diagnósticos, y la aplicación no guarda esta información. Todo ajuste realizado por la herramienta es revisable y requiere la validación del equipo docente.",
+  "lineas_formato": {
+    "tipografia": "Tipo y tamaño de letra: {fuente}, {tamano} pt.",
+    "solo_fuente": "Tipo de letra: {fuente}.",
+    "solo_tamano": "Tamaño de letra: {tamano} pt.",
+    "interlineado": "Interlineado: {interlineado}.",
+    "espacio_parrafo": "Espacio tras cada párrafo: {espacio} pt.",
+    "alinear_izquierda": "Texto alineado a la izquierda (sin justificar).",
+    "una_columna": "Texto a una sola columna.",
+    "margenes": "Márgenes amplios: {margenes} cm.",
+    "alto_contraste": "Texto en negro (alto contraste).",
+    "negrita_titulos": "Títulos en negrita.",
+    "vinetas_numeradas": "Listas con viñetas convertidas en lista numerada.",
+    "pasos": "Procedimientos divididos en pasos numerados ({procedimientos}).",
+    "resaltado": "Palabras clave resaltadas ({resaltados}).",
+    "pictogramas": "Banco de pictogramas de apoyo (ARASAAC) para las palabras clave ({pictogramas}).",
+    "preguntas_numeradas": "Preguntas numeradas de forma consecutiva ({preguntas_numeradas}).",
+    "espacio_respuestas": "Espacio para responder tras cada pregunta ({preguntas} preguntas, {lineas} líneas cada una)."
+  },
+  "lineas_ia": {
+    "simplificar": "Texto simplificado a un nivel de lectura: {nivel}.",
+    "pasos": "Procedimientos reescritos como pasos numerados.",
+    "glosario": "Glosario de términos difíciles añadido al final.",
+    "resumen": "Resumen por apartados añadido al principio.",
+    "preguntas": "Preguntas de comprensión añadidas al final ({preguntas}).",
+    "dividir_preguntas": "Preguntas largas o compuestas divididas en varias más cortas ({divididas})."
+  }
+}

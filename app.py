@@ -97,6 +97,7 @@ class Aplicacion(_Raiz):
         self.var_color = tk.StringVar(value="Amarillo")
         self.var_numerar_preguntas = tk.BooleanVar()
         self.var_espacio_respuestas = tk.IntVar(value=0)
+        self.var_registro = tk.BooleanVar()
         # IA
         self.var_ia_clave = tk.StringVar()
         self.var_ia_estado = tk.StringVar(value="sin clave guardada")
@@ -244,6 +245,19 @@ class Aplicacion(_Raiz):
             side="left")
         ttk.Spinbox(marco_esp, from_=0, to=20, width=4,
                     textvariable=self.var_espacio_respuestas).pack(side="left", padx=6)
+
+        ttk.Separator(marco_o).grid(row=14, column=0, columnspan=2, sticky="ew", padx=8, pady=(10, 4))
+        ttk.Checkbutton(
+            marco_o,
+            text="Generar también una hoja interna con qué se ha adaptado y por qué",
+            variable=self.var_registro,
+        ).grid(row=15, column=0, columnspan=2, sticky="w", padx=8, pady=2)
+        ttk.Label(
+            marco_o,
+            text="Documento «— registro.docx» de uso interno del profesorado; no es el "
+            "anexo oficial del expediente y no incluye datos del alumnado.",
+            wraplength=560, foreground="#666", justify="left",
+        ).grid(row=16, column=0, columnspan=2, sticky="w", padx=8, pady=(0, 4))
         return marco_o
 
     def _pestana_ia(self, padre) -> ttk.Frame:
@@ -487,11 +501,13 @@ class Aplicacion(_Raiz):
     def _trabajo(self, entrada, salida, opciones, opciones_ia, clave) -> None:
         registrar = lambda m: self._cola.put(("log", m))  # noqa: E731
         try:
+            resumen_ia: dict = {}
             if opciones_ia is not None:
                 res = adaptar_documento_completo(
                     entrada, salida, opciones, opciones_ia, api_key=clave, registrar=registrar
                 )
                 ia, fmt = res["ia"], res["formato"]
+                resumen_ia, resumen_fmt = ia, fmt
                 partes = []
                 if ia:
                     partes.append(
@@ -508,7 +524,7 @@ class Aplicacion(_Raiz):
                 partes.append(f"Formato: {fmt['parrafos']} párrafos, {fmt['resaltados']} resaltados")
                 texto = "Listo. " + " · ".join(partes)
             else:
-                r = adaptar_documento(entrada, salida, opciones, registrar=registrar)
+                r = resumen_fmt = adaptar_documento(entrada, salida, opciones, registrar=registrar)
                 texto = (
                     f"Listo. {r['parrafos']} párrafos, {r['resaltados']} palabras resaltadas, "
                     f"{r['procedimientos_en_pasos']} procedimientos en pasos, "
@@ -516,6 +532,15 @@ class Aplicacion(_Raiz):
                     f"{r['preguntas_numeradas']} preguntas numeradas, "
                     f"{r['preguntas_con_espacio']} con espacio para responder."
                 )
+
+            if self.var_registro.get():
+                from core.registro import generar_registro, ruta_registro
+
+                ruta_reg = ruta_registro(salida)
+                generar_registro(ruta_reg, os.path.basename(salida), opciones, resumen_fmt,
+                                 resumen_ia=resumen_ia, opciones_ia=opciones_ia)
+                texto += f" Hoja de registro: «{os.path.basename(ruta_reg)}»."
+
             self._cola.put(("ok", (salida, texto)))
         except Exception as exc:  # noqa: BLE001 - queremos mostrar cualquier fallo
             self._cola.put(("error", str(exc)))

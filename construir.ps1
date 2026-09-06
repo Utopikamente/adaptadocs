@@ -33,6 +33,7 @@ $work = Join-Path $env:LOCALAPPDATA "adaptadocs-build"
     --name "Adaptadocs" `
     --icon ".\recursos\icono.ico" `
     --version-file ".\recursos\version_info.txt" `
+    --add-data "core\registro.json;core" `
     --collect-all tkinterdnd2 `
     --collect-all anthropic `
     --collect-all keyring `

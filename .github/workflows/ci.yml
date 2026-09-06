@@ -18,3 +18,5 @@ jobs:
         run: python prueba.py
       - name: Comprobación de la capa de IA (sin red)
         run: python prueba_ia.py
+      - name: Comprobación de la hoja de registro
+        run: python prueba_registro.py

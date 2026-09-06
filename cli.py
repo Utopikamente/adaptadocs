@@ -61,6 +61,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--espacio-respuestas", type=int, default=0,
                         help="Líneas en blanco a insertar tras cada pregunta detectada "
                         "para que el alumnado responda (0 = ninguna)")
+    parser.add_argument("--registro", action="store_true",
+                        help="Generar, junto al documento adaptado, una hoja interna "
+                        "«— registro.docx» con qué adaptaciones se han aplicado y su marco legal")
     parser.add_argument(
         "--ia", default="",
         help="Tareas de IA separadas por comas: " + ", ".join(_TAREAS_IA)
@@ -116,11 +119,13 @@ def main(argv: list[str] | None = None) -> int:
     for entrada in entradas:
         salida = args.salida if (args.salida and len(entradas) == 1) else _ruta_salida(entrada)
         try:
+            resumen_ia: dict = {}
             if opciones_ia is not None:
                 res = adaptar_documento_completo(
                     entrada, salida, opciones, opciones_ia, registrar=print
                 )
-                ia = res["ia"]
+                ia = resumen_ia = res["ia"]
+                resumen = res["formato"]
                 print(
                     f"  IA: {ia.get('simplificados', 0)} reescritos · "
                     f"{ia.get('glosario', 0)} términos · {ia.get('preguntas', 0)} preguntas · "
@@ -136,6 +141,13 @@ def main(argv: list[str] | None = None) -> int:
                     f"{resumen['preguntas_numeradas']} preguntas numeradas · "
                     f"{resumen['preguntas_con_espacio']} con espacio para responder\n"
                 )
+            if args.registro:
+                from core.registro import generar_registro, ruta_registro
+
+                ruta = ruta_registro(salida)
+                generar_registro(ruta, os.path.basename(salida), opciones, resumen,
+                                 resumen_ia=resumen_ia, opciones_ia=opciones_ia)
+                print(f"  Registro: {os.path.basename(ruta)}\n")
         except Exception as exc:  # noqa: BLE001
             print(f"ERROR con «{entrada}»: {exc}\n", file=sys.stderr)
             errores += 1

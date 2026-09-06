@@ -78,6 +78,12 @@ Get-FileHash "AdaptadocsSetup.exe" -Algorithm SHA256
   y su uso comercial requiere permiso de ARASAAC.
 - Respeta imágenes, tablas y la estructura de apartados del documento.
 - Crea un archivo nuevo con el sufijo `(adaptado)`; **el original no se toca**.
+- Opcionalmente genera una **hoja interna de registro** («— registro.docx»)
+  con qué adaptaciones se han aplicado y su marco normativo (Decreto 23/2023
+  art. 23; Orden 1712/2023 art. 10.3.b/c; Orden 130/2023 art. 17.1). Es un
+  documento de trabajo del profesorado: **no** es el anexo oficial del
+  expediente y no incluye datos del alumnado. Sus textos están en
+  `core/registro.json`, editable.
 
 Incluye **perfiles** predefinidos (General, Dislexia, TDAH, TEA, Discapacidad
 intelectual leve, Baja visión, TEL/TDL con apoyo visual) que puedes retocar antes
@@ -143,6 +149,7 @@ Por línea de comandos o por lotes:
 ```bash
 python cli.py documento.docx --perfil Dislexia
 python cli.py una_carpeta --perfil TDAH --resaltar "importante, recuerda, ojo"
+python cli.py examen.docx --perfil Dislexia --registro   # + hoja «— registro.docx»
 ```
 
 Probar rápidamente:
@@ -152,6 +159,7 @@ python crear_ejemplo.py
 python cli.py ejemplo.docx --perfil Dislexia --resaltar "glucosa, oxígeno"
 python prueba.py          # comprobación de formato
 python prueba_ia.py       # comprobación de la capa de IA (sin conexión)
+python prueba_registro.py # comprobación de la hoja de registro (sin conexión)
 python prueba_ia_api.py   # prueba REAL de la IA (usa la API y gasta saldo)
 ```
 
@@ -211,6 +219,8 @@ adaptadocs/
 │   ├── aplicar_ia.py     Vuelca el resultado de la IA en el documento
 │   ├── pictogramas.py    Pictogramas de ARASAAC (banco de apoyo visual)
 │   ├── claves.py         Guardado seguro de la clave de API (keyring)
+│   ├── registro.py       Hoja interna «qué se ha adaptado y por qué»
+│   ├── registro.json     Textos y marco legal de esa hoja (editable)
 │   └── pipeline.py       Orquesta IA + formato
 ├── recursos/           Icono y datos de versión del .exe
 └── .github/workflows/  CI y publicación automática

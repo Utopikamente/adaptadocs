@@ -1,5 +1,20 @@
 # Historial de cambios
 
+## [1.6.0] — 2026-09-06
+
+- **Hoja interna de registro de adaptaciones**, casilla en la pestaña Formato:
+  al adaptar un documento, genera junto a él un archivo «— registro.docx» que
+  recoge qué ajustes de formato y de contenido se han aplicado y el marco
+  normativo (Decreto 23/2023 art. 23; Orden 1712/2023 art. 10.3.b/c; Orden
+  130/2023 art. 17.1). Es un documento de trabajo del profesorado: no
+  sustituye a los anexos oficiales del expediente y no incluye datos del
+  alumnado (deja un hueco para rellenar a mano).
+- Los textos y plantillas del registro están en `core/registro.json`,
+  editables sin tocar el código.
+- `cli.py`: opción `--registro`.
+- La numeración de pasos al «separar procedimientos» ahora reinicia en 1 en
+  cada actividad, en vez de continuar la numeración global.
+
 ## [1.5.0] — 2026-09-05
 
 - **Dividir preguntas compuestas** (con IA), en la pestaña «Contenido con IA»:
