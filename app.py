@@ -12,9 +12,17 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 from core import claves
+from core.acis import (
+    DatosACIS,
+    MateriaACIS,
+    generar_acis,
+    materia_desde_programacion,
+)
+from core.acis_ia import categorias_necesidades, expandir_categoria
 from core.ia import MODELOS, MODELO_POR_DEFECTO, NIVELES, NIVEL_POR_DEFECTO, OpcionesIA
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 from core.pipeline import adaptar_documento_completo
+from core.programacion import ProgramacionNoReconocida, leer_programacion
 from core.transformador import OpcionesAdaptacion, adaptar_documento
 
 # Arrastrar y soltar es opcional: si tkinterdnd2 no está instalado, se usa
@@ -110,6 +118,18 @@ class Aplicacion(_Raiz):
         self.var_ia_pasos = tk.BooleanVar()
         self.var_ia_npreguntas = tk.IntVar(value=5)
         self.var_ia_dividir_preguntas = tk.BooleanVar()
+        # ACIS
+        self.var_acis_prog_materia = tk.StringVar()
+        self.var_acis_prog_destino = tk.StringVar()
+        self.var_acis_materia = tk.StringVar()
+        self.var_acis_profesor = tk.StringVar()
+        self.var_acis_departamento = tk.StringVar()
+        self.var_acis_acs_determinada = tk.BooleanVar()
+        self.var_acis_categoria = tk.StringVar()
+        self.var_acis_localidad = tk.StringVar()
+        self.var_acis_fecha = tk.StringVar()
+        self.var_acis_profesor_de = tk.StringVar()
+        self.var_acis_departamento_vb = tk.StringVar()
 
     def _construir_interfaz(self) -> None:
         pad = {"padx": 8, "pady": 4}
@@ -147,6 +167,7 @@ class Aplicacion(_Raiz):
         cuaderno.grid(row=fila, column=0, sticky="nsew", **pad)
         cuaderno.add(self._pestana_formato(cuaderno), text="  Formato  ")
         cuaderno.add(self._pestana_ia(cuaderno), text="  Contenido con IA  ")
+        cuaderno.add(self._pestana_acis(cuaderno), text="  Adaptación curricular (ACIS)  ")
         fila += 1
 
         # --- 4. Salida ----------------------------------------- #
@@ -319,6 +340,234 @@ class Aplicacion(_Raiz):
             variable=self.var_ia_dividir_preguntas,
         ).grid(row=11, column=0, columnspan=3, sticky="w", padx=8, pady=2)
         return m
+
+    def _pestana_acis(self, padre) -> ttk.Frame:
+        raiz = ttk.Frame(padre, padding=8)
+        raiz.columnconfigure(0, weight=1)
+        raiz.rowconfigure(4, weight=1)
+
+        ttk.Label(
+            raiz,
+            text="La ACIS está reservada al alumnado con NEE cuya adaptación significativa haya "
+            "determinado el equipo de orientación (evaluación psicopedagógica). Para otras "
+            "necesidades (TDAH, dislexia…) corresponde adaptación no significativa. El documento "
+            "se genera en tu equipo y no se envía a ningún servicio.",
+            wraplength=620, foreground="#666", justify="left",
+        ).grid(row=0, column=0, sticky="w", pady=(0, 6))
+
+        # --- 1. Programaciones ------------------------------------- #
+        m1 = ttk.LabelFrame(raiz, text="1. Programaciones didácticas (.docx)")
+        m1.grid(row=1, column=0, sticky="ew", pady=4)
+        m1.columnconfigure(1, weight=1)
+        ttk.Label(m1, text="De la materia (curso actual)").grid(row=0, column=0, sticky="w", padx=6, pady=4)
+        ttk.Entry(m1, textvariable=self.var_acis_prog_materia).grid(row=0, column=1, sticky="ew", pady=4)
+        ttk.Button(m1, text="Examinar…",
+                   command=lambda: self._acis_elegir(self.var_acis_prog_materia)).grid(
+            row=0, column=2, padx=6, pady=4)
+        ttk.Label(m1, text="Del curso al que se adapta").grid(row=1, column=0, sticky="w", padx=6, pady=4)
+        ttk.Entry(m1, textvariable=self.var_acis_prog_destino).grid(row=1, column=1, sticky="ew", pady=4)
+        ttk.Button(m1, text="Examinar…",
+                   command=lambda: self._acis_elegir(self.var_acis_prog_destino)).grid(
+            row=1, column=2, padx=6, pady=4)
+        ttk.Button(m1, text="Leer y volcar el curso destino ▸",
+                   command=self._acis_leer_programaciones).grid(
+            row=2, column=1, sticky="e", pady=(2, 6))
+
+        # --- 2. Materia ------------------------------------------- #
+        m2 = ttk.LabelFrame(raiz, text="2. Materia")
+        m2.grid(row=2, column=0, sticky="ew", pady=4)
+        m2.columnconfigure((1, 3), weight=1)
+        ttk.Label(m2, text="Materia").grid(row=0, column=0, sticky="w", padx=6, pady=4)
+        ttk.Entry(m2, textvariable=self.var_acis_materia).grid(row=0, column=1, columnspan=3, sticky="ew", pady=4)
+        ttk.Label(m2, text="Profesor").grid(row=1, column=0, sticky="w", padx=6, pady=4)
+        ttk.Entry(m2, textvariable=self.var_acis_profesor).grid(row=1, column=1, sticky="ew", pady=4)
+        ttk.Label(m2, text="Departamento").grid(row=1, column=2, sticky="w", padx=6, pady=4)
+        ttk.Entry(m2, textvariable=self.var_acis_departamento).grid(row=1, column=3, sticky="ew", pady=4)
+        ttk.Checkbutton(
+            m2,
+            text="El equipo de orientación ha determinado ACS para esta materia "
+            "(evaluación psicopedagógica)",
+            variable=self.var_acis_acs_determinada,
+        ).grid(row=2, column=0, columnspan=4, sticky="w", padx=6, pady=(4, 6))
+
+        # --- 3. Perfil de accesibilidad -------------------------- #
+        m3 = ttk.LabelFrame(raiz, text="3. Perfil de accesibilidad (referencia mientras editas)")
+        m3.grid(row=3, column=0, sticky="ew", pady=4)
+        m3.columnconfigure(1, weight=1)
+        ttk.Label(m3, text="Atajo por categoría").grid(row=0, column=0, sticky="w", padx=6, pady=4)
+        combo = ttk.Combobox(m3, textvariable=self.var_acis_categoria,
+                             values=["(ninguna)"] + categorias_necesidades(), state="readonly")
+        combo.grid(row=0, column=1, sticky="ew", pady=4, padx=(0, 6))
+        combo.bind("<<ComboboxSelected>>", lambda _e: self._acis_categoria_cambiada())
+        self.acis_txt_necesidades = tk.Text(m3, height=4, wrap="word", state="disabled",
+                                            background="#f4f4f4")
+        self.acis_txt_necesidades.grid(row=1, column=0, columnspan=2, sticky="ew", padx=6, pady=(0, 6))
+
+        # --- 4. Contenido editable (una pestaña por apartado) ---- #
+        sub = ttk.Notebook(raiz)
+        sub.grid(row=4, column=0, sticky="nsew", pady=4)
+        self.acis_txt: dict[str, tk.Text] = {}
+        apartados = [
+            ("competencias", "Competencias"),
+            ("criterios_evaluacion", "Criterios"),
+            ("contenidos", "Contenidos"),
+            ("instrumentos", "Instrumentos"),
+            ("metodologia", "Metodología"),
+            ("unidades", "Unidades"),
+            ("secuenciacion", "Secuenciación"),
+        ]
+        for clave, etiqueta in apartados:
+            f = ttk.Frame(sub, padding=4)
+            f.rowconfigure(1, weight=1)
+            f.columnconfigure(0, weight=1)
+            pista = {
+                "competencias": "Se mantienen las de la materia. Escribe aquí solo si se adapta alguna (excepcional).",
+                "secuenciacion": "Una unidad por línea, con el trimestre tras una barra:  UD 1. Título | 1er trimestre",
+            }.get(clave, "Lo que quede vacío saldrá como «[PENDIENTE — lo determina el equipo docente]».")
+            ttk.Label(f, text=pista, foreground="#666", wraplength=560).grid(row=0, column=0, sticky="w")
+            t = tk.Text(f, height=7, wrap="word")
+            t.grid(row=1, column=0, sticky="nsew", pady=(2, 0))
+            self.acis_txt[clave] = t
+            sub.add(f, text=f"  {etiqueta}  ")
+
+        # --- 5. Centro y firma ---------------------------------- #
+        m5 = ttk.LabelFrame(raiz, text="5. Centro y firma (opcional)")
+        m5.grid(row=5, column=0, sticky="ew", pady=4)
+        m5.columnconfigure((1, 3), weight=1)
+        ttk.Label(m5, text="Localidad").grid(row=0, column=0, sticky="w", padx=6, pady=4)
+        ttk.Entry(m5, textvariable=self.var_acis_localidad).grid(row=0, column=1, sticky="ew", pady=4)
+        ttk.Label(m5, text="Fecha").grid(row=0, column=2, sticky="w", padx=6, pady=4)
+        ttk.Entry(m5, textvariable=self.var_acis_fecha).grid(row=0, column=3, sticky="ew", pady=4)
+        ttk.Label(m5, text="El profesor de").grid(row=1, column=0, sticky="w", padx=6, pady=4)
+        ttk.Entry(m5, textvariable=self.var_acis_profesor_de).grid(row=1, column=1, sticky="ew", pady=4)
+        ttk.Label(m5, text="Vº Bº Jefatura de Dpto. de").grid(row=1, column=2, sticky="w", padx=6, pady=4)
+        ttk.Entry(m5, textvariable=self.var_acis_departamento_vb).grid(row=1, column=3, sticky="ew", pady=4)
+
+        ttk.Button(raiz, text="Generar borrador de ACIS", command=self._acis_generar).grid(
+            row=6, column=0, sticky="ew", pady=(8, 2))
+        return raiz
+
+    # ------------------------------------------------------------------ #
+    # ACIS
+    # ------------------------------------------------------------------ #
+
+    def _acis_elegir(self, var: tk.StringVar) -> None:
+        ruta = filedialog.askopenfilename(
+            title="Elige la programación didáctica",
+            filetypes=[("Documentos de Word", "*.docx"), ("Todos los archivos", "*.*")],
+        )
+        if ruta:
+            var.set(ruta)
+
+    def _acis_fijar_texto(self, widget: tk.Text, texto: str) -> None:
+        estado = widget.cget("state")
+        widget.configure(state="normal")
+        widget.delete("1.0", "end")
+        if texto:
+            widget.insert("1.0", texto)
+        widget.configure(state=estado)
+
+    def _acis_categoria_cambiada(self) -> None:
+        categoria = self.var_acis_categoria.get()
+        necesidades = expandir_categoria(categoria) if categoria and categoria != "(ninguna)" else []
+        texto = "\n".join(f"• {n}" for n in necesidades)
+        self._acis_fijar_texto(self.acis_txt_necesidades, texto or
+                               "Elige una categoría para ver las necesidades funcionales asociadas.")
+
+    def _acis_leer_programaciones(self) -> None:
+        ruta_destino = self.var_acis_prog_destino.get().strip()
+        if not ruta_destino or not os.path.isfile(ruta_destino):
+            messagebox.showerror("Falta la programación",
+                                 "Elige la programación del curso al que se adapta.")
+            return
+        try:
+            prog = leer_programacion(ruta_destino)
+        except ProgramacionNoReconocida as exc:
+            messagebox.showwarning(
+                "No se reconoce la estructura",
+                f"{exc}\n\nRellena los apartados a mano o revisa que la programación tenga "
+                "la tabla de competencias y criterios.",
+            )
+            return
+        except Exception as exc:  # noqa: BLE001
+            messagebox.showerror("No se pudo leer", str(exc))
+            return
+
+        materia = materia_desde_programacion(prog)
+        self._acis_fijar_texto(self.acis_txt["criterios_evaluacion"], materia.criterios_evaluacion)
+        self._acis_fijar_texto(self.acis_txt["contenidos"], materia.contenidos)
+        self._acis_fijar_texto(self.acis_txt["instrumentos"], materia.instrumentos)
+        if prog.materia and not self.var_acis_materia.get():
+            self.var_acis_materia.set(prog.materia)
+        self._log(
+            f"ACIS: leída la programación destino ({len(prog.competencias)} competencias, "
+            f"{len(prog.saberes_basicos)} bloques, {len(prog.instrumentos)} instrumentos). "
+            "Revisa y edita los apartados antes de generar."
+        )
+
+    def _acis_generar(self) -> None:
+        if not self.var_acis_acs_determinada.get() and not messagebox.askyesno(
+            "Casilla de ACS sin marcar",
+            "No has marcado que el equipo de orientación haya determinado la ACS para esta "
+            "materia. Si continúas, el documento se generará sin el bloque de la materia y con "
+            "un aviso legal.\n\n¿Continuar de todas formas?",
+        ):
+            return
+
+        def _txt(clave: str) -> str:
+            return self.acis_txt[clave].get("1.0", "end").strip()
+
+        secuenciacion: list[tuple[str, str]] = []
+        for linea in _txt("secuenciacion").splitlines():
+            if not linea.strip():
+                continue
+            if "|" in linea:
+                unidad, trimestre = linea.rsplit("|", 1)
+                secuenciacion.append((unidad.strip(), trimestre.strip()))
+            else:
+                secuenciacion.append((linea.strip(), ""))
+
+        materia = MateriaACIS(
+            materia=self.var_acis_materia.get().strip(),
+            profesor=self.var_acis_profesor.get().strip(),
+            departamento=self.var_acis_departamento.get().strip(),
+            acs_determinada=self.var_acis_acs_determinada.get(),
+            competencias=_txt("competencias"),
+            criterios_evaluacion=_txt("criterios_evaluacion"),
+            contenidos=_txt("contenidos"),
+            metodologia=_txt("metodologia"),
+            instrumentos=_txt("instrumentos"),
+            unidades=_txt("unidades"),
+            secuenciacion=secuenciacion,
+        )
+        datos = DatosACIS(
+            localidad=self.var_acis_localidad.get().strip(),
+            fecha=self.var_acis_fecha.get().strip(),
+            profesor_de=self.var_acis_profesor_de.get().strip(),
+            departamento_vb=self.var_acis_departamento_vb.get().strip(),
+            materias=[materia],
+        )
+
+        inicial = f"ACIS {materia.materia or 'borrador'}.docx".replace("/", "-")
+        ruta = filedialog.asksaveasfilename(
+            title="Guardar el borrador de ACIS como",
+            defaultextension=".docx", initialfile=inicial,
+            filetypes=[("Documentos de Word", "*.docx")],
+        )
+        if not ruta:
+            return
+        try:
+            _, avisos = generar_acis(ruta, datos)
+        except Exception as exc:  # noqa: BLE001
+            messagebox.showerror("No se pudo generar", str(exc))
+            return
+
+        self._log(f"ACIS: generado «{os.path.basename(ruta)}».")
+        for aviso in avisos:
+            self._log(f"  AVISO: {aviso}")
+        if messagebox.askyesno("Borrador de ACIS generado",
+                               "Se ha creado el borrador de ACIS.\n\n¿Abrir la carpeta?"):
+            self._abrir_carpeta(ruta)
 
     # ------------------------------------------------------------------ #
     # Perfil / clave <-> controles

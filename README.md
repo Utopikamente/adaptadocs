@@ -132,6 +132,32 @@ python cli.py ficha.docx --ia simplificar --modelo-ia claude-sonnet-5
 
 ---
 
+## Adaptación curricular (ACIS)
+
+La pestaña **«Adaptación curricular (ACIS)»** genera un borrador del **Anexo
+III.b** (adaptación curricular individualizada y significativa) de la ESO en la
+Comunidad de Madrid, para copiarlo después en Raíces.
+
+- Se adjuntan dos programaciones didácticas (`.docx`): la de la materia y la
+  del **curso al que se adapta**. La app lee la del curso destino y vuelca sus
+  criterios de evaluación, contenidos e instrumentos como punto de partida
+  editable.
+- Un **perfil de accesibilidad** (necesidades funcionales no clínicas, con
+  atajos por categoría de necesidad educativa) sirve de referencia al editar.
+  Está en `core/acis.json` y se puede cambiar sin programar.
+- La ACIS está reservada al alumnado con necesidades educativas especiales cuya
+  adaptación significativa haya determinado el equipo de orientación. La casilla
+  correspondiente debe marcarse; si no, se avisa.
+- Lo que quede vacío sale como «[PENDIENTE — lo determina el equipo docente]» y
+  el documento se marca como **BORRADOR**. **Se genera en tu equipo**; no se
+  envía a ningún servicio.
+
+También por línea de comandos: `python crear_acis.py --ejemplo` crea un
+`ejemplo_acis.json`, y `python crear_acis.py ejemplo_acis.json` genera el
+documento.
+
+---
+
 ## Usar desde el código fuente
 
 Requiere **Python 3.10 o superior** (<https://www.python.org/downloads/>,
@@ -157,10 +183,13 @@ Probar rápidamente:
 ```bash
 python crear_ejemplo.py
 python cli.py ejemplo.docx --perfil Dislexia --resaltar "glucosa, oxígeno"
-python prueba.py          # comprobación de formato
-python prueba_ia.py       # comprobación de la capa de IA (sin conexión)
-python prueba_registro.py # comprobación de la hoja de registro (sin conexión)
-python prueba_ia_api.py   # prueba REAL de la IA (usa la API y gasta saldo)
+python prueba.py            # comprobación de formato
+python prueba_ia.py         # capa de IA de contenido (sin conexión)
+python prueba_registro.py   # hoja de registro (sin conexión)
+python prueba_acis.py       # generación del Anexo III.b (sin conexión)
+python prueba_programacion.py  # lector de programaciones (sin conexión)
+python prueba_acis_ia.py    # volcado de la adaptación con IA (sin conexión)
+python prueba_ia_api.py     # prueba REAL de la IA (usa la API y gasta saldo)
 ```
 
 ---
@@ -207,9 +236,10 @@ todo y lo publica en la Release
 
 ```
 adaptadocs/
-├── app.py              Ventana de escritorio (Tkinter), 2 pestañas: Formato / IA
+├── app.py              Ventana de escritorio (Tkinter): Formato / IA / ACIS
 ├── cli.py              Uso por línea de comandos y por lotes
 ├── crear_ejemplo.py    Genera un .docx de prueba
+├── crear_acis.py       Genera un Anexo III.b (ACIS) desde un JSON
 ├── construir.ps1       Construye carpeta + instalador + zip portable
 ├── instalador.iss      Script del instalador (Inno Setup)
 ├── core/
@@ -221,6 +251,10 @@ adaptadocs/
 │   ├── claves.py         Guardado seguro de la clave de API (keyring)
 │   ├── registro.py       Hoja interna «qué se ha adaptado y por qué»
 │   ├── registro.json     Textos y marco legal de esa hoja (editable)
+│   ├── acis.py           Genera el Anexo III.b (ACIS) de ESO
+│   ├── acis.json         Textos fijos y perfil de accesibilidad (editable)
+│   ├── acis_ia.py        Adaptación de la programación al nivel de otro curso (IA)
+│   ├── programacion.py   Lee competencias/criterios/contenidos de una programación
 │   └── pipeline.py       Orquesta IA + formato
 ├── recursos/           Icono y datos de versión del .exe
 └── .github/workflows/  CI y publicación automática

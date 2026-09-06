@@ -70,6 +70,37 @@ class DatosACIS:
     materias: list[MateriaACIS] = field(default_factory=list)
 
 
+def materia_desde_programacion(prog, base: "MateriaACIS | None" = None) -> "MateriaACIS":
+    """Vuelca una `core.programacion.Programacion` en una `MateriaACIS`, usando
+    sus criterios, saberes básicos e instrumentos como punto de partida
+    (pensado para la programación del curso destino, que ya está a ese nivel).
+    El docente después los edita. No decide la casilla `acs_determinada`."""
+    materia = base or MateriaACIS(materia=getattr(prog, "materia", "") or "")
+
+    bloques_cri: list[str] = []
+    for c in getattr(prog, "competencias", []):
+        cabecera = f"Competencia específica {c.numero}".strip()
+        if c.texto:
+            cabecera += f" — {c.texto}"
+        lineas = [cabecera]
+        for cod, txt in c.criterios:
+            lineas.append(f"  {cod} {txt}".rstrip())
+        bloques_cri.append("\n".join(lineas))
+    materia.criterios_evaluacion = "\n\n".join(bloques_cri)
+
+    bloques_con: list[str] = []
+    for bloque, items in getattr(prog, "saberes_basicos", {}).items():
+        lineas = [bloque] + [f"  − {it}" for it in items]
+        bloques_con.append("\n".join(lineas))
+    materia.contenidos = "\n\n".join(bloques_con)
+
+    materia.instrumentos = "\n".join(
+        f"{elem}: {inst}" if elem else inst
+        for elem, inst in getattr(prog, "instrumentos", [])
+    )
+    return materia
+
+
 def datos_desde_dict(d: dict) -> DatosACIS:
     """Construye `DatosACIS` a partir de un diccionario (p. ej. leído de JSON)."""
     materias = []

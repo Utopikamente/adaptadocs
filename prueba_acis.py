@@ -22,7 +22,9 @@ from core.acis import (
     cargar_textos,
     datos_desde_dict,
     generar_acis,
+    materia_desde_programacion,
 )
+from core.programacion import Competencia, Programacion
 
 
 def _texto(doc) -> str:
@@ -129,6 +131,26 @@ def main() -> int:
     texto_materia = "\n".join(c.text for fila in tabla_materia.rows for c in fila.cells)
     if textos["pendiente"] in texto_materia:
         fallos.append("una materia con todos los campos rellenos no debería tener pendientes")
+
+    # --- Volcado desde una programación (curso destino) ------------- #
+    prog = Programacion(
+        materia="Lengua Extranjera (Inglés)", curso="2.º ESO",
+        competencias=[
+            Competencia("1", "Comprender textos orales y escritos sencillos.",
+                        ["CCL2"], [("1.1.", "Captar la información esencial de textos breves y claros.")]),
+        ],
+        saberes_basicos={"A. Comunicación": ["Funciones: describir, narrar, pedir información."]},
+        instrumentos=[("Listening", "Prueba oral"), ("Writing", "Rúbrica")],
+    )
+    m = materia_desde_programacion(prog, MateriaACIS(materia="Inglés", acs_determinada=True))
+    if "Competencia específica 1" not in m.criterios_evaluacion or "1.1." not in m.criterios_evaluacion:
+        fallos.append("materia_desde_programacion no vuelca los criterios")
+    if "A. Comunicación" not in m.contenidos or "− Funciones" not in m.contenidos:
+        fallos.append("materia_desde_programacion no vuelca los contenidos")
+    if "Listening: Prueba oral" not in m.instrumentos:
+        fallos.append("materia_desde_programacion no vuelca los instrumentos")
+    if m.acs_determinada is not True:
+        fallos.append("materia_desde_programacion no debe tocar acs_determinada de la base")
 
     if fallos:
         print("PRUEBA ACIS FALLIDA:")
