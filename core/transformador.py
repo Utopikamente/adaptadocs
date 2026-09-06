@@ -233,13 +233,54 @@ def _partir_en_pasos(texto: str) -> list[str]:
     return pasos
 
 
+def _abstract_id_lista_numerada(doc):
+    """Devuelve el `abstractNumId` que usa el estilo «List Number», o None."""
+    try:
+        estilo = doc.styles["List Number"].element
+    except KeyError:
+        return None
+    vals = estilo.xpath(".//w:numPr/w:numId/@w:val")
+    if not vals:
+        return None
+    try:
+        numbering = doc.part.numbering_part.element
+        num = numbering.num_having_numId(int(vals[0]))
+    except (KeyError, ValueError, NotImplementedError):
+        return None
+    return num.abstractNumId.val
+
+
+def _nueva_lista_reiniciada(doc, abstract_id):
+    """Crea una numeración nueva con el mismo formato que «List Number» pero
+    que vuelve a empezar en 1. Devuelve su `numId`, o None si no se puede."""
+    if abstract_id is None:
+        return None
+    try:
+        numbering = doc.part.numbering_part.element
+        num = numbering.add_num(abstract_id)
+        num.add_lvlOverride(0).add_startOverride(1)
+        return num.numId
+    except (KeyError, ValueError, NotImplementedError):
+        return None
+
+
+def _asignar_numeracion(parrafo: Paragraph, num_id: int) -> None:
+    """Fuerza el `numId` (la lista concreta) de un párrafo, sin depender de
+    la numeración global del estilo."""
+    numPr = parrafo._p.get_or_add_pPr().get_or_add_numPr()
+    numPr.get_or_add_ilvl().val = 0
+    numPr.get_or_add_numId().val = num_id
+
+
 def _separar_procedimientos(doc, o: OpcionesAdaptacion) -> int:
     """Convierte en listas numeradas los párrafos de primer nivel que sean
-    (o estén marcados como) un procedimiento. Devuelve cuántos ha convertido."""
+    (o estén marcados como) un procedimiento. Cada procedimiento estrena su
+    propia numeración, que empieza en 1. Devuelve cuántos ha convertido."""
     if o.separar_en_pasos not in ("marcados", "auto"):
         return 0
 
     re_marca = _re_marca_pasos(o.marca_pasos)
+    abstract_id = _abstract_id_lista_numerada(doc)
     convertidos = 0
 
     for parrafo in list(doc.paragraphs):
@@ -266,9 +307,14 @@ def _separar_procedimientos(doc, o: OpcionesAdaptacion) -> int:
             parrafo.style = doc.styles["List Number"]
         except KeyError:
             pass
+        num_id = _nueva_lista_reiniciada(doc, abstract_id)
+        if num_id is not None:
+            _asignar_numeracion(parrafo, num_id)
         ancla = parrafo
         for paso in pasos[1:]:
             ancla = _nuevo_parrafo_despues(ancla, paso, "List Number")
+            if num_id is not None:
+                _asignar_numeracion(ancla, num_id)
         convertidos += 1
 
     return convertidos

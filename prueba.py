@@ -101,6 +101,27 @@ def main() -> int:
             f"auto: procedimientos_en_pasos = {r_auto['procedimientos_en_pasos']} (esperado >= 2)"
         )
 
+    # Cada procedimiento debe estrenar su propia numeración (reinicia en 1),
+    # no continuar la del anterior. Se comprueba que los pasos usan al menos
+    # dos listas distintas y que cada una arranca con startOverride = 1.
+    num_ids_pasos = [
+        int(v)
+        for p in d_auto.paragraphs
+        if "Number" in (p.style.name or "")
+        for v in p._p.xpath(".//w:numPr/w:numId/@w:val")
+    ]
+    if len(set(num_ids_pasos)) < 2:
+        fallos.append(
+            f"auto: los pasos comparten numeración {set(num_ids_pasos)} "
+            "(cada actividad debería reiniciar en 1)"
+        )
+    numbering = d_auto.part.numbering_part.element
+    for nid in set(num_ids_pasos):
+        num = numbering.num_having_numId(nid)
+        arranques = num.xpath(".//w:lvlOverride/w:startOverride/@w:val")
+        if "1" not in arranques:
+            fallos.append(f"auto: la lista {nid} no reinicia en 1 (startOverride={arranques})")
+
     d_no = Document(origen)
     r_no = aplicar_formato(d_no, OpcionesAdaptacion(separar_en_pasos="no"))
     if r_no["procedimientos_en_pasos"] != 0:
