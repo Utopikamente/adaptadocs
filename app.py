@@ -341,22 +341,57 @@ class Aplicacion(_Raiz):
         ).grid(row=11, column=0, columnspan=3, sticky="w", padx=8, pady=2)
         return m
 
+    def _texto_con_scroll(self, padre, *, height: int, **kw) -> tk.Text:
+        marco = ttk.Frame(padre)
+        marco.rowconfigure(0, weight=1)
+        marco.columnconfigure(0, weight=1)
+        t = tk.Text(marco, height=height, wrap="word", **kw)
+        t.grid(row=0, column=0, sticky="nsew")
+        sb = ttk.Scrollbar(marco, orient="vertical", command=t.yview)
+        sb.grid(row=0, column=1, sticky="ns")
+        t.configure(yscrollcommand=sb.set)
+        t._marco = marco  # para colocarlo con grid desde fuera
+        return t
+
     def _pestana_acis(self, padre) -> ttk.Frame:
-        raiz = ttk.Frame(padre, padding=8)
+        raiz = ttk.Frame(padre)
+        raiz.rowconfigure(0, weight=1)
         raiz.columnconfigure(0, weight=1)
-        raiz.rowconfigure(4, weight=1)
+
+        lienzo = tk.Canvas(raiz, borderwidth=0, highlightthickness=0)
+        barra_v = ttk.Scrollbar(raiz, orient="vertical", command=lienzo.yview)
+        lienzo.configure(yscrollcommand=barra_v.set)
+        lienzo.grid(row=0, column=0, sticky="nsew")
+        barra_v.grid(row=0, column=1, sticky="ns")
+
+        raiz_scroll = ttk.Frame(lienzo, padding=8)
+        ventana = lienzo.create_window((0, 0), window=raiz_scroll, anchor="nw")
+        raiz_scroll.bind(
+            "<Configure>", lambda _e: lienzo.configure(scrollregion=lienzo.bbox("all")))
+        lienzo.bind(
+            "<Configure>", lambda e: lienzo.itemconfigure(ventana, width=e.width))
+
+        def _rueda(e):
+            if isinstance(e.widget, tk.Text):
+                return
+            lienzo.yview_scroll(int(-1 * (e.delta / 120)), "units")
+
+        lienzo.bind("<Enter>", lambda _e: lienzo.bind_all("<MouseWheel>", _rueda))
+        lienzo.bind("<Leave>", lambda _e: lienzo.unbind_all("<MouseWheel>"))
+
+        raiz_scroll.columnconfigure(0, weight=1)
 
         ttk.Label(
-            raiz,
+            raiz_scroll,
             text="La ACIS está reservada al alumnado con NEE cuya adaptación significativa haya "
             "determinado el equipo de orientación (evaluación psicopedagógica). Para otras "
             "necesidades (TDAH, dislexia…) corresponde adaptación no significativa. El documento "
             "se genera en tu equipo y no se envía a ningún servicio.",
-            wraplength=620, foreground="#666", justify="left",
+            wraplength=600, foreground="#666", justify="left",
         ).grid(row=0, column=0, sticky="w", pady=(0, 6))
 
         # --- 1. Programaciones ------------------------------------- #
-        m1 = ttk.LabelFrame(raiz, text="1. Programaciones didácticas (.docx)")
+        m1 = ttk.LabelFrame(raiz_scroll, text="1. Programaciones didácticas (.docx)")
         m1.grid(row=1, column=0, sticky="ew", pady=4)
         m1.columnconfigure(1, weight=1)
         ttk.Label(m1, text="De la materia (curso actual)").grid(row=0, column=0, sticky="w", padx=6, pady=4)
@@ -374,7 +409,7 @@ class Aplicacion(_Raiz):
             row=2, column=1, sticky="e", pady=(2, 6))
 
         # --- 2. Materia ------------------------------------------- #
-        m2 = ttk.LabelFrame(raiz, text="2. Materia")
+        m2 = ttk.LabelFrame(raiz_scroll, text="2. Materia")
         m2.grid(row=2, column=0, sticky="ew", pady=4)
         m2.columnconfigure((1, 3), weight=1)
         ttk.Label(m2, text="Materia").grid(row=0, column=0, sticky="w", padx=6, pady=4)
@@ -391,7 +426,7 @@ class Aplicacion(_Raiz):
         ).grid(row=2, column=0, columnspan=4, sticky="w", padx=6, pady=(4, 6))
 
         # --- 3. Perfil de accesibilidad -------------------------- #
-        m3 = ttk.LabelFrame(raiz, text="3. Perfil de accesibilidad (referencia mientras editas)")
+        m3 = ttk.LabelFrame(raiz_scroll, text="3. Perfil de accesibilidad (referencia mientras editas)")
         m3.grid(row=3, column=0, sticky="ew", pady=4)
         m3.columnconfigure(1, weight=1)
         ttk.Label(m3, text="Atajo por categoría").grid(row=0, column=0, sticky="w", padx=6, pady=4)
@@ -399,13 +434,14 @@ class Aplicacion(_Raiz):
                              values=["(ninguna)"] + categorias_necesidades(), state="readonly")
         combo.grid(row=0, column=1, sticky="ew", pady=4, padx=(0, 6))
         combo.bind("<<ComboboxSelected>>", lambda _e: self._acis_categoria_cambiada())
-        self.acis_txt_necesidades = tk.Text(m3, height=4, wrap="word", state="disabled",
-                                            background="#f4f4f4")
-        self.acis_txt_necesidades.grid(row=1, column=0, columnspan=2, sticky="ew", padx=6, pady=(0, 6))
+        self.acis_txt_necesidades = self._texto_con_scroll(
+            m3, height=4, state="disabled", background="#f4f4f4")
+        self.acis_txt_necesidades._marco.grid(row=1, column=0, columnspan=2, sticky="ew",
+                                              padx=6, pady=(0, 6))
 
         # --- 4. Contenido editable (una pestaña por apartado) ---- #
-        sub = ttk.Notebook(raiz)
-        sub.grid(row=4, column=0, sticky="nsew", pady=4)
+        sub = ttk.Notebook(raiz_scroll)
+        sub.grid(row=4, column=0, sticky="ew", pady=4)
         self.acis_txt: dict[str, tk.Text] = {}
         apartados = [
             ("competencias", "Competencias"),
@@ -425,13 +461,13 @@ class Aplicacion(_Raiz):
                 "secuenciacion": "Una unidad por línea, con el trimestre tras una barra:  UD 1. Título | 1er trimestre",
             }.get(clave, "Lo que quede vacío saldrá como «[PENDIENTE — lo determina el equipo docente]».")
             ttk.Label(f, text=pista, foreground="#666", wraplength=560).grid(row=0, column=0, sticky="w")
-            t = tk.Text(f, height=7, wrap="word")
-            t.grid(row=1, column=0, sticky="nsew", pady=(2, 0))
+            t = self._texto_con_scroll(f, height=6)
+            t._marco.grid(row=1, column=0, sticky="nsew", pady=(2, 0))
             self.acis_txt[clave] = t
             sub.add(f, text=f"  {etiqueta}  ")
 
         # --- 5. Centro y firma ---------------------------------- #
-        m5 = ttk.LabelFrame(raiz, text="5. Centro y firma (opcional)")
+        m5 = ttk.LabelFrame(raiz_scroll, text="5. Centro y firma (opcional)")
         m5.grid(row=5, column=0, sticky="ew", pady=4)
         m5.columnconfigure((1, 3), weight=1)
         ttk.Label(m5, text="Localidad").grid(row=0, column=0, sticky="w", padx=6, pady=4)
@@ -443,8 +479,12 @@ class Aplicacion(_Raiz):
         ttk.Label(m5, text="Vº Bº Jefatura de Dpto. de").grid(row=1, column=2, sticky="w", padx=6, pady=4)
         ttk.Entry(m5, textvariable=self.var_acis_departamento_vb).grid(row=1, column=3, sticky="ew", pady=4)
 
-        ttk.Button(raiz, text="Generar borrador de ACIS", command=self._acis_generar).grid(
-            row=6, column=0, sticky="ew", pady=(8, 2))
+        # --- barra inferior fija (siempre visible) ---------------- #
+        barra = ttk.Frame(raiz, padding=(8, 6))
+        barra.grid(row=1, column=0, columnspan=2, sticky="ew")
+        barra.columnconfigure(0, weight=1)
+        ttk.Button(barra, text="Generar borrador de ACIS",
+                   command=self._acis_generar).grid(row=0, column=0, sticky="ew")
         return raiz
 
     # ------------------------------------------------------------------ #
