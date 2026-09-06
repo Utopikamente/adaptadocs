@@ -22,3 +22,5 @@ jobs:
         run: python prueba_registro.py
       - name: Comprobación del Anexo III.b (ACIS)
         run: python prueba_acis.py
+      - name: Comprobación del lector de programaciones
+        run: python prueba_programacion.py
