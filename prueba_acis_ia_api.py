@@ -1,6 +1,10 @@
 """Prueba REAL de la adaptación curricular con IA (llama a la API y gasta saldo).
 
-    python prueba_acis_ia_api.py  "ruta/PROGRAMACION.docx"  "2.º ESO"  [barreras]
+    python prueba_acis_ia_api.py  "ruta/PROGRAMACION.docx"  "2.º ESO"  ["categoría de necesidad"]
+
+La categoría (opcional) es un atajo del perfil de accesibilidad: se despliega
+en necesidades funcionales y solo esas se envían a la IA. Categorías
+disponibles: ver `core/acis.json` → perfil_accesibilidad → categorias.
 
 Lee la programación, pide a la IA los criterios, contenidos e instrumentos
 adaptados al nivel indicado y genera «ACIS (borrador).docx».
@@ -16,6 +20,7 @@ from core.acis import DatosACIS, MateriaACIS, generar_acis
 from core.acis_ia import (
     OpcionesAdaptacionCurricular,
     adaptar_programacion,
+    expandir_categoria,
     resultado_a_materia,
 )
 from core.claves import leer_clave
@@ -29,7 +34,11 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     ruta_prog, nivel = argv[0], argv[1]
-    barreras = argv[2] if len(argv) > 2 else ""
+    categoria = argv[2] if len(argv) > 2 else ""
+    necesidades = expandir_categoria(categoria) if categoria else []
+    if categoria and not necesidades:
+        print(f"Categoría no reconocida: {categoria!r}", file=sys.stderr)
+        return 2
 
     clave = os.environ.get("ANTHROPIC_API_KEY") or leer_clave()
     if not clave:
@@ -41,9 +50,11 @@ def main(argv: list[str] | None = None) -> int:
           f"{len(prog.saberes_basicos)} bloques de saberes, "
           f"{len(prog.instrumentos)} instrumentos.")
 
+    if necesidades:
+        print(f"Perfil de accesibilidad ({categoria}): {len(necesidades)} necesidades funcionales.")
     resultado = adaptar_programacion(
         prog,
-        OpcionesAdaptacionCurricular(nivel_objetivo=nivel, barreras=barreras),
+        OpcionesAdaptacionCurricular(nivel_objetivo=nivel, necesidades=necesidades),
         api_key=clave,
         registrar=print,
     )

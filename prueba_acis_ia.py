@@ -17,7 +17,13 @@ import tempfile
 from docx import Document
 
 from core.acis import MateriaACIS, generar_acis, DatosACIS
-from core.acis_ia import resultado_a_materia
+from core.acis_ia import (
+    OpcionesAdaptacionCurricular,
+    _mensaje_usuario,
+    categorias_necesidades,
+    expandir_categoria,
+    resultado_a_materia,
+)
 from core.programacion import Competencia, Programacion
 
 
@@ -92,6 +98,28 @@ def main() -> int:
         fallos.append("el criterio adaptado no llega al documento")
     if "Narrar hechos en pasado" not in texto:
         fallos.append("el contenido adaptado no llega al documento")
+
+    # --- Perfil de accesibilidad: categoría -> necesidades funcionales --- #
+    cats = categorias_necesidades()
+    if not cats:
+        fallos.append("no hay categorías de perfil de accesibilidad en acis.json")
+    tea = next((c for c in cats if "TEA" in c), None)
+    if tea:
+        necesidades = expandir_categoria(tea)
+        if not necesidades or any(len(n) < 10 for n in necesidades):
+            fallos.append(f"expandir_categoria({tea!r}) devolvió algo raro: {necesidades}")
+        # El mensaje a la IA incluye las necesidades funcionales y NO la etiqueta.
+        msg = _mensaje_usuario(
+            prog,
+            OpcionesAdaptacionCurricular(nivel_objetivo="2.º ESO", necesidades=necesidades),
+            None,
+        )
+        if "PERFIL DE ACCESIBILIDAD" not in msg:
+            fallos.append("el mensaje a la IA no incluye el perfil de accesibilidad")
+        if necesidades[0] not in msg:
+            fallos.append("las necesidades funcionales no llegan al mensaje de la IA")
+        if tea in msg or "TEA" in msg:
+            fallos.append("la etiqueta de categoría clínica no debe aparecer en el mensaje a la IA")
 
     # Respuesta vacía: los campos quedan vacíos (y saldrían como pendientes).
     vacia = resultado_a_materia(prog, {"competencias": [], "contenidos": [], "instrumentos": []},

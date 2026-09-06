@@ -50,9 +50,22 @@ suposición y hay que confirmarla con el autor antes de usarla.
 - Nunca se almacenan datos identificativos de alumnos: ni nombre, ni
   expediente, ni fecha de nacimiento, ni diagnóstico clínico. El perfil
   describe barreras y apoyos, no personas.
-- Nunca se almacenan diagnósticos ni categorías clínicas (TEA, TDAH, DI,
-  dislexia...). Son datos de salud, categoría especial del art. 9 RGPD. Si
-  aparece un campo así en el código, es un error: avisar.
+- El programa **no almacena** diagnósticos, informes clínicos ni el informe
+  psicopedagógico. Para ajustar una adaptación puede ofrecerse un **perfil de
+  accesibilidad**: el docente elige, como atajo, una categoría de necesidad
+  educativa (p. ej. TEA, TDL, discapacidad intelectual leve) que se
+  **despliega en una lista editable de necesidades funcionales no clínicas**
+  (p. ej. «necesita lenguaje literal», «necesita mucha repetición»). Solo esas
+  necesidades funcionales —no la etiqueta clínica en bruto— se usan en los
+  prompts. La correspondencia categoría → necesidades vive en un archivo de
+  datos local editable y no se envía a ningún servicio. Nada de esto se guarda
+  entre sesiones. Un campo que persista un diagnóstico sigue siendo un error:
+  avisar.
+- El documento de ACIS que genera el programa (que puede llevar el nombre del
+  alumno cuando lo rellena el docente) **nunca se envía a la IA ni a ningún
+  servicio externo**: se genera en local y el docente lo copia en Raíces. A la
+  IA solo van la programación de la materia (sin datos personales), el nivel
+  de competencia curricular objetivo y el perfil de accesibilidad funcional.
 - La herramienta propone, el profesional decide. Ninguna salida se presenta
   como definitiva. Todo documento generado es editable y requiere validación
   humana antes de usarse.

@@ -49,5 +49,35 @@
     "instrumentos": "Adaptaciones sobre los instrumentos de evaluación y los criterios de calificación de la programación didáctica. Deben permitir que los resultados reflejen si el alumno ha alcanzado las competencias de la etapa para la titulación. Los criterios de calificación fijan el peso de cada actividad en la nota final.",
     "unidades": "Unidades didácticas previstas en la programación de la materia con las adaptaciones que procedan y, si es necesario, unidades diseñadas ex profeso para la adaptación curricular.",
     "secuenciacion": "Para cada unidad didáctica, el trimestre en que se trabajará."
+  },
+  "perfil_accesibilidad": {
+    "nota": "El docente marca las necesidades que aplican; la categoría es solo un atajo que las despliega. A la IA se envían las necesidades funcionales, nunca la categoría. Nada se guarda entre sesiones.",
+    "grupos": {
+      "Acceso a la información": ["lenguaje_literal", "frases_cortas", "apoyo_visual", "anticipacion_estructura", "lectura_en_voz_alta"],
+      "Demostrar lo que sabe": ["alternativas_escritura", "modelos_plantillas", "mas_tiempo", "respuestas_cerradas"],
+      "Nivel de exigencia e implicación": ["contenidos_concretos", "repeticion_sobreaprendizaje", "fragmentar_tarea", "temas_de_interes"]
+    },
+    "necesidades": {
+      "lenguaje_literal": "Necesita lenguaje literal y explícito: evitar ironía, metáforas, dobles sentidos y frases hechas.",
+      "frases_cortas": "Necesita frases cortas, una idea por frase, y reducir la carga lingüística de los enunciados.",
+      "apoyo_visual": "Necesita apoyo visual permanente: pictogramas, esquemas, imágenes y ejemplos.",
+      "anticipacion_estructura": "Necesita anticipación y estructura clara de la tarea: guion de pasos, tiempos y criterios visibles.",
+      "lectura_en_voz_alta": "Necesita que se lean en voz alta los enunciados y las instrucciones.",
+      "alternativas_escritura": "Necesita vías alternativas a la escritura: respuesta oral, señalar, elegir entre opciones o productos visuales.",
+      "modelos_plantillas": "Necesita modelos resueltos y plantillas para producir (andamiaje).",
+      "mas_tiempo": "Necesita más tiempo de procesamiento y de respuesta.",
+      "respuestas_cerradas": "Necesita formatos de respuesta cerrada o guiada: unir, marcar, completar huecos con banco de palabras.",
+      "contenidos_concretos": "Necesita contenidos concretos y funcionales, con poca abstracción y vinculados a su vida diaria.",
+      "repeticion_sobreaprendizaje": "Necesita mucha repetición y sobreaprendizaje de los contenidos clave.",
+      "fragmentar_tarea": "Necesita fragmentar la tarea en pasos muy pequeños y de uno en uno.",
+      "temas_de_interes": "Necesita partir de sus temas de interés para mantener la implicación."
+    },
+    "categorias": {
+      "Trastorno del espectro autista (TEA)": ["lenguaje_literal", "apoyo_visual", "anticipacion_estructura", "respuestas_cerradas", "temas_de_interes"],
+      "Trastorno del desarrollo del lenguaje (TDL/TEL)": ["frases_cortas", "apoyo_visual", "lectura_en_voz_alta", "modelos_plantillas", "mas_tiempo"],
+      "Discapacidad intelectual leve": ["frases_cortas", "contenidos_concretos", "repeticion_sobreaprendizaje", "fragmentar_tarea", "modelos_plantillas", "mas_tiempo"],
+      "Trastorno de atención (TDAH)": ["anticipacion_estructura", "fragmentar_tarea", "mas_tiempo", "respuestas_cerradas"],
+      "Dificultad específica de aprendizaje": ["frases_cortas", "lectura_en_voz_alta", "mas_tiempo", "modelos_plantillas"]
+    }
   }
 }

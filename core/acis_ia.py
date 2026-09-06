@@ -20,15 +20,55 @@ import os
 from dataclasses import dataclass
 from typing import Callable
 
-from .acis import MateriaACIS
+from .acis import MateriaACIS, cargar_textos
 from .programacion import Programacion
 
 
 @dataclass
 class OpcionesAdaptacionCurricular:
     nivel_objetivo: str = ""          # p. ej. "2.º ESO" o "6.º de Primaria (tercer ciclo)"
-    barreras: str = ""                # descripción NO clínica; opcional
+    necesidades: list[str] = None     # necesidades funcionales NO clínicas (textos ya resueltos)
+    barreras: str = ""                # texto libre adicional; opcional
     modelo: str = "claude-opus-5"
+
+    def __post_init__(self) -> None:
+        if self.necesidades is None:
+            self.necesidades = []
+
+
+# --------------------------------------------------------------------------- #
+# Perfil de accesibilidad (necesidades funcionales, no clínicas)
+# --------------------------------------------------------------------------- #
+
+def _perfil() -> dict:
+    return cargar_textos().get("perfil_accesibilidad", {})
+
+
+def grupos_necesidades() -> dict[str, list[tuple[str, str]]]:
+    """Para la interfaz: {grupo: [(clave, texto), ...]}."""
+    perfil = _perfil()
+    textos = perfil.get("necesidades", {})
+    salida: dict[str, list[tuple[str, str]]] = {}
+    for grupo, claves in perfil.get("grupos", {}).items():
+        salida[grupo] = [(c, textos[c]) for c in claves if c in textos]
+    return salida
+
+
+def categorias_necesidades() -> list[str]:
+    return list(_perfil().get("categorias", {}))
+
+
+def expandir_categoria(categoria: str) -> list[str]:
+    """Devuelve las necesidades funcionales (textos) del atajo de categoría.
+    La etiqueta de categoría NO se usa fuera de aquí."""
+    perfil = _perfil()
+    textos = perfil.get("necesidades", {})
+    return [textos[c] for c in perfil.get("categorias", {}).get(categoria, []) if c in textos]
+
+
+def textos_de_claves(claves: list[str]) -> list[str]:
+    textos = _perfil().get("necesidades", {})
+    return [textos[c] for c in claves if c in textos]
 
 
 _SISTEMA = (
@@ -147,12 +187,17 @@ def _mensaje_usuario(
         for c in referencia.competencias:
             for cod, texto in c.criterios:
                 lineas.append(f"    {cod} {texto}")
-    if opciones.barreras.strip():
+    if opciones.necesidades:
         lineas += [
             "",
-            "BARRERAS DEL ALUMNO (lenguaje no clínico; tenlas en cuenta sobre todo "
-            f"para los instrumentos de evaluación): {opciones.barreras.strip()}",
+            "PERFIL DE ACCESIBILIDAD DEL ALUMNO (necesidades funcionales; tenlas en "
+            "cuenta al rebajar los criterios y los contenidos y, sobre todo, al "
+            "proponer los instrumentos de evaluación):",
         ]
+        for n in opciones.necesidades:
+            lineas.append(f"  - {n}")
+    if opciones.barreras.strip():
+        lineas += ["", f"OTRAS INDICACIONES DEL DOCENTE: {opciones.barreras.strip()}"]
     lineas += [
         "",
         "Devuelve el JSON: 'competencias' (con 'numero' y 'criterios_adaptados': "
