@@ -1,5 +1,13 @@
 # Historial de cambios
 
+## [1.8.1] — 2026-09-07
+
+- **La ventana se ajusta a la altura de la pantalla.** Con la pestaña ACIS,
+  en pantallas pequeñas la ventana quedaba más alta que el monitor y no se
+  veía la parte de abajo (el botón «Adaptar documento» y el registro). Ahora
+  la ventana se limita al alto de la pantalla, el cuaderno de pestañas puede
+  encogerse y la pestaña ACIS tiene su propia barra de desplazamiento.
+
 ## [1.8.0] — 2026-09-07
 
 - **Espacio entre párrafos: 24 pt por defecto en todos los perfiles** (antes
