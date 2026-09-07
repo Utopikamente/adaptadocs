@@ -187,6 +187,9 @@ _VERBOS_INSTRUCCION = {
 }
 
 _RE_PREFIJO_ITEM = re.compile(r"^\s*(?:\d+|[a-zA-Z])[.)]\s+")
+_RE_MARCA_ITEM = re.compile(
+    r"^\s*(?:[-–—−•*·▪]\s+|(?:\d{1,2}|[a-zA-Z]|[ivxIVX]{1,4})[.)]\s+)"
+)
 
 
 def _empieza_por_instruccion(texto: str) -> bool:
@@ -195,6 +198,15 @@ def _empieza_por_instruccion(texto: str) -> bool:
     t = _RE_PREFIJO_ITEM.sub("", texto.strip())
     primera = re.split(r"[^0-9A-Za-zÁÉÍÓÚÑáéíóúñ]+", t, maxsplit=1)[0].lower()
     return primera in _VERBOS_INSTRUCCION
+
+
+def _es_item_de_lista(texto: str, parrafo: Paragraph) -> bool:
+    """El párrafo es un elemento de lista: empieza por guion, viñeta o marca de
+    apartado («- », «• », «a) », «1. »…), o va en un estilo de lista de Word."""
+    if _RE_MARCA_ITEM.match(texto):
+        return True
+    nombre = (parrafo.style.name or "").lower() if parrafo.style else ""
+    return "list" in nombre or "número" in nombre or "numer" in nombre
 
 
 def _re_marca_pasos(marca: str) -> re.Pattern:
@@ -377,9 +389,9 @@ def _procesar_preguntas(doc, o: OpcionesAdaptacion) -> dict:
             continue
 
         es_pregunta = _es_pregunta(texto)
-        es_paso = "number" in (parrafo.style.name or "").lower()
         es_enunciado = es_pregunta or (
-            o.enunciados_examen and (_empieza_por_instruccion(texto) or es_paso)
+            o.enunciados_examen
+            and (_empieza_por_instruccion(texto) or _es_item_de_lista(texto, parrafo))
         )
         if not es_enunciado:
             continue

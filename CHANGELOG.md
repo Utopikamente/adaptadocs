@@ -6,8 +6,10 @@
   «Es un examen». Con ella, la opción «Líneas para responder» deja hueco no
   solo tras los párrafos que acaban en «?», sino también tras los enunciados
   que empiezan por un verbo de instrucción (Calcula, Opera, Ordena, Convierte,
-  Extrae…) y tras cada paso de una lista numerada. Así, si la IA divide una
-  pregunta en pasos, cada paso tiene su espacio. `cli.py`: `--enunciados-examen`.
+  Extrae…) y tras cada renglón que empiece por guion, viñeta o marca de
+  apartado (`-`, `•`, `a)`, `1.`…), esté o no en un estilo de lista. Así, si la
+  IA divide una pregunta en pasos o hay varias operaciones con guiones, cada
+  una tiene su espacio. `cli.py`: `--enunciados-examen`.
 
 - **Las pestañas Formato y Contenido con IA ya tienen barra de
   desplazamiento.** En pantallas pequeñas se cortaban por abajo (p. ej. no se

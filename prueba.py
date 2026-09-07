@@ -161,7 +161,9 @@ def main() -> int:
     # --- Enunciados de examen (Calcula, Opera, Ordena…) ------------- #
     ex = Document()
     ex.add_paragraph("Nota: justifica todos los pasos.")
-    ex.add_paragraph("Calcula el resultado de la operación.")
+    ex.add_paragraph("Calcula el resultado de las operaciones.")
+    ex.add_paragraph("- 2 + 2")
+    ex.add_paragraph("- 5 x 3")
     ex.add_paragraph("1. Opera y simplifica la expresión.")
     ex.add_paragraph("Ordena de menor a mayor los siguientes números.")
     ruta_ex = os.path.join(trabajo, "examen.docx")
@@ -173,12 +175,13 @@ def main() -> int:
 
     d_ex = Document(ruta_ex)
     r_ex = aplicar_formato(d_ex, OpcionesAdaptacion(espacio_respuestas=3, enunciados_examen=True))
-    if r_ex["preguntas_con_espacio"] != 3:
+    if r_ex["preguntas_con_espacio"] != 5:
         fallos.append(
-            f"enunciados_examen: preguntas_con_espacio = {r_ex['preguntas_con_espacio']} (esperado 3)"
+            f"enunciados_examen: preguntas_con_espacio = {r_ex['preguntas_con_espacio']} "
+            "(esperado 5: Calcula, 2 guiones, «1. Opera», Ordena)"
         )
     textos_ex = [p.text for p in d_ex.paragraphs]
-    if textos_ex.count("") < 9:
+    if textos_ex.count("") < 15:
         fallos.append(f"enunciados_examen: faltan líneas de respuesta (vacías={textos_ex.count('')})")
 
     # --- El original no se toca ------------------------------------- #
