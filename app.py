@@ -201,7 +201,7 @@ class Aplicacion(_Raiz):
         self.rowconfigure(fila, weight=1)
 
     def _pestana_formato(self, padre) -> ttk.Frame:
-        marco_o = ttk.Frame(padre, padding=8)
+        exterior, marco_o = self._contenedor_scroll(padre)
         marco_o.columnconfigure(1, weight=1)
 
         ttk.Label(marco_o, text="Fuente").grid(row=0, column=0, sticky="w", padx=8, pady=4)
@@ -285,10 +285,10 @@ class Aplicacion(_Raiz):
             "anexo oficial del expediente y no incluye datos del alumnado.",
             wraplength=560, foreground="#666", justify="left",
         ).grid(row=16, column=0, columnspan=2, sticky="w", padx=8, pady=(0, 4))
-        return marco_o
+        return exterior
 
     def _pestana_ia(self, padre) -> ttk.Frame:
-        m = ttk.Frame(padre, padding=8)
+        exterior, m = self._contenedor_scroll(padre)
         m.columnconfigure(1, weight=1)
 
         aviso = ttk.Label(
@@ -345,7 +345,33 @@ class Aplicacion(_Raiz):
             text="Dividir preguntas largas o compuestas en varias más cortas",
             variable=self.var_ia_dividir_preguntas,
         ).grid(row=11, column=0, columnspan=3, sticky="w", padx=8, pady=2)
-        return m
+        return exterior
+
+    def _contenedor_scroll(self, padre):
+        """Devuelve (exterior, interior). Se construyen los controles en
+        `interior` (ya con padding) y se añade `exterior` al cuaderno;
+        `interior` se desplaza con barra lateral y con la rueda del ratón."""
+        exterior = ttk.Frame(padre)
+        exterior.rowconfigure(0, weight=1)
+        exterior.columnconfigure(0, weight=1)
+        lienzo = tk.Canvas(exterior, borderwidth=0, highlightthickness=0, height=380)
+        barra = ttk.Scrollbar(exterior, orient="vertical", command=lienzo.yview)
+        lienzo.configure(yscrollcommand=barra.set)
+        lienzo.grid(row=0, column=0, sticky="nsew")
+        barra.grid(row=0, column=1, sticky="ns")
+        interior = ttk.Frame(lienzo, padding=8)
+        ventana = lienzo.create_window((0, 0), window=interior, anchor="nw")
+        interior.bind("<Configure>", lambda _e: lienzo.configure(scrollregion=lienzo.bbox("all")))
+        lienzo.bind("<Configure>", lambda e: lienzo.itemconfigure(ventana, width=e.width))
+
+        def _rueda(e):
+            if isinstance(e.widget, tk.Text):
+                return
+            lienzo.yview_scroll(int(-1 * (e.delta / 120)), "units")
+
+        lienzo.bind("<Enter>", lambda _e: lienzo.bind_all("<MouseWheel>", _rueda))
+        lienzo.bind("<Leave>", lambda _e: lienzo.unbind_all("<MouseWheel>"))
+        return exterior, interior
 
     def _texto_con_scroll(self, padre, *, height: int, **kw) -> tk.Text:
         marco = ttk.Frame(padre)

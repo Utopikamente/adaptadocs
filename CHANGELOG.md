@@ -2,6 +2,11 @@
 
 ## [Sin publicar]
 
+- **Las pestañas Formato y Contenido con IA ya tienen barra de
+  desplazamiento.** En pantallas pequeñas se cortaban por abajo (p. ej. no se
+  llegaba al campo «Resaltar palabras»). Ahora las tres pestañas se
+  desplazan con barra lateral y con la rueda del ratón.
+
 - **ACIS: orientaciones por apartado (sin IA).** En cada apartado de la
   pestaña (competencias, criterios, contenidos, metodología, instrumentos)
   aparece un panel de **Orientación** de solo lectura que reúne: qué pide el
