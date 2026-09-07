@@ -1,5 +1,20 @@
 # Historial de cambios
 
+## [Sin publicar]
+
+- **Se retira el banco de pictogramas de ARASAAC.** ARASAAC ha confirmado por
+  escrito que su licencia CC BY-NC-SA no permite el uso con un modelo comercial
+  (suscripción, licencias de centro, funciones de pago), que la finalidad
+  educativa no exime, que no hay licencia comercial ni forma de solicitarla, y
+  que da igual acceder por la API. Como el proyecto contempla comercializarse,
+  se quita la función ahora para no tener que retirarla más adelante ni dejar
+  materiales de usuarios con pictogramas sujetos a esa licencia.
+  - Fuera: `core/pictogramas.py`, la opción `--pictogramas` de `cli.py`, la
+    casilla en la pestaña Formato y la línea de pictogramas de la hoja de
+    registro.
+  - El perfil «TEL/TDL (apoyo visual)» pasa a llamarse «TEL/TDL» (mantiene el
+    formato: Arial 15, interlineado 1,8, márgenes amplios, pasos numerados).
+
 ## [1.7.0] — 2026-09-07
 
 - **Nueva pestaña «Adaptación curricular (ACIS)»** (en pruebas): genera un

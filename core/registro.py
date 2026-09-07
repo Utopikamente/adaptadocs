@@ -88,8 +88,6 @@ def lineas_formato(opciones: OpcionesAdaptacion, resumen: dict, textos: dict) ->
         out.append(_formatea(p.get("pasos"), procedimientos=resumen["procedimientos_en_pasos"]))
     if resumen.get("resaltados"):
         out.append(_formatea(p.get("resaltado"), resaltados=resumen["resaltados"]))
-    if resumen.get("pictogramas"):
-        out.append(_formatea(p.get("pictogramas"), pictogramas=resumen["pictogramas"]))
     if resumen.get("preguntas_numeradas"):
         out.append(_formatea(p.get("preguntas_numeradas"),
                              preguntas_numeradas=resumen["preguntas_numeradas"]))

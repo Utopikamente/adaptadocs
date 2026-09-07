@@ -10,9 +10,7 @@ baja visión…).
 Tiene dos partes:
 
 - **Formato y presentación** (siempre disponible, gratis, sin conexión): todo
-  ocurre en tu ordenador. La única excepción es el **banco de pictogramas**: si lo
-  activas, se piden a ARASAAC los dibujos de las palabras a ilustrar (solo esas
-  palabras, no el documento).
+  ocurre en tu ordenador.
 - **Contenido con IA** (opcional): reescribe el texto a un nivel de lectura más
   sencillo, añade glosario, resumen y preguntas de comprensión. Necesita una
   clave de API de Anthropic y **envía el texto del documento a Claude** para
@@ -71,11 +69,6 @@ Get-FileHash "AdaptadocsSetup.exe" -Algorithm SHA256
   forma clara y consecutiva, y añade una **cantidad fija de líneas en
   blanco** tras cada una para que el alumnado responda.
 - **Resalta** las palabras clave que indiques, con el color que elijas.
-- Añade al final un **banco de pictogramas** ([ARASAAC](https://arasaac.org)) con
-  las palabras que resaltes: apoyo visual para alumnado con TEL/TDL, TEA, etc.
-  Necesita conexión. Los pictogramas tienen licencia **CC BY-NC-SA** (autor
-  Sergio Palao; Gobierno de Aragón): la atribución se incluye en el documento
-  y su uso comercial requiere permiso de ARASAAC.
 - Respeta imágenes, tablas y la estructura de apartados del documento.
 - Crea un archivo nuevo con el sufijo `(adaptado)`; **el original no se toca**.
 - Opcionalmente genera una **hoja interna de registro** («— registro.docx»)
@@ -86,8 +79,8 @@ Get-FileHash "AdaptadocsSetup.exe" -Algorithm SHA256
   `core/registro.json`, editable.
 
 Incluye **perfiles** predefinidos (General, Dislexia, TDAH, TEA, Discapacidad
-intelectual leve, Baja visión, TEL/TDL con apoyo visual) que puedes retocar antes
-de generar el documento.
+intelectual leve, Baja visión, TEL/TDL) que puedes retocar antes de generar el
+documento.
 
 ---
 
@@ -247,7 +240,6 @@ adaptadocs/
 │   ├── perfiles.py       Perfiles de formato predefinidos
 │   ├── ia.py             Llamada a la API de Anthropic (adaptación de contenido)
 │   ├── aplicar_ia.py     Vuelca el resultado de la IA en el documento
-│   ├── pictogramas.py    Pictogramas de ARASAAC (banco de apoyo visual)
 │   ├── claves.py         Guardado seguro de la clave de API (keyring)
 │   ├── registro.py       Hoja interna «qué se ha adaptado y por qué»
 │   ├── registro.json     Textos y marco legal de esa hoja (editable)

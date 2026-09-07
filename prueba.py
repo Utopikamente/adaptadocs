@@ -127,35 +127,6 @@ def main() -> int:
     if r_no["procedimientos_en_pasos"] != 0:
         fallos.append("no: no debería haber tocado ningún procedimiento")
 
-    # --- Banco de pictogramas (con buscador simulado, sin red) ----- #
-    import base64
-
-    png_1x1 = base64.b64decode(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk"
-        "+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
-    )
-    d_pic = Document(origen)
-    r_pic = aplicar_formato(
-        d_pic,
-        OpcionesAdaptacion(pictogramas="resaltadas", resaltar_palabras=["sol", "agua", "planta"]),
-        obtener_pictograma=lambda _palabra: png_1x1,
-    )
-    if r_pic["pictogramas"] != 3:
-        fallos.append(f"pictogramas = {r_pic['pictogramas']} (esperado 3)")
-    if "Pictogramas" not in [p.text for p in d_pic.paragraphs]:
-        fallos.append("falta la sección Pictogramas")
-    if not d_pic.tables:
-        fallos.append("no se creó la tabla de pictogramas")
-
-    d_pic_no = Document(origen)
-    r_pic_no = aplicar_formato(
-        d_pic_no,
-        OpcionesAdaptacion(pictogramas="resaltadas", resaltar_palabras=["sol"]),
-        obtener_pictograma=lambda _palabra: None,  # simula "sin conexión / sin pictograma"
-    )
-    if r_pic_no["pictogramas"] != 0 or "Pictogramas" in [p.text for p in d_pic_no.paragraphs]:
-        fallos.append("sin pictogramas: no debería haberse añadido la sección")
-
     # --- Numerar preguntas y dejar espacio para responder ----------- #
     d_preg_off = Document(origen)
     r_preg_off = aplicar_formato(d_preg_off, OpcionesAdaptacion())
@@ -198,7 +169,7 @@ def main() -> int:
         return 1
 
     print(
-        "PRUEBA OK — formato, resaltado, viñetas, pasos, pictogramas, preguntas "
+        "PRUEBA OK — formato, resaltado, viñetas, pasos, preguntas "
         "y original intacto."
     )
     return 0

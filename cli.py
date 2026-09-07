@@ -52,9 +52,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--separar-pasos", default="no", choices=["no", "marcados", "auto"],
                         help="Separar procedimientos en pasos numerados (sin IA): "
                         "'marcados' = solo párrafos que empiezan por «PASOS:»; 'auto' = heurística")
-    parser.add_argument("--pictogramas", action="store_true",
-                        help="Añadir al final un banco de pictogramas de ARASAAC para las "
-                        "palabras de --resaltar (necesita conexión)")
     parser.add_argument("--numerar-preguntas", action="store_true",
                         help="Renumerar de forma consecutiva los párrafos que sean preguntas "
                         "(terminan en «?»)")
@@ -80,8 +77,6 @@ def main(argv: list[str] | None = None) -> int:
 
     opciones = opciones_de_perfil(args.perfil)
     opciones.separar_en_pasos = args.separar_pasos
-    if args.pictogramas:
-        opciones.pictogramas = "resaltadas"
     opciones.numerar_preguntas = args.numerar_preguntas
     opciones.espacio_respuestas = args.espacio_respuestas
     if args.resaltar:
@@ -137,7 +132,6 @@ def main(argv: list[str] | None = None) -> int:
                 print(
                     f"  {resumen['parrafos']} párrafos · {resumen['resaltados']} resaltados · "
                     f"{resumen['procedimientos_en_pasos']} en pasos · "
-                    f"{resumen['pictogramas']} pictogramas · "
                     f"{resumen['preguntas_numeradas']} preguntas numeradas · "
                     f"{resumen['preguntas_con_espacio']} con espacio para responder\n"
                 )

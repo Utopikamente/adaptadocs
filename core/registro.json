@@ -24,7 +24,6 @@
     "vinetas_numeradas": "Listas con viñetas convertidas en lista numerada.",
     "pasos": "Procedimientos divididos en pasos numerados ({procedimientos}).",
     "resaltado": "Palabras clave resaltadas ({resaltados}).",
-    "pictogramas": "Banco de pictogramas de apoyo (ARASAAC) para las palabras clave ({pictogramas}).",
     "preguntas_numeradas": "Preguntas numeradas de forma consecutiva ({preguntas_numeradas}).",
     "espacio_respuestas": "Espacio para responder tras cada pregunta ({preguntas} preguntas, {lineas} líneas cada una)."
   },

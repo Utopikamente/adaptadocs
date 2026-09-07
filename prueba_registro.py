@@ -47,7 +47,7 @@ def main() -> int:
     )
     resumen = {
         "resaltados": 7, "vinetas_convertidas": 0, "procedimientos_en_pasos": 2,
-        "pictogramas": 0, "preguntas_numeradas": 3, "preguntas_con_espacio": 3,
+        "preguntas_numeradas": 3, "preguntas_con_espacio": 3,
     }
     salida = os.path.join(trabajo, "ficha (adaptado) — registro.docx")
     generar_registro(salida, "ficha (adaptado).docx", opciones, resumen)
@@ -111,7 +111,7 @@ def main() -> int:
     salida_vacia = os.path.join(trabajo, "vacio — registro.docx")
     generar_registro(salida_vacia, "x.docx", vacio,
                      {"resaltados": 0, "procedimientos_en_pasos": 0,
-                      "preguntas_numeradas": 0, "preguntas_con_espacio": 0, "pictogramas": 0})
+                      "preguntas_numeradas": 0, "preguntas_con_espacio": 0})
     if textos["sin_adaptaciones"] not in _texto(Document(salida_vacia)):
         fallos.append("sin adaptaciones: debería decirlo explícitamente")
 

@@ -100,7 +100,6 @@ class Aplicacion(_Raiz):
         self.var_negrita_titulos = tk.BooleanVar()
         self.var_vinetas = tk.BooleanVar()
         self.var_separar = tk.StringVar(value="No separar")
-        self.var_pictogramas = tk.BooleanVar()
         self.var_palabras = tk.StringVar()
         self.var_color = tk.StringVar(value="Amarillo")
         self.var_numerar_preguntas = tk.BooleanVar()
@@ -245,11 +244,6 @@ class Aplicacion(_Raiz):
             row=1, column=0, columnspan=2, sticky="ew", pady=4)
         ttk.Combobox(marco_r, textvariable=self.var_color, values=COLORES,
                      state="readonly", width=10).grid(row=1, column=2, padx=(6, 0), pady=4)
-        ttk.Checkbutton(
-            marco_r,
-            text="Añadir banco de pictogramas (ARASAAC) para esas palabras — necesita conexión",
-            variable=self.var_pictogramas,
-        ).grid(row=2, column=0, columnspan=3, sticky="w", pady=(2, 0))
 
         marco_preg = ttk.Frame(marco_o)
         marco_preg.grid(row=12, column=0, columnspan=2, sticky="w", padx=8, pady=(8, 2))
@@ -604,7 +598,6 @@ class Aplicacion(_Raiz):
         self.var_negrita_titulos.set(o.negrita_titulos)
         self.var_vinetas.set(o.convertir_vinetas_en_pasos)
         self.var_separar.set(CLAVE_A_SEPARAR.get(o.separar_en_pasos, "No separar"))
-        self.var_pictogramas.set(o.pictogramas == "resaltadas")
         self.var_color.set(CLAVE_A_COLOR.get(o.color_resaltado, "Amarillo"))
         self.var_numerar_preguntas.set(o.numerar_preguntas)
         self.var_espacio_respuestas.set(o.espacio_respuestas)
@@ -647,7 +640,6 @@ class Aplicacion(_Raiz):
             negrita_titulos=self.var_negrita_titulos.get(),
             convertir_vinetas_en_pasos=self.var_vinetas.get(),
             separar_en_pasos=SEPARAR_A_CLAVE.get(self.var_separar.get(), "no"),
-            pictogramas="resaltadas" if self.var_pictogramas.get() else "no",
             resaltar_palabras=palabras,
             color_resaltado=COLOR_A_CLAVE.get(self.var_color.get(), "AMARILLO"),
             numerar_preguntas=self.var_numerar_preguntas.get(),
@@ -794,7 +786,6 @@ class Aplicacion(_Raiz):
                 texto = (
                     f"Listo. {r['parrafos']} párrafos, {r['resaltados']} palabras resaltadas, "
                     f"{r['procedimientos_en_pasos']} procedimientos en pasos, "
-                    f"{r['pictogramas']} pictogramas, "
                     f"{r['preguntas_numeradas']} preguntas numeradas, "
                     f"{r['preguntas_con_espacio']} con espacio para responder."
                 )
