@@ -67,7 +67,7 @@ class Aplicacion(_Raiz):
     def __init__(self) -> None:
         super().__init__()
         self.title("Adaptadocs")
-        self.minsize(660, 720)
+        self.minsize(640, 520)
         self.columnconfigure(0, weight=1)
 
         self._cola: queue.Queue[tuple[str, object]] = queue.Queue()
@@ -77,7 +77,16 @@ class Aplicacion(_Raiz):
         self._construir_interfaz()
         self._cargar_perfil()
         self._cargar_clave_guardada()
+        self._ajustar_a_pantalla()
         self.after(100, self._vaciar_cola)
+
+    def _ajustar_a_pantalla(self) -> None:
+        """Evita que la ventana salga más alta que la pantalla."""
+        self.update_idletasks()
+        margen = 90  # barra de tareas + título
+        alto = min(self.winfo_reqheight(), self.winfo_screenheight() - margen)
+        ancho = max(self.winfo_reqwidth(), 660)
+        self.geometry(f"{ancho}x{alto}+40+20")
 
     # ------------------------------------------------------------------ #
     # Construcción de la interfaz
@@ -163,6 +172,7 @@ class Aplicacion(_Raiz):
         cuaderno.add(self._pestana_formato(cuaderno), text="  Formato  ")
         cuaderno.add(self._pestana_ia(cuaderno), text="  Contenido con IA  ")
         cuaderno.add(self._pestana_acis(cuaderno), text="  Adaptación curricular (ACIS)  ")
+        self.rowconfigure(fila, weight=3)
         fila += 1
 
         # --- 4. Salida ----------------------------------------- #
@@ -180,7 +190,7 @@ class Aplicacion(_Raiz):
         self.boton.grid(row=fila, column=0, sticky="ew", padx=8, pady=(8, 4))
         fila += 1
 
-        self.registro = tk.Text(self, height=7, state="disabled", wrap="word")
+        self.registro = tk.Text(self, height=5, state="disabled", wrap="word")
         self.registro.grid(row=fila, column=0, sticky="nsew", padx=8, pady=(0, 8))
         self.rowconfigure(fila, weight=1)
 
@@ -348,7 +358,7 @@ class Aplicacion(_Raiz):
         raiz.rowconfigure(0, weight=1)
         raiz.columnconfigure(0, weight=1)
 
-        lienzo = tk.Canvas(raiz, borderwidth=0, highlightthickness=0)
+        lienzo = tk.Canvas(raiz, borderwidth=0, highlightthickness=0, height=380)
         barra_v = ttk.Scrollbar(raiz, orient="vertical", command=lienzo.yview)
         lienzo.configure(yscrollcommand=barra_v.set)
         lienzo.grid(row=0, column=0, sticky="nsew")
