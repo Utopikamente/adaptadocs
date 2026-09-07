@@ -59,6 +59,7 @@ def main() -> int:
                 "metodologia": "Apoyo de PT 2 h/semana.",
                 "instrumentos": "Pruebas orales; rúbricas.",
                 "unidades": "UD 1 a 6 con adaptación.",
+                "seguimiento": "Revisión cada evaluación; propuesta para el curso siguiente.",
                 "secuenciacion": [["UD 1. La célula", "1er trimestre"]],
             },
             {"materia": "Matemáticas", "acs_determinada": False},
@@ -88,6 +89,7 @@ def main() -> int:
         "la materia con ACS": "Biología y Geología" in cuerpo,
         "los criterios de evaluación aportados": "Identificar seres vivos" in cuerpo,
         "la secuenciación": "UD 1. La célula" in cuerpo and "1er trimestre" in cuerpo,
+        "el calendario de seguimiento": "propuesta para el curso siguiente" in cuerpo,
         "las competencias vacías como pendiente": textos["pendiente"] in cuerpo,
         "la materia sin ACS en «no incluidas»": "Materias no incluidas" in cuerpo,
         "la nota de expediente": "EXPEDIENTE ACADÉMICO" in cuerpo,
@@ -124,7 +126,8 @@ def main() -> int:
         acs_determinada=True, competencias="Sin adaptación de competencias.",
         criterios_evaluacion="1.1 (3.º ESO).", contenidos="La materia (3.º ESO).",
         metodologia="Trabajo cooperativo.", instrumentos="Portafolio.",
-        unidades="UD 1 a 4.", secuenciacion=[["UD 1", "1er trimestre"]],
+        unidades="UD 1 a 4.", seguimiento="Revisión trimestral.",
+        secuenciacion=[["UD 1", "1er trimestre"]],
     )])
     ruta3, _ = generar_acis(os.path.join(trabajo, "completa.docx"), completa)
     tabla_materia = Document(ruta3).tables[1]

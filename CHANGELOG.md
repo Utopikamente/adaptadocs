@@ -16,6 +16,28 @@
   Usa la clave de API de la pestaña «Contenido con IA». `core/acis_ia.py`
   ampliado; `prueba_acis_ia_api.py` hace la llamada real.
 
+  Calibrado con modelos reales de ACS LOMLOE (STEC/Canarias, Genially):
+  - Trabaja por **alineación curricular**: cada competencia y criterio se
+    reformula partiendo del **texto oficial del nivel de referencia**, no de
+    una paráfrasis libre, conservando sus matices («de forma guiada»,
+    «codirigida», «con apoyos»).
+  - Cada criterio adaptado lleva **nota de origen** (de qué criterio del curso
+    procede) e **indicadores de logro** concretos y observables.
+  - Los **criterios de calificación** dejan claro que la ACIS **no limita la
+    nota** (de suficiente a sobresaliente según el ajuste) y que se evalúa por
+    los criterios adaptados, no por los del grupo; el seguimiento del progreso
+    usa la escala I (iniciado) / P (en proceso) / A (alcanzado) por trimestre
+    sobre los saberes básicos del nivel de referencia.
+  - La **metodología** incluye recursos y materiales de apoyo y pautas
+    habituales de estos modelos (verbalizar los pasos, alternar carga
+    atencional, secuenciar por dificultad, ciclo planificación-ejecución-
+    control-valoración, apoyos verbales/visuales/gráficos).
+  - Nuevo apartado **«Seguimiento»**: calendario con una revisión por
+    evaluación y una propuesta para el curso siguiente (incluida la posible
+    superación del curso o ciclo de referencia). Se añade también como fila en
+    el Anexo III.b generado. `core/acis.py`, `core/acis.json`,
+    `core/acis_orientaciones.py` y `app.py` acompañan el cambio.
+
 - **Espacio para responder en exámenes.** Nueva casilla en la pestaña Formato:
   «Es un examen». Con ella, la opción «Líneas para responder» deja hueco no
   solo tras los párrafos que acaban en «?», sino también tras los enunciados

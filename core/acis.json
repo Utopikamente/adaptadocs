@@ -27,7 +27,8 @@
     "unidades_tit": "Unidades didácticas.",
     "secuenciacion_tit": "Secuenciación y temporalización.",
     "ud_col": "Unidad didáctica",
-    "trimestre_col": "Trimestre"
+    "trimestre_col": "Trimestre",
+    "seguimiento_tit": "Calendario de seguimiento, evaluación y revisión de la adaptación."
   },
   "nota_expediente": "ESTA ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA DEL ALUMNO QUEDARÁ ADJUNTA A SU EXPEDIENTE ACADÉMICO.",
   "footer": "ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA",
@@ -39,7 +40,8 @@
     "metodologia": "Aspectos de la metodología que varían respecto a la programación didáctica del resto del alumnado. Si recibe apoyo de profesorado especialista (PT/AL): horas lectivas, elementos curriculares y actividades principales de esas sesiones. Efecto de las medidas de acceso sobre temporalización y secuenciación.",
     "instrumentos": "Adaptaciones sobre los instrumentos de evaluación y los criterios de calificación de la programación didáctica. Deben permitir que los resultados reflejen si el alumno ha alcanzado las competencias de la etapa para la titulación. Los criterios de calificación fijan el peso de cada actividad en la nota final.",
     "unidades": "Unidades didácticas previstas en la programación de la materia con las adaptaciones que procedan y, si es necesario, unidades diseñadas ex profeso para la adaptación curricular.",
-    "secuenciacion": "Para cada unidad didáctica, el trimestre en que se trabajará."
+    "secuenciacion": "Para cada unidad didáctica, el trimestre en que se trabajará.",
+    "seguimiento": "Calendario de revisión de la adaptación: una revisión en cada una de las tres evaluaciones y una propuesta para el curso siguiente. Recoge el grado de consecución de los criterios adaptados, los ajustes para el siguiente periodo y, si procede, la superación del curso o ciclo de referencia. La ACIS se revisa al menos una vez por evaluación dentro de la atención a las diferencias individuales (Orden 1712/2023, capítulo III; confírmese el artículo aplicable)."
   },
   "perfil_accesibilidad": {
     "nota": "El docente marca las necesidades que aplican; la categoría es solo un atajo que las despliega. A la IA se envían las necesidades funcionales, nunca la categoría. Nada se guarda entre sesiones.",
@@ -131,7 +133,8 @@
     "competencias": "Las competencias específicas de la materia NO se modifican en una ACIS (art. 10.3.a de la Orden 1712/2023). Se mantienen las de la programación. Solo se concreta aquí una adaptación cuando sea estrictamente necesario (p. ej. discapacidad motórica en Educación Física o auditiva en Lengua Extranjera), sin prescindir de ninguna competencia completa y buscando el máximo desarrollo.",
     "criterios_evaluacion": "Toma como referencia los criterios del nivel de competencia curricular del alumno. De cada criterio, indica el curso de la ESO al que corresponde. Si el nivel baja a Educación Primaria, toma los del Decreto 61/2022 indicando el área y el ciclo. Estos criterios serán la referencia para la evaluación del alumno.",
     "contenidos": "Adapta los contenidos de los aspectos básicos del currículo al nivel del alumno, para su progreso y máximo desarrollo. De cada contenido indica el curso de la ESO o, si procede, el área y el ciclo de Primaria (Decreto 61/2022).",
-    "metodologia": "Indica qué cambia respecto a la programación general: apoyos de PT/AL (horas lectivas, elementos que se trabajan y actividades principales), agrupamientos, y efecto sobre la temporalización y secuenciación de las unidades.",
+    "metodologia": "Indica qué cambia respecto a la programación general: apoyos de PT/AL (horas lectivas, elementos que se trabajan y actividades principales), agrupamientos, efecto sobre la temporalización y secuenciación de las unidades, y los recursos y materiales de apoyo (material y libro adaptados al nivel, fichas de refuerzo y de comprensión, material manipulativo, recursos digitales).",
+    "seguimiento": "Calendario de revisión de la adaptación: una revisión en cada una de las tres evaluaciones y una propuesta para el curso siguiente (grado de consecución de los criterios adaptados, ajustes para el siguiente periodo y, si procede, superación del curso o ciclo de referencia).",
     "instrumentos": "Recoge las adaptaciones sobre los instrumentos de evaluación y los criterios de calificación de la programación: instrumentos diversos, adaptación del formato de las pruebas, ampliación de tiempo y no penalizar ortografía, caligrafía o presentación cuando proceda. Los resultados deben reflejar si el alumno alcanza las competencias de la etapa.",
     "encabezado_referencia_destino": "Referencia del curso destino (de su programación):",
     "encabezado_referencia_eso": "Currículo oficial de ESO (Decreto 65/2022, Anexo II) — {materia}:",

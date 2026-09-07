@@ -79,6 +79,8 @@ def main() -> int:
         fallos.append("instrumentos: no incluye la recomendación de «más tiempo»")
     if "ejemplo resuelto" not in o1["metodologia"].lower():
         fallos.append("metodología: no incluye la recomendación de «lenguaje literal»")
+    if "curso siguiente" not in o1.get("seguimiento", "").lower():
+        fallos.append("falta la orientación de «seguimiento»")
     marca_primaria = "Currículo oficial de Educación Primaria (Decreto 61/2022, Anexo II)"
     if marca_primaria in o1["criterios_evaluacion"]:
         fallos.append("no debería volcar el currículo de Primaria si el nivel es ESO")

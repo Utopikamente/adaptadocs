@@ -57,6 +57,7 @@ class MateriaACIS:
     metodologia: str = ""
     instrumentos: str = ""
     unidades: str = ""
+    seguimiento: str = ""            # calendario de seguimiento y revisión
     # Lista de (unidad didáctica, trimestre)
     secuenciacion: list[tuple[str, str]] = field(default_factory=list)
 
@@ -129,6 +130,7 @@ def datos_desde_dict(d: dict) -> DatosACIS:
             metodologia=m.get("metodologia", ""),
             instrumentos=m.get("instrumentos", ""),
             unidades=m.get("unidades", ""),
+            seguimiento=m.get("seguimiento", ""),
             secuenciacion=secu,
         ))
     return DatosACIS(
@@ -245,6 +247,9 @@ def _tabla_materia(doc, materia: MateriaACIS, textos: dict) -> None:
         ud = fila.cells[0].merge(fila.cells[2])
         _texto_celda(ud, _linea(unidad, 45))
         _texto_celda(fila.cells[3], _linea(trimestre, 14))
+
+    _fila_completa(tabla, c["seguimiento_tit"], textos, titulo=True)
+    _fila_completa(tabla, materia.seguimiento.strip() or pend, textos)
 
 
 # --------------------------------------------------------------------------- #

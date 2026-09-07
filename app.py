@@ -510,6 +510,7 @@ class Aplicacion(_Raiz):
             ("metodologia", "Metodología", True),
             ("unidades", "Unidades", False),
             ("secuenciacion", "Secuenciación", False),
+            ("seguimiento", "Seguimiento", True),
         ]
         for clave, etiqueta, con_orientacion in apartados:
             f = ttk.Frame(sub, padding=4)
@@ -730,6 +731,7 @@ class Aplicacion(_Raiz):
             "metodologia": materia.metodologia,
             "instrumentos": materia.instrumentos,
             "unidades": materia.unidades,
+            "seguimiento": materia.seguimiento,
         }
         for clave, texto in campos.items():
             if texto:
@@ -780,6 +782,7 @@ class Aplicacion(_Raiz):
             metodologia=_txt("metodologia"),
             instrumentos=_txt("instrumentos"),
             unidades=_txt("unidades"),
+            seguimiento=_txt("seguimiento"),
             secuenciacion=secuenciacion,
         )
         datos = DatosACIS(materias=[materia])

@@ -203,4 +203,5 @@ def orientaciones(
                                _recomendaciones(necesidades, "metodologia", textos)),
         "instrumentos": _juntar(o["instrumentos"], ref_dest_ins,
                                 _recomendaciones(necesidades, "instrumentos", textos)),
+        "seguimiento": o.get("seguimiento", ""),
     }

@@ -8,12 +8,14 @@ clínicas) y el currículo oficial de referencia (ESO y, si baja a Primaria,
 Primaria). Devuelve, en borrador para el equipo docente:
 
 - las competencias específicas reformuladas a ese nivel (sin eliminar ninguna),
-- sus criterios de evaluación al nivel objetivo (con referencia y, si baja a
-  Primaria, área y ciclo),
+- sus criterios de evaluación al nivel de referencia (con referencia, nota de
+  origen, indicadores de logro y, si baja a Primaria, área y ciclo),
 - los contenidos por bloque a ese nivel,
-- la metodología (apoyos, agrupamientos, temporalización) según el perfil,
+- la metodología (apoyos, agrupamientos, temporalización, recursos) según el
+  perfil,
 - instrumentos de evaluación accesibles y criterios de calificación,
-- cada unidad de la programación con su adaptación.
+- cada unidad de la programación con su adaptación,
+- el calendario de seguimiento y revisión de la adaptación.
 """
 
 from __future__ import annotations
@@ -84,29 +86,53 @@ _SISTEMA = (
     "Eres especialista en adaptación curricular individualizada y significativa "
     "(ACIS) en la Comunidad de Madrid. El alumno SIGUE MATRICULADO en su curso "
     "(no cambia de curso ni de etapa): la ACIS hace su programación accesible a "
-    "su NIVEL DE COMPETENCIA CURRICULAR real (el de un curso anterior, a veces "
-    "de Educación Primaria) y a su perfil de necesidades educativas especiales. "
-    "A partir de la programación didáctica de la materia redactas el borrador. "
-    "Reglas: "
-    "(1) reformulas cada competencia específica al nivel objetivo (más concreta, "
-    "frases cortas, lenguaje accesible) SIN eliminar ninguna y manteniendo su "
-    "número; "
-    "(2) para cada criterio de evaluación de la programación propones su "
-    "equivalente al nivel objetivo, con su referencia (p. ej. «1.1.»); si el "
-    "nivel es de Primaria, indicas el área y el ciclo; "
-    "(3) rebajas los contenidos por bloque a ese nivel; "
+    "su NIVEL DE REFERENCIA CURRICULAR real (el de un curso anterior, a veces de "
+    "Educación Primaria) y a su perfil de necesidades educativas especiales. "
+    "Trabajas por ALINEACIÓN CURRICULAR: para cada competencia y cada criterio "
+    "de la programación del curso buscas su correlato en el currículo oficial "
+    "del nivel de referencia y partes de ese texto oficial, no de una paráfrasis "
+    "libre. A partir de la programación didáctica de la materia redactas el "
+    "borrador. Reglas: "
+    "(1) reformulas cada competencia específica al nivel de referencia tomando "
+    "como base el texto oficial de ese nivel (conservando sus matices: «de forma "
+    "guiada», «codirigida», «con apoyos»), con frases cortas y lenguaje "
+    "accesible, SIN eliminar ninguna y manteniendo su número; "
+    "(2) para cada criterio de evaluación de la programación localizas su "
+    "criterio equivalente en el nivel de referencia y lo propones con su "
+    "referencia (p. ej. «1.1.») y una nota de «origen» (de qué criterio del "
+    "curso procede); si el nivel es de Primaria, indicas el área y el ciclo; "
+    "añades 2 o 3 indicadores de logro concretos y observables por criterio; "
+    "(3) rebajas los contenidos / saberes básicos por bloque a ese nivel, "
+    "tomándolos del currículo oficial de referencia; "
     "(4) redactas la metodología: qué cambia respecto a la programación general "
-    "(apoyos de PT/AL, agrupamientos, temporalización), teniendo en cuenta el "
-    "perfil de accesibilidad; "
+    "(apoyos de PT/AL con horas y qué se trabaja, agrupamientos, "
+    "temporalización) según el perfil de accesibilidad; incluye un párrafo "
+    "«Recursos y materiales de apoyo:» (material y libro adaptados al nivel "
+    "competencial, fichas de refuerzo y de comprensión, material manipulativo, "
+    "recursos digitales interactivos) y recoge, cuando encajen con el perfil, "
+    "pautas habituales: verbalizar los pasos de cada tarea, alternar actividades "
+    "de mayor carga atencional con otras más mecánicas, secuenciar por "
+    "dificultad, entrenamiento sistemático en el ciclo planificación-ejecución-"
+    "control-valoración para evitar el error reiterado, y apoyos verbales, "
+    "visuales y gráficos; "
     "(5) propones instrumentos de evaluación accesibles y unos criterios de "
     "calificación (pesos por instrumento, no penalizar ortografía/caligrafía/"
-    "presentación cuando proceda, corrección por partes, ítems de repaso); "
+    "presentación cuando proceda, corrección por partes, ítems de repaso). Dejas "
+    "claro que la ACIS NO limita la calificación: el alumno puede obtener desde "
+    "suficiente hasta sobresaliente según su ajuste, y se evalúa por SUS "
+    "criterios adaptados, no por los del grupo. El seguimiento del progreso se "
+    "hace sobre los saberes básicos del nivel de referencia con la escala "
+    "I (iniciado) / P (en proceso) / A (alcanzado) por trimestre; "
     "(6) para cada unidad de la programación indicas cómo se adapta (qué léxico "
     "y estructuras esenciales se mantienen a ese nivel) o si procede una unidad "
     "diseñada ex profeso sobre el mismo tema; "
-    "(7) NO inventas contenido ajeno al currículo: te apoyas en el currículo "
-    "oficial de referencia que se te aporta; "
-    "(8) escribes en español y devuelves solo el JSON pedido. Todo es un "
+    "(7) redactas el «seguimiento»: calendario con una revisión en cada una de "
+    "las tres evaluaciones y una propuesta para el curso siguiente (incluida la "
+    "posible superación del curso o ciclo de referencia); "
+    "(8) NO inventas contenido ajeno al currículo: te apoyas en el currículo "
+    "oficial de referencia que se te aporta; si algo exige una decisión "
+    "profesional que no puedes tomar, lo dices en «avisos»; "
+    "(9) escribes en español y devuelves solo el JSON pedido. Todo es un "
     "BORRADOR que debe revisar y aprobar el equipo docente."
 )
 
@@ -115,8 +141,12 @@ def _esquema() -> dict:
     obj = lambda props, req: {  # noqa: E731
         "type": "object", "additionalProperties": False, "required": req, "properties": props,
     }
-    criterio = obj({"referencia": {"type": "string"}, "nivel": {"type": "string"},
-                    "texto": {"type": "string"}}, ["referencia", "nivel", "texto"])
+    criterio = obj(
+        {"referencia": {"type": "string"}, "nivel": {"type": "string"},
+         "origen": {"type": "string"}, "texto": {"type": "string"},
+         "indicadores": {"type": "array", "items": {"type": "string"}}},
+        ["referencia", "nivel", "origen", "texto", "indicadores"],
+    )
     return {
         "type": "json_schema",
         "schema": obj(
@@ -158,23 +188,25 @@ def _esquema() -> dict:
                         ["titulo", "adaptacion", "periodo"],
                     ),
                 },
+                "seguimiento": {"type": "string"},
                 "avisos": {"type": "array", "items": {"type": "string"}},
             },
             ["competencias", "contenidos", "metodologia", "instrumentos",
-             "criterios_calificacion", "unidades", "avisos"],
+             "criterios_calificacion", "unidades", "seguimiento", "avisos"],
         ),
     }
 
 _CLAVES = ("competencias", "contenidos", "metodologia", "instrumentos",
-           "criterios_calificacion", "unidades", "avisos")
+           "criterios_calificacion", "unidades", "seguimiento", "avisos")
+_CLAVES_TEXTO = ("metodologia", "criterios_calificacion", "seguimiento")
 
 
 def _mensaje_usuario(prog: Programacion, opciones: OpcionesAdaptacionCurricular) -> str:
     lineas: list[str] = [
         f"MATERIA: {prog.materia or '(sin nombre)'}",
         f"CURSO EN EL QUE EL ALUMNO SIGUE MATRICULADO: {prog.curso or '(sin indicar)'}",
-        f"NIVEL DE COMPETENCIA CURRICULAR REAL DEL ALUMNO (al que se adapta): "
-        f"{opciones.nivel_objetivo or '(sin indicar)'}",
+        f"NIVEL DE REFERENCIA CURRICULAR AL QUE SE ADAPTA (nivel de competencia "
+        f"curricular real del alumno): {opciones.nivel_objetivo or '(sin indicar)'}",
         "",
         "COMPETENCIAS ESPECÍFICAS Y CRITERIOS DE EVALUACIÓN DE LA PROGRAMACIÓN:",
     ]
@@ -223,10 +255,11 @@ def _mensaje_usuario(prog: Programacion, opciones: OpcionesAdaptacionCurricular)
                    opciones.referencia_curriculo.strip()]
 
     lineas += ["", "Devuelve el JSON con todas las claves: competencias "
-               "(numero, texto_reformulado, criterios_adaptados[referencia, nivel, texto]), "
-               "contenidos (bloque, nivel, items), metodologia, instrumentos "
-               "(elemento, propuesta, justificacion), criterios_calificacion, "
-               "unidades (titulo, adaptacion, periodo) y avisos."]
+               "(numero, texto_reformulado, criterios_adaptados[referencia, nivel, "
+               "origen, texto, indicadores]), contenidos (bloque, nivel, items), "
+               "metodologia, instrumentos (elemento, propuesta, justificacion), "
+               "criterios_calificacion, unidades (titulo, adaptacion, periodo), "
+               "seguimiento y avisos."]
     return "\n".join(lineas)
 
 
@@ -290,7 +323,7 @@ def adaptar_programacion(
         raise RuntimeError("No se pudo interpretar la respuesta de la IA.") from exc
 
     for k in _CLAVES:
-        datos.setdefault(k, [] if k not in ("metodologia", "criterios_calificacion") else "")
+        datos.setdefault(k, "" if k in _CLAVES_TEXTO else [])
     datos["_uso"] = {
         "entrada": respuesta.usage.input_tokens,
         "salida": respuesta.usage.output_tokens,
@@ -332,8 +365,15 @@ def _texto_criterios(resultado: dict) -> str:
             ref = str(cr.get("referencia", "")).strip()
             nivel = str(cr.get("nivel", "")).strip()
             txt = str(cr.get("texto", "")).strip()
+            origen = str(cr.get("origen", "")).strip()
             prefijo = " ".join(x for x in (ref, f"({nivel})" if nivel else "") if x)
             lineas.append(f"  {prefijo} {txt}".rstrip())
+            if origen:
+                lineas.append(f"      (adapta: {origen})")
+            for ind in cr.get("indicadores", []):
+                ind = str(ind).strip()
+                if ind:
+                    lineas.append(f"      · {ind}")
         bloques.append("\n".join(lineas))
     return "\n\n".join(bloques)
 
@@ -392,6 +432,8 @@ def resultado_a_materia(
     if str(resultado.get("metodologia", "")).strip():
         materia.metodologia = str(resultado["metodologia"]).strip()
     materia.instrumentos = _texto_instrumentos(resultado)
+    if str(resultado.get("seguimiento", "")).strip():
+        materia.seguimiento = str(resultado["seguimiento"]).strip()
     if resultado.get("unidades"):
         materia.unidades = _texto_unidades(resultado)
         materia.secuenciacion = [

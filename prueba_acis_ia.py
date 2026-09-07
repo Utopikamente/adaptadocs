@@ -50,12 +50,18 @@ def main() -> int:
              "texto_reformulado": "Entender de qué trata un texto muy corto y sencillo, con apoyo visual.",
              "criterios_adaptados": [
                  {"referencia": "1.1.", "nivel": "Tercer ciclo de Primaria",
-                  "texto": "Identificar de qué trata un texto corto y con dibujos."}]},
+                  "origen": "criterio 1.1. de 4.º ESO",
+                  "texto": "Identificar de qué trata un texto corto y con dibujos.",
+                  "indicadores": ["Señala el dibujo que corresponde al texto.",
+                                  "Dice en una frase de qué trata."]}]},
             {"numero": "2",
              "texto_reformulado": "Escribir frases cortas y ordenadas sobre un tema conocido.",
              "criterios_adaptados": [
                  {"referencia": "2.1.", "nivel": "Tercer ciclo de Primaria",
-                  "texto": "Escribir 3-4 frases con una plantilla."}]},
+                  "origen": "criterio 2.1. de 4.º ESO",
+                  "texto": "Escribir 3-4 frases con una plantilla.",
+                  "indicadores": ["Completa la plantilla sin dejar huecos.",
+                                  "Usa mayúscula y punto."]}]},
         ],
         "contenidos": [
             {"bloque": "A. Comunicación", "nivel": "Tercer ciclo de Primaria",
@@ -72,6 +78,8 @@ def main() -> int:
             {"titulo": "UNIT 1 FAMILY MATTERS", "periodo": "1ª evaluación",
              "adaptacion": "La familia: miembros y describir a una persona con have got."},
         ],
+        "seguimiento": "Revisión en cada evaluación. Propuesta para el curso siguiente: "
+                       "si alcanza el Tercer ciclo de Primaria, se hará constar en el expediente.",
         "avisos": ["El nivel de Primaria debe contrastarse con el Anexo II del Decreto 61/2022."],
     }
 
@@ -83,6 +91,8 @@ def main() -> int:
         "competencias reformuladas": "1. Entender de qué trata" in materia.competencias,
         "criterios por competencia": "Competencia específica 1" in materia.criterios_evaluacion,
         "referencia y nivel del criterio": "1.1. (Tercer ciclo de Primaria)" in materia.criterios_evaluacion,
+        "nota de origen del criterio": "(adapta: criterio 1.1. de 4.º ESO)" in materia.criterios_evaluacion,
+        "indicadores de logro": "· Señala el dibujo que corresponde al texto." in materia.criterios_evaluacion,
         "contenidos por bloque y nivel": "A. Comunicación (Tercer ciclo de Primaria)" in materia.contenidos,
         "ítems de contenido": "− Describir personas" in materia.contenidos,
         "metodología": "Apoyo de PT" in materia.metodologia,
@@ -91,6 +101,7 @@ def main() -> int:
                                      and "No se penaliza la ortografía" in materia.instrumentos,
         "unidad adaptada": "UNIT 1 FAMILY MATTERS: La familia" in materia.unidades,
         "secuenciación con periodo": materia.secuenciacion == [("UNIT 1 FAMILY MATTERS", "1ª evaluación")],
+        "calendario de seguimiento": "Propuesta para el curso siguiente" in materia.seguimiento,
         "casilla acs_determinada intacta": materia.acs_determinada is True,
     }
     for que, ok in comprobaciones.items():
@@ -105,7 +116,8 @@ def main() -> int:
     if "[PENDIENTE" in texto:
         fallos.append("los campos adaptados no deberían salir como pendientes")
     for frag in ("Identificar de qué trata un texto", "Contar la rutina diaria",
-                 "UNIT 1 FAMILY MATTERS", "No se penaliza la ortografía"):
+                 "UNIT 1 FAMILY MATTERS", "No se penaliza la ortografía",
+                 "Propuesta para el curso siguiente"):
         if frag not in texto:
             fallos.append(f"«{frag}» no llega al documento")
 
@@ -131,7 +143,8 @@ def main() -> int:
 
     # Respuesta vacía: los campos quedan vacíos.
     vacia = resultado_a_materia(prog, {}, MateriaACIS(materia="X", acs_determinada=True))
-    if vacia.criterios_evaluacion or vacia.contenidos or vacia.instrumentos or vacia.competencias:
+    if (vacia.criterios_evaluacion or vacia.contenidos or vacia.instrumentos
+            or vacia.competencias or vacia.seguimiento):
         fallos.append("una respuesta vacía no debería rellenar campos")
 
     if fallos:
