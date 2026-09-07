@@ -121,6 +121,10 @@ def main() -> int:
     d.add_paragraph("Pruebas escritas 60 %, trabajos 30 %, actitud 10 %.")
     d.add_paragraph("8. METODOLOGÍA")
     d.add_paragraph("Enfoque comunicativo, trabajo por tareas y agrupamientos flexibles.")
+    d.add_paragraph("9. UNIDADES DIDÁCTICAS")
+    d.add_paragraph("UNIT 1 FAMILY MATTERS 1ª evaluación")
+    d.add_paragraph("UNIT 2 SWEET DREAMS 1ª evaluación")
+    d.add_paragraph("Tema 3. La ciudad — 2º trimestre")
     d.save(ruta_prosa)
     p2 = leer_programacion(ruta_prosa)
     if len(p2.competencias) != 2:
@@ -133,6 +137,13 @@ def main() -> int:
         fallos.append("prosa: no recoge los instrumentos / criterios de calificación")
     if "agrupamientos flexibles" not in p2.metodologia:
         fallos.append("prosa: no recoge la metodología")
+    titulos = [t for t, _ in p2.unidades]
+    if len(p2.unidades) != 3:
+        fallos.append(f"prosa: unidades = {len(p2.unidades)} (esperado 3): {titulos}")
+    if p2.unidades and p2.unidades[0] != ("UNIT 1 FAMILY MATTERS", "1ª evaluación"):
+        fallos.append(f"prosa: primera unidad mal extraída: {p2.unidades[0]}")
+    if not any("La ciudad" in t for t in titulos):
+        fallos.append("prosa: no reconoce «Tema 3. …» como unidad")
 
     # --- Documento sin ningún apartado curricular ------------------ #
     ruta_mala = os.path.join(trabajo, "sin_apartados.docx")

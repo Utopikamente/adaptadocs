@@ -591,12 +591,30 @@ class Aplicacion(_Raiz):
         self._acis_fijar_texto(self.acis_txt["criterios_evaluacion"], materia.criterios_evaluacion)
         self._acis_fijar_texto(self.acis_txt["contenidos"], materia.contenidos)
         self._acis_fijar_texto(self.acis_txt["instrumentos"], materia.instrumentos)
+        if materia.metodologia:
+            self._acis_fijar_texto(self.acis_txt["metodologia"], materia.metodologia)
+
+        # Las unidades didácticas salen de la programación DE LA MATERIA
+        # (el curso actual); si no se ha adjuntado, de la del curso destino.
+        prog_mat = self._acis_leer_una(self.var_acis_prog_materia.get())
+        uds = getattr(prog_mat, "unidades", None) or prog.unidades
+        if uds:
+            self._acis_fijar_texto(
+                self.acis_txt["unidades"],
+                "Unidades de la programación de la materia (se mantienen, con las adaptaciones "
+                "que procedan en cada una):\n"
+                + "\n".join(f"− {t}" + (f" ({p})" if p else "") for t, p in uds),
+            )
+            self._acis_fijar_texto(
+                self.acis_txt["secuenciacion"],
+                "\n".join(f"{t} | {p}" if p else t for t, p in uds),
+            )
         if prog.materia and not self.var_acis_materia.get():
             self.var_acis_materia.set(prog.materia)
         self._acis_orientar()
         self._log(
             f"ACIS: leída la programación destino ({len(prog.competencias)} competencias, "
-            f"{len(prog.saberes_basicos)} bloques, {len(prog.instrumentos)} instrumentos). "
+            f"{len(prog.criterios)} criterios). Unidades: {len(uds)}. "
             "Revisa las orientaciones y edita los apartados antes de generar."
         )
 

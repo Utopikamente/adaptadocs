@@ -47,6 +47,7 @@ class Programacion:
     instrumentos: list[tuple[str, str]] = field(default_factory=list)
     instrumentos_texto: str = ""
     metodologia: str = ""
+    unidades: list[tuple[str, str]] = field(default_factory=list)  # (título, periodo)
 
 
 # --------------------------------------------------------------------------- #
@@ -262,6 +263,43 @@ def tabla_cab(tabla):
     return _celdas_unicas(tabla.rows[0]) if tabla.rows else []
 
 
+_RE_UNIDAD = re.compile(
+    r"^\s*(?:UNIT|UNIDAD(?:\s+DID[ÁA]CTICA)?|UD|U\.?D\.?|TEMA|BLOQUE)\s+\d+\b",
+    re.IGNORECASE,
+)
+_RE_PERIODO = re.compile(
+    r"(\d\.?\s*[ªº°]?\s*(?:evaluaci[óo]n|trimestre)"
+    r"|(?:primer|segundo|tercer)\s+(?:trimestre|evaluaci[óo]n))",
+    re.IGNORECASE,
+)
+
+
+def _extraer_unidades(doc, prog: Programacion) -> None:
+    """Recoge las líneas tipo «UNIT 1 …», «UD 2 …», «Tema 3 …», con su
+    trimestre o evaluación si aparece en la misma línea."""
+    vistas: set[str] = set()
+    fuentes = [p.text for p in doc.paragraphs]
+    for tabla in doc.tables:
+        for fila in tabla.rows:
+            for celda in _celdas_unicas(fila):
+                fuentes.append(celda.text)
+    for texto in fuentes:
+        linea = " ".join(texto.split())
+        if not _RE_UNIDAD.match(linea):
+            continue
+        periodo = ""
+        m = _RE_PERIODO.search(linea)
+        if m:
+            periodo = " ".join(m.group(1).split())
+            titulo = linea[:m.start()].strip(" .-–—")
+        else:
+            titulo = linea.strip(" .-–—")
+        clave = titulo.lower()
+        if titulo and clave not in vistas:
+            vistas.add(clave)
+            prog.unidades.append((titulo, periodo))
+
+
 # --------------------------------------------------------------------------- #
 
 def leer_programacion(ruta: str, *, materia: str = "", curso: str = "") -> Programacion:
@@ -275,6 +313,8 @@ def leer_programacion(ruta: str, *, materia: str = "", curso: str = "") -> Progr
         _parsear_tabla_centro(prog, tabla)
     else:
         _parsear_tolerante(doc, prog)
+
+    _extraer_unidades(doc, prog)
 
     if not prog.instrumentos and not prog.instrumentos_texto:
         tabla_inst = _buscar_tabla(doc, "INSTRUMENTO DE EVALUACION")

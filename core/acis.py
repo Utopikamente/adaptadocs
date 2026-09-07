@@ -103,6 +103,13 @@ def materia_desde_programacion(prog, base: "MateriaACIS | None" = None) -> "Mate
 
     if getattr(prog, "metodologia", ""):
         materia.metodologia = prog.metodologia
+
+    uds = getattr(prog, "unidades", [])
+    if uds:
+        materia.unidades = ("Unidades de la programación de la materia (se mantienen, con las "
+                            "adaptaciones que procedan en cada una):\n"
+                            + "\n".join(f"− {t}" + (f" ({p})" if p else "") for t, p in uds))
+        materia.secuenciacion = [(t, p) for t, p in uds]
     return materia
 
 
