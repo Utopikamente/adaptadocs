@@ -1,5 +1,21 @@
 # Historial de cambios
 
+## [Sin publicar]
+
+- **ACIS: orientaciones por apartado (sin IA).** En cada apartado de la
+  pestaña (competencias, criterios, contenidos, metodología, instrumentos)
+  aparece un panel de **Orientación** de solo lectura que reúne: qué pide el
+  Anexo III.b, los criterios/contenidos/instrumentos del curso destino, y —si
+  el nivel objetivo es de Primaria y se reconoce el área— el texto oficial del
+  **currículo de Primaria** (Decreto 61/2022, Anexo II); más recomendaciones
+  de metodología e instrumentos según el perfil de accesibilidad marcado. No
+  entra en el documento; es ayuda para redactar la adaptación.
+- Nuevo campo **«Nivel de competencia objetivo»** en la pestaña ACIS.
+- `core/curriculo_primaria.json` (7 áreas × 3 ciclos del Anexo II del Decreto
+  61/2022, texto oficial, editable) + `herramientas/extraer_curriculo_primaria.py`.
+- Tabla **perfil de accesibilidad → recomendaciones** en `core/acis.json`
+  (borrador, editable).
+
 ## [1.8.1] — 2026-09-07
 
 - **La ventana se ajusta a la altura de la pantalla.** Con la pestaña ACIS,

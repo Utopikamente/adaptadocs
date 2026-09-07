@@ -26,3 +26,5 @@ jobs:
         run: python prueba_programacion.py
       - name: Comprobación de la adaptación curricular con IA (sin red)
         run: python prueba_acis_ia.py
+      - name: Comprobación de las orientaciones de la ACIS
+        run: python prueba_acis_orientaciones.py

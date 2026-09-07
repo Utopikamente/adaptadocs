@@ -58,6 +58,13 @@ def categorias_necesidades() -> list[str]:
     return list(_perfil().get("categorias", {}))
 
 
+def claves_de_categoria(categoria: str) -> list[str]:
+    """Devuelve las CLAVES de las necesidades funcionales del atajo de categoría."""
+    if not categoria or categoria == "(ninguna)":
+        return []
+    return list(_perfil().get("categorias", {}).get(categoria, []))
+
+
 def expandir_categoria(categoria: str) -> list[str]:
     """Devuelve las necesidades funcionales (textos) del atajo de categoría.
     La etiqueta de categoría NO se usa fuera de aquí."""

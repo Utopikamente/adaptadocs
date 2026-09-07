@@ -18,7 +18,12 @@ from core.acis import (
     generar_acis,
     materia_desde_programacion,
 )
-from core.acis_ia import categorias_necesidades, expandir_categoria
+from core.acis_ia import (
+    categorias_necesidades,
+    claves_de_categoria,
+    expandir_categoria,
+)
+from core.acis_orientaciones import orientaciones as _acis_orientaciones
 from core.ia import MODELOS, MODELO_POR_DEFECTO, NIVELES, NIVEL_POR_DEFECTO, OpcionesIA
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 from core.pipeline import adaptar_documento_completo
@@ -134,6 +139,7 @@ class Aplicacion(_Raiz):
         self.var_acis_departamento = tk.StringVar()
         self.var_acis_acs_determinada = tk.BooleanVar()
         self.var_acis_categoria = tk.StringVar()
+        self.var_acis_nivel = tk.StringVar()
 
     def _construir_interfaz(self) -> None:
         pad = {"padx": 8, "pady": 4}
@@ -418,12 +424,22 @@ class Aplicacion(_Raiz):
         ttk.Entry(m2, textvariable=self.var_acis_profesor).grid(row=1, column=1, sticky="ew", pady=4)
         ttk.Label(m2, text="Departamento").grid(row=1, column=2, sticky="w", padx=6, pady=4)
         ttk.Entry(m2, textvariable=self.var_acis_departamento).grid(row=1, column=3, sticky="ew", pady=4)
+        ttk.Label(m2, text="Nivel de competencia objetivo").grid(
+            row=2, column=0, sticky="w", padx=6, pady=4)
+        ent_niv = ttk.Entry(m2, textvariable=self.var_acis_nivel)
+        ent_niv.grid(row=2, column=1, columnspan=3, sticky="ew", pady=4)
+        ent_niv.bind("<FocusOut>", lambda _e: self._acis_orientar())
+        ttk.Label(
+            m2, text="p. ej. «2.º ESO» o «Tercer ciclo de Primaria». Si es de Primaria y se "
+            "reconoce el área, se usa el currículo del Decreto 61/2022 como referencia.",
+            foreground="#666", wraplength=560,
+        ).grid(row=3, column=0, columnspan=4, sticky="w", padx=6)
         ttk.Checkbutton(
             m2,
             text="El equipo de orientación ha determinado ACS para esta materia "
             "(evaluación psicopedagógica)",
             variable=self.var_acis_acs_determinada,
-        ).grid(row=2, column=0, columnspan=4, sticky="w", padx=6, pady=(4, 6))
+        ).grid(row=4, column=0, columnspan=4, sticky="w", padx=6, pady=(4, 6))
 
         # --- 3. Perfil de accesibilidad -------------------------- #
         m3 = ttk.LabelFrame(raiz_scroll, text="3. Perfil de accesibilidad (referencia mientras editas)")
@@ -443,26 +459,41 @@ class Aplicacion(_Raiz):
         sub = ttk.Notebook(raiz_scroll)
         sub.grid(row=4, column=0, sticky="ew", pady=4)
         self.acis_txt: dict[str, tk.Text] = {}
+        self.acis_orient: dict[str, tk.Text] = {}
         apartados = [
-            ("competencias", "Competencias"),
-            ("criterios_evaluacion", "Criterios"),
-            ("contenidos", "Contenidos"),
-            ("instrumentos", "Instrumentos"),
-            ("metodologia", "Metodología"),
-            ("unidades", "Unidades"),
-            ("secuenciacion", "Secuenciación"),
+            ("competencias", "Competencias", True),
+            ("criterios_evaluacion", "Criterios", True),
+            ("contenidos", "Contenidos", True),
+            ("instrumentos", "Instrumentos", True),
+            ("metodologia", "Metodología", True),
+            ("unidades", "Unidades", False),
+            ("secuenciacion", "Secuenciación", False),
         ]
-        for clave, etiqueta in apartados:
+        for clave, etiqueta, con_orientacion in apartados:
             f = ttk.Frame(sub, padding=4)
-            f.rowconfigure(1, weight=1)
             f.columnconfigure(0, weight=1)
-            pista = {
-                "competencias": "Se mantienen las de la materia. Escribe aquí solo si se adapta alguna (excepcional).",
-                "secuenciacion": "Una unidad por línea, con el trimestre tras una barra:  UD 1. Título | 1er trimestre",
-            }.get(clave, "Lo que quede vacío saldrá como «[PENDIENTE — lo determina el equipo docente]».")
-            ttk.Label(f, text=pista, foreground="#666", wraplength=560).grid(row=0, column=0, sticky="w")
+            fila = 0
+            if con_orientacion:
+                ttk.Label(f, text="Orientación (no entra en el documento):",
+                          foreground="#666").grid(row=fila, column=0, sticky="w")
+                orient = self._texto_con_scroll(f, height=6, state="disabled", background="#f4f4f4")
+                orient._marco.grid(row=fila + 1, column=0, sticky="nsew", pady=(2, 6))
+                self.acis_orient[clave] = orient
+                ttk.Label(f, text="Tu adaptación:", foreground="#666").grid(
+                    row=fila + 2, column=0, sticky="w")
+                fila += 3
+            else:
+                pista = {
+                    "secuenciacion": "Una unidad por línea, con el trimestre tras una barra:  "
+                    "UD 1. Título | 1er trimestre",
+                }.get(clave, "Lo que quede vacío saldrá como «[PENDIENTE — lo determina el "
+                      "equipo docente]».")
+                ttk.Label(f, text=pista, foreground="#666", wraplength=560).grid(
+                    row=fila, column=0, sticky="w")
+                fila += 1
+            f.rowconfigure(fila, weight=1)
             t = self._texto_con_scroll(f, height=6)
-            t._marco.grid(row=1, column=0, sticky="nsew", pady=(2, 0))
+            t._marco.grid(row=fila, column=0, sticky="nsew", pady=(2, 0))
             self.acis_txt[clave] = t
             sub.add(f, text=f"  {etiqueta}  ")
 
@@ -500,6 +531,38 @@ class Aplicacion(_Raiz):
         texto = "\n".join(f"• {n}" for n in necesidades)
         self._acis_fijar_texto(self.acis_txt_necesidades, texto or
                                "Elige una categoría para ver las necesidades funcionales asociadas.")
+        self._acis_orientar()
+
+    def _acis_leer_una(self, ruta: str):
+        """Lee una programación; devuelve None si la ruta está vacía, no existe
+        o la estructura no se reconoce (para no bloquear las orientaciones)."""
+        ruta = (ruta or "").strip()
+        if not ruta or not os.path.isfile(ruta):
+            return None
+        try:
+            return leer_programacion(ruta)
+        except Exception:  # noqa: BLE001
+            return None
+
+    def _acis_orientar(self) -> None:
+        """Rellena los paneles de «Orientación» de cada apartado."""
+        if not getattr(self, "acis_orient", None):
+            return
+        prog_materia = self._acis_leer_una(self.var_acis_prog_materia.get())
+        prog_destino = self._acis_leer_una(self.var_acis_prog_destino.get())
+        if prog_materia is None and prog_destino is None:
+            return
+        claves = claves_de_categoria(self.var_acis_categoria.get())
+        try:
+            textos = _acis_orientaciones(
+                prog_materia, prog_destino,
+                self.var_acis_nivel.get().strip(), claves,
+            )
+        except Exception as exc:  # noqa: BLE001
+            self._log(f"ACIS: no se pudieron generar las orientaciones ({exc}).")
+            return
+        for clave, widget in self.acis_orient.items():
+            self._acis_fijar_texto(widget, textos.get(clave, ""))
 
     def _acis_leer_programaciones(self) -> None:
         ruta_destino = self.var_acis_prog_destino.get().strip()
@@ -526,10 +589,11 @@ class Aplicacion(_Raiz):
         self._acis_fijar_texto(self.acis_txt["instrumentos"], materia.instrumentos)
         if prog.materia and not self.var_acis_materia.get():
             self.var_acis_materia.set(prog.materia)
+        self._acis_orientar()
         self._log(
             f"ACIS: leída la programación destino ({len(prog.competencias)} competencias, "
             f"{len(prog.saberes_basicos)} bloques, {len(prog.instrumentos)} instrumentos). "
-            "Revisa y edita los apartados antes de generar."
+            "Revisa las orientaciones y edita los apartados antes de generar."
         )
 
     def _acis_generar(self) -> None:

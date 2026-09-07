@@ -138,6 +138,11 @@ Comunidad de Madrid, para copiarlo después en Raíces.
 - Un **perfil de accesibilidad** (necesidades funcionales no clínicas, con
   atajos por categoría de necesidad educativa) sirve de referencia al editar.
   Está en `core/acis.json` y se puede cambiar sin programar.
+- Cada apartado muestra un panel de **Orientación** (solo lectura, no entra en
+  el documento): qué pide el anexo, los criterios/contenidos del curso destino
+  y, si el nivel objetivo es de Primaria, el currículo oficial de Primaria
+  (Decreto 61/2022, `core/curriculo_primaria.json`), más recomendaciones de
+  metodología e instrumentos según el perfil marcado.
 - La ACIS está reservada al alumnado con necesidades educativas especiales cuya
   adaptación significativa haya determinado el equipo de orientación. La casilla
   correspondiente debe marcarse; si no, se avisa.
