@@ -75,25 +75,34 @@ def materia_desde_programacion(prog, base: "MateriaACIS | None" = None) -> "Mate
 
     bloques_cri: list[str] = []
     for c in getattr(prog, "competencias", []):
+        if not c.criterios:
+            continue
         cabecera = f"Competencia específica {c.numero}".strip()
         if c.texto:
             cabecera += f" — {c.texto}"
-        lineas = [cabecera]
-        for cod, txt in c.criterios:
-            lineas.append(f"  {cod} {txt}".rstrip())
+        lineas = [cabecera] + [f"  {cod} {txt}".rstrip() for cod, txt in c.criterios]
         bloques_cri.append("\n".join(lineas))
-    materia.criterios_evaluacion = "\n\n".join(bloques_cri)
+    if bloques_cri:
+        materia.criterios_evaluacion = "\n\n".join(bloques_cri)
+    elif getattr(prog, "criterios", None):
+        materia.criterios_evaluacion = "\n".join(
+            f"{cod} {txt}".strip() for cod, txt in prog.criterios)
 
-    bloques_con: list[str] = []
-    for bloque, items in getattr(prog, "saberes_basicos", {}).items():
-        lineas = [bloque] + [f"  − {it}" for it in items]
-        bloques_con.append("\n".join(lineas))
-    materia.contenidos = "\n\n".join(bloques_con)
+    bloques_con = ["\n".join([bloque] + [f"  − {it}" for it in items])
+                   for bloque, items in getattr(prog, "saberes_basicos", {}).items()]
+    if bloques_con:
+        materia.contenidos = "\n\n".join(bloques_con)
+    elif getattr(prog, "contenidos_texto", ""):
+        materia.contenidos = prog.contenidos_texto
 
-    materia.instrumentos = "\n".join(
-        f"{elem}: {inst}" if elem else inst
-        for elem, inst in getattr(prog, "instrumentos", [])
-    )
+    pares = getattr(prog, "instrumentos", [])
+    if pares:
+        materia.instrumentos = "\n".join(f"{e}: {i}" if e else i for e, i in pares)
+    elif getattr(prog, "instrumentos_texto", ""):
+        materia.instrumentos = prog.instrumentos_texto
+
+    if getattr(prog, "metodologia", ""):
+        materia.metodologia = prog.metodologia
     return materia
 
 

@@ -14,6 +14,11 @@
   esperada, se avisa pero las orientaciones se muestran igual. No entra en el
   documento.
 - Nuevo campo **«Nivel de competencia objetivo»** en la pestaña ACIS.
+- **El lector de programaciones ya no exige una estructura concreta.** Además
+  de la tabla habitual, busca los títulos estándar de LOMLOE («Competencias
+  específicas», «Criterios de evaluación», «Contenidos» o «Saberes básicos»,
+  «Instrumentos de evaluación», «Metodología») en encabezados, párrafos o
+  tablas y recoge lo que va debajo. Solo avisa si no encuentra ninguno.
 - `core/curriculo_eso.json` (21 materias del Anexo II del Decreto 65/2022) y
   `core/curriculo_primaria.json` (7 áreas × 3 ciclos del Anexo II del Decreto
   61/2022), texto oficial editable + herramientas de extracción en

@@ -170,9 +170,9 @@ def orientaciones(
     ref_eso = _texto_eso(nombre, ce, textos)
     ref_primaria = _texto_primaria(nombre, nivel_objetivo, textos, cp)
 
-    # Referencia del curso destino (si la programación se ha podido leer)
-    ref_dest_cri = ref_dest_con = ref_dest_ins = ""
-    if prog_destino is not None and getattr(prog_destino, "competencias", None) is not None:
+    # Referencia del curso destino (lo que se haya podido leer de su programación)
+    ref_dest_cri = ref_dest_con = ref_dest_ins = ref_dest_met = ""
+    if prog_destino is not None:
         destino = materia_desde_programacion(prog_destino)
         enc = o["encabezado_referencia_destino"]
         if destino.criterios_evaluacion:
@@ -181,12 +181,15 @@ def orientaciones(
             ref_dest_con = f"{enc}\n{destino.contenidos}"
         if destino.instrumentos:
             ref_dest_ins = f"{enc}\n{destino.instrumentos}"
+        if destino.metodologia:
+            ref_dest_met = f"{enc}\n{destino.metodologia}"
 
     return {
         "competencias": _juntar(o["competencias"], bloque_comps, ref_eso),
         "criterios_evaluacion": _juntar(o["criterios_evaluacion"], ref_dest_cri, ref_primaria, ref_eso),
         "contenidos": _juntar(o["contenidos"], ref_dest_con, ref_primaria, ref_eso),
-        "metodologia": _juntar(o["metodologia"], _recomendaciones(necesidades, "metodologia", textos)),
+        "metodologia": _juntar(o["metodologia"], ref_dest_met,
+                               _recomendaciones(necesidades, "metodologia", textos)),
         "instrumentos": _juntar(o["instrumentos"], ref_dest_ins,
                                 _recomendaciones(necesidades, "instrumentos", textos)),
     }

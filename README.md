@@ -131,10 +131,12 @@ La pestaña **«Adaptación curricular (ACIS)»** genera un borrador del **Anexo
 III.b** (adaptación curricular individualizada y significativa) de la ESO en la
 Comunidad de Madrid, para copiarlo después en Raíces.
 
-- Se adjuntan dos programaciones didácticas (`.docx`): la de la materia y la
-  del **curso al que se adapta**. La app lee la del curso destino y vuelca sus
-  criterios de evaluación, contenidos e instrumentos como punto de partida
-  editable.
+- Opcionalmente se adjuntan una o dos programaciones didácticas (`.docx`): la
+  de la materia y la del **curso al que se adapta**. La app las lee sin exigir
+  un formato concreto (busca los títulos estándar de LOMLOE), y vuelca los
+  criterios, contenidos e instrumentos del curso destino como punto de partida
+  editable. Sin programación, las orientaciones se generan igual desde el
+  currículo oficial.
 - Un **perfil de accesibilidad** (necesidades funcionales no clínicas, con
   atajos por categoría de necesidad educativa) sirve de referencia al editar.
   Está en `core/acis.json` y se puede cambiar sin programar.

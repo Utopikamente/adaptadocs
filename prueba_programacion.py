@@ -103,14 +103,45 @@ def main() -> int:
     if prog.instrumentos != [("Listening", "Prueba escrita"), ("Writing", "Rúbrica")]:
         fallos.append(f"instrumentos = {prog.instrumentos}")
 
-    # --- Programación sin la estructura esperada -------------------- #
-    ruta_mala = os.path.join(trabajo, "sin_tablas.docx")
+    # --- Programación en otro formato (títulos + prosa, sin la tabla) --- #
+    ruta_prosa = os.path.join(trabajo, "prosa.docx")
     d = Document()
-    d.add_paragraph("Programación en prosa, sin tablas de competencias.")
+    d.add_paragraph("4. COMPETENCIAS ESPECÍFICAS")
+    d.add_paragraph("1. Comprender textos orales y escritos sencillos para responder a necesidades.")
+    d.add_paragraph("2. Producir textos escritos con una organización clara.")
+    d.add_paragraph("5. CRITERIOS DE EVALUACIÓN")
+    d.add_paragraph("1.1. Extraer el sentido global de textos claros.")
+    d.add_paragraph("1.2. Interpretar textos progresivamente más complejos.")
+    d.add_paragraph("2.1. Redactar textos breves y coherentes.")
+    d.add_paragraph("6. CONTENIDOS")
+    d.add_paragraph("A. Comunicación")
+    d.add_paragraph("- Estrategias de comprensión y producción.")
+    d.add_paragraph("- Funciones: saludar, describir, narrar.")
+    d.add_paragraph("7. INSTRUMENTOS DE EVALUACIÓN Y CRITERIOS DE CALIFICACIÓN")
+    d.add_paragraph("Pruebas escritas 60 %, trabajos 30 %, actitud 10 %.")
+    d.add_paragraph("8. METODOLOGÍA")
+    d.add_paragraph("Enfoque comunicativo, trabajo por tareas y agrupamientos flexibles.")
+    d.save(ruta_prosa)
+    p2 = leer_programacion(ruta_prosa)
+    if len(p2.competencias) != 2:
+        fallos.append(f"prosa: competencias = {len(p2.competencias)} (esperado 2)")
+    if [c for c, _ in p2.criterios] != ["1.1.", "1.2.", "2.1."]:
+        fallos.append(f"prosa: criterios = {[c for c, _ in p2.criterios]}")
+    if "A. Comunicación" not in p2.saberes_basicos:
+        fallos.append("prosa: no detecta el bloque de contenidos «A. Comunicación»")
+    if "60 %" not in p2.instrumentos_texto:
+        fallos.append("prosa: no recoge los instrumentos / criterios de calificación")
+    if "agrupamientos flexibles" not in p2.metodologia:
+        fallos.append("prosa: no recoge la metodología")
+
+    # --- Documento sin ningún apartado curricular ------------------ #
+    ruta_mala = os.path.join(trabajo, "sin_apartados.docx")
+    d = Document()
+    d.add_paragraph("Un documento cualquiera sin apartados de programación.")
     d.save(ruta_mala)
     try:
         leer_programacion(ruta_mala)
-        fallos.append("una programación sin tablas debería lanzar ProgramacionNoReconocida")
+        fallos.append("un documento sin apartados debería lanzar ProgramacionNoReconocida")
     except ProgramacionNoReconocida:
         pass
 
