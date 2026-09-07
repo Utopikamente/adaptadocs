@@ -1,9 +1,16 @@
 # Historial de cambios
 
-## [Sin publicar]
+## [1.8.0] — 2026-09-07
 
 - **Espacio entre párrafos: 24 pt por defecto en todos los perfiles** (antes
   10–18 pt). Se puede bajar en la ventana si se necesita.
+- **ACIS: fuera el bloque de firmas** del Anexo III.b (lugar y fecha, «El
+  profesor de», Vº Bº jefatura de departamento, «Fdo.:», jefatura de
+  estudios) y la sección «Centro y firma» de la pestaña. El documento se
+  copia en Raíces; nunca se firma desde aquí. Se mantiene la nota «quedará
+  adjunta a su expediente académico».
+- ACIS: la pestaña ahora tiene barra de desplazamiento y el botón «Generar
+  borrador de ACIS» queda fijo abajo, siempre visible.
 - **Se retira el banco de pictogramas de ARASAAC.** ARASAAC ha confirmado por
   escrito que su licencia CC BY-NC-SA no permite el uso con un modelo comercial
   (suscripción, licencias de centro, funciones de pago), que la finalidad
@@ -33,7 +40,7 @@
     si no se marca, se avisa y el bloque de la materia no se genera.
   - Los apartados vacíos salen como «[PENDIENTE — lo determina el equipo
     docente]»; el documento sale marcado como BORRADOR y se genera en local
-    (no se envía a ningún servicio). Sin bloque de firmas.
+    (no se envía a ningún servicio).
   - `core/acis.py`, `core/acis.json`, `core/programacion.py`, `core/acis_ia.py`
     (adaptación con IA, aún sin conectar en la ventana), `crear_acis.py`.
 - Pruebas nuevas: `prueba_acis.py`, `prueba_programacion.py`,
