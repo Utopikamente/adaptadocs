@@ -43,7 +43,7 @@ class OpcionesAdaptacion:
 
     # Espaciado
     interlineado: float | None = 1.5
-    espacio_despues_pt: float | None = 10.0
+    espacio_despues_pt: float | None = 24.0
 
     # Disposición
     alinear_izquierda: bool = True          # convierte el texto justificado en alineado a la izquierda

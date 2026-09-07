@@ -2,6 +2,8 @@
 
 ## [Sin publicar]
 
+- **Espacio entre párrafos: 24 pt por defecto en todos los perfiles** (antes
+  10–18 pt). Se puede bajar en la ventana si se necesita.
 - **Se retira el banco de pictogramas de ARASAAC.** ARASAAC ha confirmado por
   escrito que su licencia CC BY-NC-SA no permite el uso con un modelo comercial
   (suscripción, licencias de centro, funciones de pago), que la finalidad
