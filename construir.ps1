@@ -35,6 +35,7 @@ $work = Join-Path $env:LOCALAPPDATA "adaptadocs-build"
     --version-file ".\recursos\version_info.txt" `
     --add-data "core\registro.json;core" `
     --add-data "core\acis.json;core" `
+    --add-data "core\curriculo_primaria.json;core" `
     --collect-all tkinterdnd2 `
     --collect-all anthropic `
     --collect-all keyring `
