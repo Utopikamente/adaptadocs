@@ -118,6 +118,7 @@ class Aplicacion(_Raiz):
         self.var_color = tk.StringVar(value="Amarillo")
         self.var_numerar_preguntas = tk.BooleanVar()
         self.var_espacio_respuestas = tk.IntVar(value=0)
+        self.var_enunciados_examen = tk.BooleanVar()
         self.var_registro = tk.BooleanVar()
         # IA
         self.var_ia_clave = tk.StringVar()
@@ -273,18 +274,25 @@ class Aplicacion(_Raiz):
         ttk.Spinbox(marco_esp, from_=0, to=20, width=4,
                     textvariable=self.var_espacio_respuestas).pack(side="left", padx=6)
 
-        ttk.Separator(marco_o).grid(row=14, column=0, columnspan=2, sticky="ew", padx=8, pady=(10, 4))
+        ttk.Checkbutton(
+            marco_o,
+            text="Es un examen: tratar como pregunta también los enunciados de instrucción "
+            "(Calcula, Opera, Ordena…) y los pasos de una lista numerada",
+            variable=self.var_enunciados_examen,
+        ).grid(row=14, column=0, columnspan=2, sticky="w", padx=8, pady=(2, 0))
+
+        ttk.Separator(marco_o).grid(row=15, column=0, columnspan=2, sticky="ew", padx=8, pady=(10, 4))
         ttk.Checkbutton(
             marco_o,
             text="Generar también una hoja interna con qué se ha adaptado y por qué",
             variable=self.var_registro,
-        ).grid(row=15, column=0, columnspan=2, sticky="w", padx=8, pady=2)
+        ).grid(row=16, column=0, columnspan=2, sticky="w", padx=8, pady=2)
         ttk.Label(
             marco_o,
             text="Documento «— registro.docx» de uso interno del profesorado; no es el "
             "anexo oficial del expediente y no incluye datos del alumnado.",
             wraplength=560, foreground="#666", justify="left",
-        ).grid(row=16, column=0, columnspan=2, sticky="w", padx=8, pady=(0, 4))
+        ).grid(row=17, column=0, columnspan=2, sticky="w", padx=8, pady=(0, 4))
         return exterior
 
     def _pestana_ia(self, padre) -> ttk.Frame:
@@ -723,6 +731,7 @@ class Aplicacion(_Raiz):
         self.var_color.set(CLAVE_A_COLOR.get(o.color_resaltado, "Amarillo"))
         self.var_numerar_preguntas.set(o.numerar_preguntas)
         self.var_espacio_respuestas.set(o.espacio_respuestas)
+        self.var_enunciados_examen.set(getattr(o, "enunciados_examen", False))
 
     def _cargar_clave_guardada(self) -> None:
         guardada = claves.leer_clave()
@@ -766,6 +775,7 @@ class Aplicacion(_Raiz):
             color_resaltado=COLOR_A_CLAVE.get(self.var_color.get(), "AMARILLO"),
             numerar_preguntas=self.var_numerar_preguntas.get(),
             espacio_respuestas=int(self.var_espacio_respuestas.get()),
+            enunciados_examen=self.var_enunciados_examen.get(),
         )
 
     def _recoger_opciones_ia(self) -> OpcionesIA | None:

@@ -2,6 +2,13 @@
 
 ## [Sin publicar]
 
+- **Espacio para responder en exámenes.** Nueva casilla en la pestaña Formato:
+  «Es un examen». Con ella, la opción «Líneas para responder» deja hueco no
+  solo tras los párrafos que acaban en «?», sino también tras los enunciados
+  que empiezan por un verbo de instrucción (Calcula, Opera, Ordena, Convierte,
+  Extrae…) y tras cada paso de una lista numerada. Así, si la IA divide una
+  pregunta en pasos, cada paso tiene su espacio. `cli.py`: `--enunciados-examen`.
+
 - **Las pestañas Formato y Contenido con IA ya tienen barra de
   desplazamiento.** En pantallas pequeñas se cortaban por abajo (p. ej. no se
   llegaba al campo «Resaltar palabras»). Ahora las tres pestañas se

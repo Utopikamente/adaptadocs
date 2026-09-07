@@ -65,6 +65,10 @@ class OpcionesAdaptacion:
     # Preguntas de examen/ficha: se detectan los párrafos que terminan en «?».
     numerar_preguntas: bool = False   # renumera esos párrafos como lista numerada
     espacio_respuestas: int = 0       # líneas en blanco tras cada pregunta (0 = ninguna)
+    # Si es un examen, tratar también como pregunta los enunciados que empiezan
+    # por un verbo de instrucción (Calcula, Opera, Ordena…) y los pasos de una
+    # lista numerada, para dejar hueco de respuesta tras cada uno.
+    enunciados_examen: bool = False
 
     def copia(self) -> "OpcionesAdaptacion":
         return deepcopy(self)
@@ -177,7 +181,20 @@ _VERBOS_INSTRUCCION = {
     "identifica", "señala", "senala", "indica", "busca", "corrige", "comprueba",
     "repite", "suma", "resta", "multiplica", "divide", "traza", "rellena",
     "contesta", "responde", "explica", "describe", "nombra", "enumera",
+    "opera", "convierte", "simplifica", "extrae", "expresa", "halla",
+    "representa", "factoriza", "desarrolla", "demuestra", "razona", "justifica",
+    "deduce", "transforma", "escribe",
 }
+
+_RE_PREFIJO_ITEM = re.compile(r"^\s*(?:\d+|[a-zA-Z])[.)]\s+")
+
+
+def _empieza_por_instruccion(texto: str) -> bool:
+    """El párrafo empieza por un verbo de instrucción (admite un «1.» o «a)»
+    delante)."""
+    t = _RE_PREFIJO_ITEM.sub("", texto.strip())
+    primera = re.split(r"[^0-9A-Za-zÁÉÍÓÚÑáéíóúñ]+", t, maxsplit=1)[0].lower()
+    return primera in _VERBOS_INSTRUCCION
 
 
 def _re_marca_pasos(marca: str) -> re.Pattern:
@@ -356,7 +373,15 @@ def _procesar_preguntas(doc, o: OpcionesAdaptacion) -> dict:
         if _es_titulo(parrafo):
             continue
         texto = parrafo.text.strip()
-        if not texto or not _es_pregunta(texto):
+        if not texto:
+            continue
+
+        es_pregunta = _es_pregunta(texto)
+        es_paso = "number" in (parrafo.style.name or "").lower()
+        es_enunciado = es_pregunta or (
+            o.enunciados_examen and (_empieza_por_instruccion(texto) or es_paso)
+        )
+        if not es_enunciado:
             continue
 
         if o.espacio_respuestas > 0:
@@ -365,7 +390,7 @@ def _procesar_preguntas(doc, o: OpcionesAdaptacion) -> dict:
                 ancla = _nuevo_parrafo_despues(ancla, "", None)
             resumen["preguntas_con_espacio"] += 1
 
-        if o.numerar_preguntas:
+        if o.numerar_preguntas and es_pregunta:
             try:
                 parrafo.style = doc.styles["List Number"]
                 resumen["preguntas_numeradas"] += 1

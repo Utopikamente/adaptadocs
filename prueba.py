@@ -158,6 +158,29 @@ def main() -> int:
             f"({len(d_preg_esp.paragraphs)} párrafos, esperado {parrafos_antes + 4})"
         )
 
+    # --- Enunciados de examen (Calcula, Opera, Ordena…) ------------- #
+    ex = Document()
+    ex.add_paragraph("Nota: justifica todos los pasos.")
+    ex.add_paragraph("Calcula el resultado de la operación.")
+    ex.add_paragraph("1. Opera y simplifica la expresión.")
+    ex.add_paragraph("Ordena de menor a mayor los siguientes números.")
+    ruta_ex = os.path.join(trabajo, "examen.docx")
+    ex.save(ruta_ex)
+
+    d_ex_off = Document(ruta_ex)
+    if aplicar_formato(d_ex_off, OpcionesAdaptacion(espacio_respuestas=3))["preguntas_con_espacio"] != 0:
+        fallos.append("sin 'enunciados_examen', los enunciados sin «?» no deberían llevar hueco")
+
+    d_ex = Document(ruta_ex)
+    r_ex = aplicar_formato(d_ex, OpcionesAdaptacion(espacio_respuestas=3, enunciados_examen=True))
+    if r_ex["preguntas_con_espacio"] != 3:
+        fallos.append(
+            f"enunciados_examen: preguntas_con_espacio = {r_ex['preguntas_con_espacio']} (esperado 3)"
+        )
+    textos_ex = [p.text for p in d_ex.paragraphs]
+    if textos_ex.count("") < 9:
+        fallos.append(f"enunciados_examen: faltan líneas de respuesta (vacías={textos_ex.count('')})")
+
     # --- El original no se toca ------------------------------------- #
     if _aprox(Document(origen).sections[0].left_margin.cm, 3.0):
         fallos.append("¡el documento original ha sido modificado!")

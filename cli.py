@@ -58,6 +58,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--espacio-respuestas", type=int, default=0,
                         help="Líneas en blanco a insertar tras cada pregunta detectada "
                         "para que el alumnado responda (0 = ninguna)")
+    parser.add_argument("--enunciados-examen", action="store_true",
+                        help="Tratar como pregunta también los enunciados que empiezan por "
+                        "un verbo de instrucción (Calcula, Opera, Ordena…) y los pasos de "
+                        "una lista numerada, para dejarles hueco de respuesta")
     parser.add_argument("--registro", action="store_true",
                         help="Generar, junto al documento adaptado, una hoja interna "
                         "«— registro.docx» con qué adaptaciones se han aplicado y su marco legal")
@@ -79,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
     opciones.separar_en_pasos = args.separar_pasos
     opciones.numerar_preguntas = args.numerar_preguntas
     opciones.espacio_respuestas = args.espacio_respuestas
+    opciones.enunciados_examen = args.enunciados_examen
     if args.resaltar:
         opciones.resaltar_palabras = [p.strip() for p in args.resaltar.split(",") if p.strip()]
         opciones.color_resaltado = args.color
