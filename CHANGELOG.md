@@ -1,9 +1,10 @@
 # Historial de cambios
 
-## [Sin publicar]
+## [1.7.0] — 2026-09-07
 
-- **Nueva pestaña «Adaptación curricular (ACIS)»**: genera un borrador del
-  Anexo III.b (adaptación curricular individualizada y significativa) de ESO.
+- **Nueva pestaña «Adaptación curricular (ACIS)»** (en pruebas): genera un
+  borrador del Anexo III.b (adaptación curricular individualizada y
+  significativa) de ESO para copiarlo en Raíces.
   - Se adjuntan dos programaciones didácticas (.docx): la de la materia y la
     del curso al que se adapta. La app lee la del curso destino y vuelca sus
     criterios de evaluación, contenidos e instrumentos como punto de partida
@@ -15,7 +16,7 @@
     si no se marca, se avisa y el bloque de la materia no se genera.
   - Los apartados vacíos salen como «[PENDIENTE — lo determina el equipo
     docente]»; el documento sale marcado como BORRADOR y se genera en local
-    (no se envía a ningún servicio).
+    (no se envía a ningún servicio). Sin bloque de firmas.
   - `core/acis.py`, `core/acis.json`, `core/programacion.py`, `core/acis_ia.py`
     (adaptación con IA, aún sin conectar en la ventana), `crear_acis.py`.
 - Pruebas nuevas: `prueba_acis.py`, `prueba_programacion.py`,
