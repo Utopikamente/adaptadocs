@@ -19,11 +19,15 @@ from core.acis import (
     materia_desde_programacion,
 )
 from core.acis_ia import (
+    OpcionesAdaptacionCurricular,
+    adaptar_programacion,
     categorias_necesidades,
     claves_de_categoria,
     expandir_categoria,
+    resultado_a_materia,
 )
 from core.acis_orientaciones import orientaciones as _acis_orientaciones
+from core.acis_orientaciones import texto_referencia as _acis_texto_referencia
 from core.ia import MODELOS, MODELO_POR_DEFECTO, NIVELES, NIVEL_POR_DEFECTO, OpcionesIA
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 from core.pipeline import adaptar_documento_completo
@@ -444,9 +448,13 @@ class Aplicacion(_Raiz):
         ttk.Button(m1, text="Examinar…",
                    command=lambda: self._acis_elegir(self.var_acis_prog_destino)).grid(
             row=1, column=2, padx=6, pady=4)
-        ttk.Button(m1, text="Leer y volcar el curso destino ▸",
-                   command=self._acis_leer_programaciones).grid(
-            row=2, column=1, sticky="e", pady=(2, 6))
+        botonera = ttk.Frame(m1)
+        botonera.grid(row=2, column=0, columnspan=3, sticky="e", pady=(2, 6))
+        ttk.Button(botonera, text="Leer y volcar",
+                   command=self._acis_leer_programaciones).pack(side="left", padx=(0, 6))
+        self.boton_acis_ia = ttk.Button(botonera, text="Generar ACIS con IA ▸",
+                                        command=self._acis_ia_generar)
+        self.boton_acis_ia.pack(side="left")
 
         # --- 2. Materia ------------------------------------------- #
         m2 = ttk.LabelFrame(raiz_scroll, text="2. Materia")
@@ -650,6 +658,93 @@ class Aplicacion(_Raiz):
             f"ACIS: leída la programación destino ({len(prog.competencias)} competencias, "
             f"{len(prog.criterios)} criterios). Unidades: {len(uds)}. "
             "Revisa las orientaciones y edita los apartados antes de generar."
+        )
+
+    def _acis_ia_generar(self) -> None:
+        """Envía la programación de la materia a Claude y rellena los apartados
+        con el borrador de ACIS adaptado al nivel y al perfil del alumno."""
+        if self._procesando:
+            return
+        prog = self._acis_leer_una(self.var_acis_prog_materia.get())
+        if prog is None or not (prog.competencias or prog.criterios):
+            messagebox.showerror(
+                "Falta la programación de la materia",
+                "Adjunta la programación de la materia (el curso actual del alumno). "
+                "Es de donde salen las competencias y los criterios que se adaptan.",
+            )
+            return
+        nivel = self.var_acis_nivel.get().strip()
+        if not nivel and not messagebox.askyesno(
+            "Sin nivel objetivo",
+            "No has indicado el «Nivel de competencia objetivo». La IA adaptará sin ese "
+            "dato.\n\n¿Continuar?",
+        ):
+            return
+        clave = self.var_ia_clave.get().strip() or claves.leer_clave()
+        if not clave:
+            messagebox.showerror(
+                "Falta la clave de API",
+                "Guarda tu clave de API de Anthropic en la pestaña «Contenido con IA».",
+            )
+            return
+        if not messagebox.askyesno(
+            "Enviar a la IA",
+            "La programación de la materia se enviará a Anthropic (Claude) para generar "
+            "el borrador de ACIS. No se envían datos del alumno.\n\n¿Continuar?",
+        ):
+            return
+
+        nombre = self.var_acis_materia.get().strip() or prog.materia
+        necesidades = expandir_categoria(self.var_acis_categoria.get())
+        try:
+            referencia = _acis_texto_referencia(nombre, nivel)
+        except Exception:  # noqa: BLE001
+            referencia = ""
+        opciones = OpcionesAdaptacionCurricular(
+            nivel_objetivo=nivel, necesidades=necesidades,
+            referencia_curriculo=referencia,
+            modelo=MODELO_A_ID.get(self.var_ia_modelo.get(), "claude-opus-5"),
+        )
+
+        self._procesando = True
+        self.boton_acis_ia.configure(state="disabled", text="Generando…")
+        self._log("─" * 40)
+        threading.Thread(
+            target=self._acis_ia_trabajo, args=(prog, opciones, clave), daemon=True,
+        ).start()
+
+    def _acis_ia_trabajo(self, prog, opciones, clave) -> None:
+        registrar = lambda m: self._cola.put(("log", m))  # noqa: E731
+        try:
+            resultado = adaptar_programacion(prog, opciones, api_key=clave, registrar=registrar)
+            self._cola.put(("acis_ia_ok", (prog, resultado)))
+        except Exception as exc:  # noqa: BLE001
+            self._cola.put(("acis_ia_error", str(exc)))
+
+    def _acis_ia_aplicar(self, prog, resultado: dict) -> None:
+        materia = resultado_a_materia(prog, resultado)
+        campos = {
+            "competencias": materia.competencias,
+            "criterios_evaluacion": materia.criterios_evaluacion,
+            "contenidos": materia.contenidos,
+            "metodologia": materia.metodologia,
+            "instrumentos": materia.instrumentos,
+            "unidades": materia.unidades,
+        }
+        for clave, texto in campos.items():
+            if texto:
+                self._acis_fijar_texto(self.acis_txt[clave], texto)
+        if materia.secuenciacion:
+            self._acis_fijar_texto(
+                self.acis_txt["secuenciacion"],
+                "\n".join(f"{t} | {p}" if p else t for t, p in materia.secuenciacion),
+            )
+        for aviso in resultado.get("avisos", []):
+            self._log(f"  AVISO: {aviso}")
+        uso = resultado.get("_uso") or {}
+        self._log(
+            "ACIS con IA: apartados rellenados. Revísalos y edítalos antes de generar el "
+            f".docx. Tokens: {uso.get('entrada', 0)} entrada / {uso.get('salida', 0)} salida."
         )
 
     def _acis_generar(self) -> None:
@@ -951,6 +1046,17 @@ class Aplicacion(_Raiz):
                     self._log(f"ERROR: {carga}")
                     self._fin()
                     messagebox.showerror("No se pudo adaptar", str(carga))
+                elif tipo == "acis_ia_ok":
+                    prog, resultado = carga
+                    self._fin()
+                    try:
+                        self._acis_ia_aplicar(prog, resultado)
+                    except Exception as exc:  # noqa: BLE001
+                        self._log(f"ERROR al volcar el resultado: {exc}")
+                elif tipo == "acis_ia_error":
+                    self._log(f"ERROR: {carga}")
+                    self._fin()
+                    messagebox.showerror("No se pudo generar la ACIS con IA", str(carga))
         except queue.Empty:
             pass
         self.after(100, self._vaciar_cola)
@@ -958,6 +1064,8 @@ class Aplicacion(_Raiz):
     def _fin(self) -> None:
         self._procesando = False
         self.boton.configure(state="normal", text="Adaptar documento")
+        if hasattr(self, "boton_acis_ia"):
+            self.boton_acis_ia.configure(state="normal", text="Generar ACIS con IA ▸")
 
     @staticmethod
     def _abrir_carpeta(ruta: str) -> None:

@@ -145,6 +145,12 @@ Comunidad de Madrid, para copiarlo después en Raíces.
   y, si el nivel objetivo es de Primaria, el currículo oficial de Primaria
   (Decreto 61/2022, `core/curriculo_primaria.json`), más recomendaciones de
   metodología e instrumentos según el perfil marcado.
+- Botón **«Generar ACIS con IA»** (opcional, con clave de API): a partir de la
+  programación de la materia, el nivel objetivo, el perfil y el currículo
+  oficial, Claude devuelve el borrador completo (competencias reformuladas a
+  ese nivel, criterios, contenidos, metodología, instrumentos y criterios de
+  calificación, y cada unidad adaptada) y rellena los apartados. El alumno
+  sigue en su curso; se adapta su programación. Todo es revisable.
 - La ACIS está reservada al alumnado con necesidades educativas especiales cuya
   adaptación significativa haya determinado el equipo de orientación. La casilla
   correspondiente debe marcarse; si no, se avisa.

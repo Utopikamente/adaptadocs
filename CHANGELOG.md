@@ -2,6 +2,20 @@
 
 ## [Sin publicar]
 
+- **Botón «Generar ACIS con IA»** en la pestaña ACIS. A partir de la
+  programación de la materia + el nivel de competencia objetivo + el perfil de
+  accesibilidad + el currículo oficial de referencia (ESO y, si baja a
+  Primaria y se reconoce el área, Primaria), Claude devuelve el borrador
+  completo: competencias específicas **reformuladas** a ese nivel (sin
+  eliminar ninguna), sus criterios de evaluación adaptados, contenidos por
+  bloque, metodología (apoyos, agrupamientos, temporalización), instrumentos
+  de evaluación y criterios de calificación, y cada unidad de la programación
+  con su adaptación. El alumno **sigue matriculado en su curso**; la ACIS hace
+  su programación accesible a su nivel y a su perfil. Rellena los apartados de
+  la pestaña; el docente revisa y edita antes de «Generar borrador de ACIS».
+  Usa la clave de API de la pestaña «Contenido con IA». `core/acis_ia.py`
+  ampliado; `prueba_acis_ia_api.py` hace la llamada real.
+
 - **Espacio para responder en exámenes.** Nueva casilla en la pestaña Formato:
   «Es un examen». Con ella, la opción «Líneas para responder» deja hueco no
   solo tras los párrafos que acaban en «?», sino también tras los enunciados

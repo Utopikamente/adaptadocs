@@ -125,6 +125,17 @@ def _texto_primaria(nombre, nivel_objetivo, textos, curriculo) -> str:
     return f"{cab}\n{_recortar(trozo, 'core/curriculo_primaria.json')}"
 
 
+def texto_referencia(nombre_materia: str, nivel_objetivo: str) -> str:
+    """Texto del currículo oficial para pasar a la IA: el de la materia en ESO
+    y, si el nivel baja a Primaria y se reconoce el área, el de Primaria."""
+    textos = cargar_textos()
+    trozos = [
+        _texto_eso(nombre_materia, cargar_curriculo_eso(), textos),
+        _texto_primaria(nombre_materia, nivel_objetivo, textos, cargar_curriculo_primaria()),
+    ]
+    return "\n\n".join(t for t in trozos if t)
+
+
 def _recomendaciones(necesidades, campo, textos) -> str:
     recs = textos.get("perfil_accesibilidad", {}).get("recomendaciones", {})
     lineas = [f"- {recs[c][campo]}" for c in (necesidades or [])

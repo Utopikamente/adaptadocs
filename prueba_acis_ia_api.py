@@ -23,6 +23,7 @@ from core.acis_ia import (
     expandir_categoria,
     resultado_a_materia,
 )
+from core.acis_orientaciones import texto_referencia
 from core.claves import leer_clave
 from core.programacion import leer_programacion
 
@@ -47,14 +48,16 @@ def main(argv: list[str] | None = None) -> int:
 
     prog = leer_programacion(ruta_prog)
     print(f"Programación: {len(prog.competencias)} competencias, "
-          f"{len(prog.saberes_basicos)} bloques de saberes, "
-          f"{len(prog.instrumentos)} instrumentos.")
+          f"{len(prog.criterios)} criterios sueltos, {len(prog.unidades)} unidades.")
 
     if necesidades:
         print(f"Perfil de accesibilidad ({categoria}): {len(necesidades)} necesidades funcionales.")
+    referencia = texto_referencia(prog.materia, nivel)
+    print(f"Currículo oficial de referencia: {len(referencia)} caracteres.")
     resultado = adaptar_programacion(
         prog,
-        OpcionesAdaptacionCurricular(nivel_objetivo=nivel, necesidades=necesidades),
+        OpcionesAdaptacionCurricular(nivel_objetivo=nivel, necesidades=necesidades,
+                                     referencia_curriculo=referencia),
         api_key=clave,
         registrar=print,
     )
