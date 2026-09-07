@@ -545,18 +545,19 @@ class Aplicacion(_Raiz):
             return None
 
     def _acis_orientar(self) -> None:
-        """Rellena los paneles de «Orientación» de cada apartado."""
+        """Rellena los paneles de «Orientación» de cada apartado. Siempre
+        produce algo: con solo el nombre de la materia y el nivel ya basta."""
         if not getattr(self, "acis_orient", None):
             return
         prog_materia = self._acis_leer_una(self.var_acis_prog_materia.get())
         prog_destino = self._acis_leer_una(self.var_acis_prog_destino.get())
-        if prog_materia is None and prog_destino is None:
-            return
         claves = claves_de_categoria(self.var_acis_categoria.get())
+        nombre = self.var_acis_materia.get().strip()
         try:
             textos = _acis_orientaciones(
                 prog_materia, prog_destino,
                 self.var_acis_nivel.get().strip(), claves,
+                nombre_materia=nombre,
             )
         except Exception as exc:  # noqa: BLE001
             self._log(f"ACIS: no se pudieron generar las orientaciones ({exc}).")
@@ -575,12 +576,15 @@ class Aplicacion(_Raiz):
         except ProgramacionNoReconocida as exc:
             messagebox.showwarning(
                 "No se reconoce la estructura",
-                f"{exc}\n\nRellena los apartados a mano o revisa que la programación tenga "
-                "la tabla de competencias y criterios.",
+                f"{exc}\n\nLas orientaciones se muestran igualmente con el currículo oficial. "
+                "Los apartados los rellenas a mano, o revisa que la programación tenga la "
+                "tabla de competencias y criterios.",
             )
+            self._acis_orientar()
             return
         except Exception as exc:  # noqa: BLE001
             messagebox.showerror("No se pudo leer", str(exc))
+            self._acis_orientar()
             return
 
         materia = materia_desde_programacion(prog)

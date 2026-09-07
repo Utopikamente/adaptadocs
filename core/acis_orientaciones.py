@@ -5,42 +5,57 @@ contenidos, metodología, e instrumentos/criterios de calificación) compone un
 texto de ayuda a partir de:
 
 - el texto fijo de `acis.json` (qué pide el anexo, cómo citar el curso/ciclo),
-- lo que trae la programación del curso destino (ya está a ese nivel),
-- si el nivel objetivo es de Educación Primaria y se reconoce el área, el
-  texto oficial del currículo de Primaria (`curriculo_primaria.json`),
+- el **currículo oficial** de la materia: ESO (Decreto 65/2022) y, si el nivel
+  objetivo es de Primaria y se reconoce el área, Primaria (Decreto 61/2022),
+- lo que traiga la programación del curso destino (si se ha podido leer),
 - las recomendaciones asociadas a las necesidades del perfil de accesibilidad.
 
-No usa conexión. El resultado se muestra como ayuda; no entra en el .docx.
+Funciona con cero, una o dos programaciones. No usa conexión. El resultado se
+muestra como ayuda; no entra en el .docx.
 """
 
 from __future__ import annotations
 
 import json
 import os
-import re
 
 from .acis import cargar_textos, materia_desde_programacion
 
-_RUTA_CURRICULO = os.path.join(os.path.dirname(__file__), "curriculo_primaria.json")
+_DIR = os.path.dirname(__file__)
+_RUTA_PRIMARIA = os.path.join(_DIR, "curriculo_primaria.json")
+_RUTA_ESO = os.path.join(_DIR, "curriculo_eso.json")
 
 _CICLOS = {
     "primer ciclo": "Primer ciclo", "1er ciclo": "Primer ciclo", "1.º ciclo": "Primer ciclo",
     "segundo ciclo": "Segundo ciclo", "2.º ciclo": "Segundo ciclo",
     "tercer ciclo": "Tercer ciclo", "3er ciclo": "Tercer ciclo", "3.º ciclo": "Tercer ciclo",
 }
-_CURSO_A_CICLO = {
-    "1.º": "Primer ciclo", "2.º": "Primer ciclo",
-    "3.º": "Segundo ciclo", "4.º": "Segundo ciclo",
-    "5.º": "Tercer ciclo", "6.º": "Tercer ciclo",
-}
+_CURSO_A_CICLO = {"1.º": "Primer ciclo", "2.º": "Primer ciclo", "3.º": "Segundo ciclo",
+                  "4.º": "Segundo ciclo", "5.º": "Tercer ciclo", "6.º": "Tercer ciclo"}
+
+_LIMITE = 7000  # caracteres máximos de un trozo de currículo en el panel
+
+
+def _cargar(ruta: str, clave: str) -> dict:
+    try:
+        with open(ruta, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {clave: {}}
 
 
 def cargar_curriculo_primaria() -> dict:
-    try:
-        with open(_RUTA_CURRICULO, encoding="utf-8") as f:
-            return json.load(f)
-    except (OSError, ValueError):
-        return {"areas": {}}
+    return _cargar(_RUTA_PRIMARIA, "areas")
+
+
+def cargar_curriculo_eso() -> dict:
+    return _cargar(_RUTA_ESO, "materias")
+
+
+def _recortar(texto: str, fuente: str) -> str:
+    if len(texto) <= _LIMITE:
+        return texto
+    return texto[:_LIMITE].rstrip() + f"\n[…] Texto completo en {fuente}."
 
 
 def es_nivel_primaria(nivel_objetivo: str) -> bool:
@@ -68,10 +83,38 @@ def detectar_area_primaria(nombre_materia: str, textos: dict) -> str | None:
     return None
 
 
-def _texto_curriculo_primaria(nombre_materia, nivel_objetivo, textos, curriculo) -> str:
+def detectar_materia_eso(nombre_materia: str, curriculo_eso: dict) -> str | None:
+    bajo = (nombre_materia or "").lower()
+    if not bajo:
+        return None
+    materias = list(curriculo_eso.get("materias", {}))
+    # coincidencia por palabras clave de la clave oficial
+    for clave in materias:
+        palabras = [p for p in clave.lower().replace(",", " ").split() if len(p) > 3
+                    and p not in ("y", "de", "la", "en")]
+        if palabras and any(p in bajo for p in palabras):
+            return clave
+    return None
+
+
+def _texto_eso(nombre, curriculo_eso, textos) -> str:
+    clave = detectar_materia_eso(nombre, curriculo_eso)
+    if not clave:
+        return ""
+    trozo = curriculo_eso.get("materias", {}).get(clave, "")
+    if not trozo:
+        return ""
+    cab = textos["orientaciones"].get(
+        "encabezado_referencia_eso",
+        "Currículo oficial de ESO (Decreto 65/2022, Anexo II) — {materia}:",
+    ).format(materia=clave)
+    return f"{cab}\n{_recortar(trozo, 'core/curriculo_eso.json')}"
+
+
+def _texto_primaria(nombre, nivel_objetivo, textos, curriculo) -> str:
     if not es_nivel_primaria(nivel_objetivo):
         return ""
-    area = detectar_area_primaria(nombre_materia, textos)
+    area = detectar_area_primaria(nombre, textos)
     ciclo = detectar_ciclo(nivel_objetivo)
     if not area or not ciclo:
         return ""
@@ -79,16 +122,13 @@ def _texto_curriculo_primaria(nombre_materia, nivel_objetivo, textos, curriculo)
     if not trozo:
         return ""
     cab = textos["orientaciones"]["encabezado_referencia_primaria"].format(area=area, ciclo=ciclo)
-    return f"{cab}\n{trozo}"
+    return f"{cab}\n{_recortar(trozo, 'core/curriculo_primaria.json')}"
 
 
-def _recomendaciones(necesidades: list[str], campo: str, textos: dict) -> str:
+def _recomendaciones(necesidades, campo, textos) -> str:
     recs = textos.get("perfil_accesibilidad", {}).get("recomendaciones", {})
-    lineas = []
-    for clave in necesidades or []:
-        entrada = recs.get(clave, {})
-        if entrada.get(campo):
-            lineas.append(f"- {entrada[campo]}")
+    lineas = [f"- {recs[c][campo]}" for c in (necesidades or [])
+              if isinstance(recs.get(c), dict) and recs[c].get(campo)]
     if not lineas:
         return ""
     return textos["orientaciones"]["encabezado_recomendaciones"] + "\n" + "\n".join(lineas)
@@ -99,47 +139,54 @@ def _juntar(*bloques: str) -> str:
 
 
 def orientaciones(
-    prog_materia,
-    prog_destino,
+    prog_materia=None,
+    prog_destino=None,
     nivel_objetivo: str = "",
-    necesidades: list[str] | None = None,
-    curriculo=None,
+    necesidades=None,
+    nombre_materia: str = "",
+    curriculo_primaria=None,
+    curriculo_eso=None,
 ) -> dict[str, str]:
-    """Devuelve {apartado: texto de orientación}. `prog_materia` es la
-    programación de la materia (para las competencias que se mantienen);
-    `prog_destino` la del curso al que se adapta."""
+    """Devuelve {apartado: texto de orientación}. Todos los argumentos son
+    opcionales: con solo el nombre de la materia y el nivel ya produce algo."""
     textos = cargar_textos()
     o = textos["orientaciones"]
-    curriculo = curriculo if curriculo is not None else cargar_curriculo_primaria()
+    cp = curriculo_primaria if curriculo_primaria is not None else cargar_curriculo_primaria()
+    ce = curriculo_eso if curriculo_eso is not None else cargar_curriculo_eso()
     necesidades = necesidades or []
 
-    nombre = getattr(prog_materia, "materia", "") or getattr(prog_destino, "materia", "")
-    ref_primaria = _texto_curriculo_primaria(nombre, nivel_objetivo, textos, curriculo)
+    nombre = (nombre_materia or getattr(prog_materia, "materia", "")
+              or getattr(prog_destino, "materia", ""))
 
-    # Competencias (se mantienen las de la materia)
-    comps = []
-    for c in getattr(prog_materia, "competencias", []) or getattr(prog_destino, "competencias", []):
-        comps.append(f"{c.numero}. {c.texto}")
-    bloque_comps = ("Se mantienen las competencias específicas de la materia:\n" + "\n".join(comps)) if comps else ""
+    # Competencias que se mantienen (de la programación de la materia si la hay)
+    comps = getattr(prog_materia, "competencias", None) or getattr(prog_destino, "competencias", None)
+    if comps:
+        bloque_comps = ("Se mantienen las competencias específicas de la materia:\n" +
+                        "\n".join(f"{c.numero}. {c.texto}" for c in comps))
+    else:
+        bloque_comps = ("No se han podido leer las competencias de la programación adjunta. "
+                        "Consúltalas en el currículo oficial (abajo).")
 
-    # Referencia del curso destino
-    destino = materia_desde_programacion(prog_destino) if prog_destino is not None else None
-    ref_destino_cri = ref_destino_con = ref_destino_ins = ""
-    if destino is not None:
+    ref_eso = _texto_eso(nombre, ce, textos)
+    ref_primaria = _texto_primaria(nombre, nivel_objetivo, textos, cp)
+
+    # Referencia del curso destino (si la programación se ha podido leer)
+    ref_dest_cri = ref_dest_con = ref_dest_ins = ""
+    if prog_destino is not None and getattr(prog_destino, "competencias", None) is not None:
+        destino = materia_desde_programacion(prog_destino)
         enc = o["encabezado_referencia_destino"]
         if destino.criterios_evaluacion:
-            ref_destino_cri = f"{enc}\n{destino.criterios_evaluacion}"
+            ref_dest_cri = f"{enc}\n{destino.criterios_evaluacion}"
         if destino.contenidos:
-            ref_destino_con = f"{enc}\n{destino.contenidos}"
+            ref_dest_con = f"{enc}\n{destino.contenidos}"
         if destino.instrumentos:
-            ref_destino_ins = f"{enc}\n{destino.instrumentos}"
+            ref_dest_ins = f"{enc}\n{destino.instrumentos}"
 
     return {
-        "competencias": _juntar(o["competencias"], bloque_comps),
-        "criterios_evaluacion": _juntar(o["criterios_evaluacion"], ref_destino_cri, ref_primaria),
-        "contenidos": _juntar(o["contenidos"], ref_destino_con, ref_primaria),
+        "competencias": _juntar(o["competencias"], bloque_comps, ref_eso),
+        "criterios_evaluacion": _juntar(o["criterios_evaluacion"], ref_dest_cri, ref_primaria, ref_eso),
+        "contenidos": _juntar(o["contenidos"], ref_dest_con, ref_primaria, ref_eso),
         "metodologia": _juntar(o["metodologia"], _recomendaciones(necesidades, "metodologia", textos)),
-        "instrumentos": _juntar(
-            o["instrumentos"], ref_destino_ins, _recomendaciones(necesidades, "instrumentos", textos)
-        ),
+        "instrumentos": _juntar(o["instrumentos"], ref_dest_ins,
+                                _recomendaciones(necesidades, "instrumentos", textos)),
     }

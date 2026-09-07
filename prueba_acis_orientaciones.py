@@ -13,9 +13,11 @@ from __future__ import annotations
 import sys
 
 from core.acis_orientaciones import (
+    cargar_curriculo_eso,
     cargar_curriculo_primaria,
     detectar_area_primaria,
     detectar_ciclo,
+    detectar_materia_eso,
     es_nivel_primaria,
     orientaciones,
 )
@@ -80,6 +82,19 @@ def main() -> int:
     marca_primaria = "Currículo oficial de Educación Primaria (Decreto 61/2022, Anexo II)"
     if marca_primaria in o1["criterios_evaluacion"]:
         fallos.append("no debería volcar el currículo de Primaria si el nivel es ESO")
+
+    # --- Sin ninguna programación: solo nombre + nivel ----------- #
+    ce = cargar_curriculo_eso()
+    if ce.get("materias"):
+        if detectar_materia_eso("Lengua Extranjera (Inglés)", ce) is None:
+            fallos.append("no reconoce la materia de ESO por el nombre")
+        o0 = orientaciones(None, None, nivel_objetivo="2.º ESO", necesidades=["mas_tiempo"],
+                           nombre_materia="Lengua Extranjera (Inglés)")
+        for apartado in ("competencias", "criterios_evaluacion", "contenidos", "metodologia", "instrumentos"):
+            if not o0.get(apartado):
+                fallos.append(f"sin programación: la orientación de «{apartado}» está vacía")
+        if "Decreto 65/2022" not in o0["criterios_evaluacion"]:
+            fallos.append("sin programación: no incluye el currículo oficial de ESO")
 
     # --- ESO -> Primaria (con currículo, si está el JSON) -------- #
     curr = cargar_curriculo_primaria()

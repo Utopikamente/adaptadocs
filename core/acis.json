@@ -134,6 +134,7 @@
     "metodologia": "Indica qué cambia respecto a la programación general: apoyos de PT/AL (horas lectivas, elementos que se trabajan y actividades principales), agrupamientos, y efecto sobre la temporalización y secuenciación de las unidades.",
     "instrumentos": "Recoge las adaptaciones sobre los instrumentos de evaluación y los criterios de calificación de la programación: instrumentos diversos, adaptación del formato de las pruebas, ampliación de tiempo y no penalizar ortografía, caligrafía o presentación cuando proceda. Los resultados deben reflejar si el alumno alcanza las competencias de la etapa.",
     "encabezado_referencia_destino": "Referencia del curso destino (de su programación):",
+    "encabezado_referencia_eso": "Currículo oficial de ESO (Decreto 65/2022, Anexo II) — {materia}:",
     "encabezado_referencia_primaria": "Currículo oficial de Educación Primaria (Decreto 61/2022, Anexo II) — {area}, {ciclo}:",
     "encabezado_recomendaciones": "Recomendaciones según el perfil de accesibilidad marcado:",
     "areas_primaria": {
