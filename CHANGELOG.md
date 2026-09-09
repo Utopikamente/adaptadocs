@@ -1,6 +1,6 @@
 # Historial de cambios
 
-## [Sin publicar]
+## [1.9.0] — 2026-09-09
 
 - **Botón «Generar ACIS con IA»** en la pestaña ACIS. A partir de la
   programación de la materia + el nivel de competencia objetivo + el perfil de
