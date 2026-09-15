@@ -15,6 +15,7 @@ import tempfile
 from docx import Document
 
 from core.aplicar_ia import aplicar_resultado
+from core.ia import es_cabecera_datos_alumno
 from core.pipeline import _extraer_bloques
 import crear_ejemplo
 
@@ -143,6 +144,33 @@ def main() -> int:
     if "¿Qué usa la planta del suelo?" not in textos3 or "¿Qué usa la planta del aire?" not in textos3:
         fallos.append("no se ven las dos subpreguntas en el documento")
 
+    # Cabeceras con datos del alumno: nunca deben mandarse a la IA
+    positivos = [
+        "Nombre y apellidos: ___________________ Curso: ____ Fecha: ___",
+        "Nombre y apellidos: Juan Pérez García     Curso: 3º ESO A",
+        "Alumno/a: María López",
+        "NIA: 12345678",
+    ]
+    negativos = [
+        "Nombre y clasificación de los reinos de la naturaleza.",
+        "En este curso aprenderemos sobre las fracciones y los decimales.",
+        "¿Cuál es el nombre del proceso por el que las plantas fabrican su alimento?",
+    ]
+    for texto in positivos:
+        if not es_cabecera_datos_alumno(texto):
+            fallos.append(f"debería detectarse como cabecera de datos del alumno: «{texto}»")
+    for texto in negativos:
+        if es_cabecera_datos_alumno(texto):
+            fallos.append(f"NO debería detectarse como cabecera de datos del alumno: «{texto}»")
+
+    doc4 = Document(f"{trabajo}/ejemplo.docx")
+    doc4.paragraphs[0].insert_paragraph_before(
+        "Nombre y apellidos: ___________________ Curso: ____ Fecha: ___"
+    )
+    bloques4, _ = _extraer_bloques(doc4)
+    if any(es_cabecera_datos_alumno(b.texto) for b in bloques4):
+        fallos.append("la cabecera de datos del alumno se ha incluido entre los bloques enviados a la IA")
+
     if fallos:
         print("PRUEBA IA (sin red) FALLIDA:")
         for f in fallos:
@@ -150,8 +178,8 @@ def main() -> int:
         return 1
 
     print(
-        "PRUEBA IA (sin red) OK — reescritura, pasos, glosario, resumen, preguntas "
-        "y preguntas divididas."
+        "PRUEBA IA (sin red) OK — reescritura, pasos, glosario, resumen, preguntas, "
+        "preguntas divididas y exclusión de cabeceras con datos del alumno."
     )
     return 0
 

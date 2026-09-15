@@ -1,7 +1,7 @@
 {
   "anexo": "ANEXO III.b",
   "titulo": "ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA (ACIS)",
-  "marca_borrador": "BORRADOR — pendiente de validación por el equipo docente. Documento generado por Adaptadocs; debe revisarse antes de incorporarlo al expediente académico.",
+  "marca_borrador": "BORRADOR — pendiente de validación por el equipo docente antes de incorporarlo al expediente académico. Comprueba en concreto: (1) que no falte ninguna competencia específica de la programación original; (2) si se ha usado la IA, que cada criterio adaptado corresponda de verdad a un criterio real del currículo del nivel de referencia (puede inventar una referencia que no exista) — los avisos en amarillo bajo cada materia señalan lo que el sistema no ha podido verificar por su cuenta; (3) que la metodología y los instrumentos se ajusten al perfil real del alumno; (4) que no aparezca ningún dato identificativo del alumno fuera del apartado de datos personales.",
   "pendiente": "[PENDIENTE — lo determina el equipo docente]",
   "sombra": "F2F2F2",
   "datos_alumno": {
@@ -28,9 +28,10 @@
     "secuenciacion_tit": "Secuenciación y temporalización.",
     "ud_col": "Unidad didáctica",
     "trimestre_col": "Trimestre",
-    "seguimiento_tit": "Calendario de seguimiento, evaluación y revisión de la adaptación."
+    "seguimiento_tit": "Calendario de seguimiento, evaluación y revisión de la adaptación.",
+    "avisos_ia_tit": "AVISOS — la IA señala esto como pendiente de revisión humana antes de usar este borrador:"
   },
-  "nota_expediente": "ESTA ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA DEL ALUMNO QUEDARÁ ADJUNTA A SU EXPEDIENTE ACADÉMICO.",
+  "nota_expediente": "ESTA ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA DEL ALUMNO QUEDARÁ ADJUNTA A SU EXPEDIENTE ACADÉMICO. NO LA COPIES EN RAÍCES NI LA FIRMES SIN QUE EL EQUIPO DOCENTE HAYA REVISADO Y VALIDADO CADA APARTADO.",
   "footer": "ADAPTACIÓN CURRICULAR INDIVIDUALIZADA Y SIGNIFICATIVA",
   "aviso_sin_acs": "No se incluye el bloque de «{materia}»: no consta que el equipo de orientación haya determinado una adaptación curricular significativa para esta materia (evaluación psicopedagógica). La ACS está legalmente reservada al alumnado con necesidades educativas especiales (art. 10 del Decreto 23/2023, de 22 de marzo; art. 10.3.a de la Orden 1712/2023).",
   "ayudas_formulario": {

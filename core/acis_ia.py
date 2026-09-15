@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import dataclass
 from typing import Callable
 
@@ -417,14 +418,88 @@ def _texto_unidades(resultado: dict) -> str:
     return "\n".join(lineas)
 
 
+def _normalizar_ref(texto: str) -> str:
+    """Quita puntos y espacios de una referencia tipo "1.1." para poder
+    buscarla como subcadena aunque el formato varíe un poco (p. ej. "1.1")."""
+    return re.sub(r"[.\s]", "", texto or "")
+
+
+def _avisos_coherencia(
+    prog: Programacion, resultado: dict, referencia_curriculo: str = ""
+) -> list[str]:
+    """Compara lo que ha devuelto la IA contra lo que se le envió, en vez de
+    aceptarlo a ciegas. No corrige nada: solo señala discrepancias para que
+    las revise una persona (CLAUDE.md: "avisar, no rellenar el hueco").
+
+    Comprueba:
+    - que no falten competencias específicas respecto a la programación original;
+    - que ninguna competencia de la programación que SÍ tenía criterios se haya
+      quedado sin ningún criterio adaptado;
+    - que la referencia de cada criterio adaptado (p. ej. "1.1.") aparezca de
+      verdad en el texto del currículo oficial de referencia que se envió (si
+      se envió); si no aparece, puede ser una invención de la IA.
+    """
+    avisos: list[str] = []
+    comps_originales = list(prog.competencias or [])
+    comps_devueltas = resultado.get("competencias", [])
+
+    if comps_originales and len(comps_devueltas) != len(comps_originales):
+        avisos.append(
+            f"La IA ha devuelto {len(comps_devueltas)} competencias específicas, pero la "
+            f"programación original tenía {len(comps_originales)}. Comprueba que no falte "
+            "ninguna."
+        )
+
+    numeros_devueltos = {str(c.get("numero", "")).strip() for c in comps_devueltas}
+    for c in comps_originales:
+        if not c.criterios:
+            continue
+        num = str(c.numero).strip()
+        devuelta = next(
+            (d for d in comps_devueltas if str(d.get("numero", "")).strip() == num), None
+        )
+        if devuelta is None:
+            if num not in numeros_devueltos:
+                avisos.append(
+                    f"La competencia específica {num} de la programación original tenía "
+                    "criterios de evaluación, pero la IA no ha devuelto ninguna competencia "
+                    f"con ese número. Revísala."
+                )
+            continue
+        if not devuelta.get("criterios_adaptados"):
+            avisos.append(
+                f"La competencia específica {num} tenía criterios en la programación "
+                "original, pero la IA no ha adaptado ninguno para ella. Revísala."
+            )
+
+    if referencia_curriculo.strip():
+        ref_normalizada = _normalizar_ref(referencia_curriculo)
+        for comp in comps_devueltas:
+            num = str(comp.get("numero", "")).strip()
+            for cr in comp.get("criterios_adaptados", []):
+                ref = str(cr.get("referencia", "")).strip()
+                if ref and _normalizar_ref(ref) not in ref_normalizada:
+                    avisos.append(
+                        f"El criterio «{ref}» adaptado de la competencia {num} no se "
+                        "encuentra literalmente en el currículo oficial de referencia que "
+                        "se envió a la IA: puede ser una referencia inventada. Verifícala "
+                        "contra el decreto antes de usarla."
+                    )
+
+    return avisos
+
+
 def resultado_a_materia(
     prog: Programacion,
     resultado: dict,
     base: MateriaACIS | None = None,
+    referencia_curriculo: str = "",
 ) -> MateriaACIS:
     """Convierte la respuesta de la IA en una `MateriaACIS` lista para
     `core.acis.generar_acis`. `base` aporta materia, profesor, departamento y la
-    casilla `acs_determinada` (que decide una persona)."""
+    casilla `acs_determinada` (que decide una persona). `referencia_curriculo`
+    es el mismo texto de currículo oficial que se envió a la IA (si lo hubo):
+    permite comprobar que las referencias de los criterios existen de verdad."""
     materia = base or MateriaACIS(materia=prog.materia)
     materia.competencias = _texto_competencias(resultado)
     materia.criterios_evaluacion = _texto_criterios(resultado)
@@ -440,4 +515,7 @@ def resultado_a_materia(
             (str(u.get("titulo", "")).strip(), str(u.get("periodo", "")).strip())
             for u in resultado["unidades"] if str(u.get("titulo", "")).strip()
         ]
+    materia.avisos_ia = [
+        str(a).strip() for a in resultado.get("avisos", []) if str(a).strip()
+    ] + _avisos_coherencia(prog, resultado, referencia_curriculo)
     return materia

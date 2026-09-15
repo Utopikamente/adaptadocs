@@ -147,6 +147,91 @@ def main() -> int:
             or vacia.competencias or vacia.seguimiento):
         fallos.append("una respuesta vacía no debería rellenar campos")
 
+    # Los avisos que la propia IA declara ("avisos") deben llegar a la MateriaACIS,
+    # no perderse (antes solo se veían en el registro de la app, no en el .docx).
+    if materia.avisos_ia != resultado["avisos"]:
+        fallos.append(
+            f"los avisos declarados por la IA no han llegado a materia.avisos_ia: {materia.avisos_ia}"
+        )
+    texto_avisos = "\n".join(c.text for fila in Document(ruta).tables[1].rows for c in fila.cells)
+    if resultado["avisos"][0] not in texto_avisos:
+        fallos.append("el aviso de la IA no aparece en el documento generado")
+
+    # --- Comprobación de coherencia IA<->original: no debe aceptar a ciegas --- #
+    prog_bg = Programacion(
+        materia="Biología y Geología", curso="3.º ESO",
+        competencias=[
+            Competencia("1", "Interpretar información científica.", ["CCL1"],
+                        [("1.1.", "Identificar información básica.")]),
+            Competencia("2", "Diseñar pequeñas investigaciones.", ["STEM1"],
+                        [("2.1.", "Formular una pregunta investigable.")]),
+        ],
+    )
+
+    # Caso malo: la IA solo devuelve una de las dos competencias originales.
+    resultado_incompleto = {
+        "competencias": [
+            {"numero": "1", "texto_reformulado": "Entender un texto científico sencillo.",
+             "criterios_adaptados": [{"referencia": "1.1.", "nivel": "Primaria",
+                                       "origen": "1.1.", "texto": "...", "indicadores": []}]},
+        ],
+        "contenidos": [], "metodologia": "", "instrumentos": [], "criterios_calificacion": "",
+        "unidades": [], "seguimiento": "", "avisos": [],
+    }
+    materia_incompleta = resultado_a_materia(prog_bg, resultado_incompleto)
+    if not any("tenía 2" in a for a in materia_incompleta.avisos_ia):
+        fallos.append("no se avisa de que faltan competencias respecto a la programación original")
+    if not any("competencia específica 2" in a and "no ha devuelto" in a
+               for a in materia_incompleta.avisos_ia):
+        fallos.append("no se avisa de que la competencia 2 (con criterios) se ha quedado sin adaptar")
+
+    # Caso malo: un criterio adaptado cita una referencia que no está en el
+    # currículo oficial que se envió a la IA — puede ser una invención.
+    resultado_ref_falsa = {
+        "competencias": [
+            {"numero": "1", "texto_reformulado": "...",
+             "criterios_adaptados": [{"referencia": "9.9.", "nivel": "Primaria",
+                                       "origen": "1.1.", "texto": "...", "indicadores": []}]},
+            {"numero": "2", "texto_reformulado": "...",
+             "criterios_adaptados": [{"referencia": "2.1.", "nivel": "Primaria",
+                                       "origen": "2.1.", "texto": "...", "indicadores": []}]},
+        ],
+        "contenidos": [], "metodologia": "", "instrumentos": [], "criterios_calificacion": "",
+        "unidades": [], "seguimiento": "", "avisos": [],
+    }
+    materia_ref_falsa = resultado_a_materia(
+        prog_bg, resultado_ref_falsa,
+        referencia_curriculo="1.1. Identificar los seres vivos. 2.1. Formular preguntas sencillas.",
+    )
+    avisos_ref = [a for a in materia_ref_falsa.avisos_ia if "9.9." in a]
+    if len(avisos_ref) != 1:
+        fallos.append(
+            f"debería avisar exactamente una vez de la referencia inventada «9.9.» ({avisos_ref})"
+        )
+    if any("2.1." in a for a in materia_ref_falsa.avisos_ia):
+        fallos.append("no debería avisar de «2.1.»: sí está en el currículo de referencia enviado")
+
+    # Caso bueno: todo coincide (mismo número de competencias, criterios en
+    # todas, referencias presentes en el currículo enviado) -> sin avisos de coherencia.
+    materia_ok = resultado_a_materia(
+        prog_bg,
+        {
+            "competencias": [
+                {"numero": "1", "texto_reformulado": "...",
+                 "criterios_adaptados": [{"referencia": "1.1.", "nivel": "Primaria",
+                                           "origen": "1.1.", "texto": "...", "indicadores": []}]},
+                {"numero": "2", "texto_reformulado": "...",
+                 "criterios_adaptados": [{"referencia": "2.1.", "nivel": "Primaria",
+                                           "origen": "2.1.", "texto": "...", "indicadores": []}]},
+            ],
+            "contenidos": [], "metodologia": "", "instrumentos": [], "criterios_calificacion": "",
+            "unidades": [], "seguimiento": "", "avisos": [],
+        },
+        referencia_curriculo="1.1. Identificar los seres vivos. 2.1. Formular preguntas sencillas.",
+    )
+    if materia_ok.avisos_ia:
+        fallos.append(f"no debería haber avisos de coherencia en el caso correcto: {materia_ok.avisos_ia}")
+
     if fallos:
         print("PRUEBA ACIS-IA (sin red) FALLIDA:")
         for f in fallos:

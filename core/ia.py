@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import dataclass, field
 from typing import Callable
 
@@ -68,6 +69,37 @@ class Bloque:
     id: int
     tipo: str  # "titulo" | "parrafo" | "lista"
     texto: str
+
+
+# --------------------------------------------------------------------------- #
+# Cabeceras con datos del alumno: nunca se envían a la IA
+# --------------------------------------------------------------------------- #
+
+# Campos habituales de la cabecera de un examen/ficha ("Nombre y apellidos:
+# ___ Curso: ___ Fecha: ___"). Los más específicos van antes que sus
+# abreviaturas o partes (p. ej. "nombre y apellidos" antes que "nombre") para
+# que la alternancia de la regex los reconozca primero.
+_CAMPOS_ALUMNO = (
+    "nombre y apellidos", "nombre completo", "apellidos", "nombre",
+    "alumno/a", "alumna", "alumno", "nia", "dni",
+    "fecha de nacimiento", "f. nac.", "curso", "grupo", "fecha",
+)
+_CAMPO_RX = "|".join(re.escape(c) for c in _CAMPOS_ALUMNO)
+# El valor de cada campo puede estar en blanco (subrayado) o ya rellenado
+# (p. ej. un nombre real) — por eso acepta cualquier cosa corta que no sea
+# otro ":" ni una frase larga, no solo relleno en blanco.
+_VALOR_CAMPO_RX = r"[^:\n]{0,40}?"
+_CABECERA_ALUMNO_RX = re.compile(
+    rf"^(?:\s*(?:{_CAMPO_RX})\s*:\s*{_VALOR_CAMPO_RX}\s*)+$", re.IGNORECASE
+)
+
+
+def es_cabecera_datos_alumno(texto: str) -> bool:
+    """True si `texto` es (solo) una línea de cabecera con campos de datos
+    identificativos del alumno, p. ej. "Nombre y apellidos: ___ Curso: ___",
+    esté en blanco o ya rellena. Estas líneas nunca deben mandarse a la IA:
+    ver CLAUDE.md, "nunca se almacenan datos identificativos de alumnos"."""
+    return bool(_CABECERA_ALUMNO_RX.fullmatch(texto.strip()))
 
 
 # --------------------------------------------------------------------------- #
@@ -241,6 +273,11 @@ def adaptar_contenido(
             "No hay clave de API de Anthropic. Introdúcela en la ventana o define "
             "la variable de entorno ANTHROPIC_API_KEY."
         )
+
+    # Segunda barrera (la primera es `pipeline._extraer_bloques`, que ya no
+    # los incluye): si por lo que sea llega aquí un bloque de cabecera con
+    # datos del alumno, se descarta antes de construir el mensaje a la IA.
+    bloques = [b for b in bloques if not es_cabecera_datos_alumno(b.texto)]
 
     if not opciones.alguna():
         return {

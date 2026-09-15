@@ -81,6 +81,7 @@ class Aplicacion(_Raiz):
 
         self._cola: queue.Queue[tuple[str, object]] = queue.Queue()
         self._procesando = False
+        self._acis_avisos_ia: list[str] = []
 
         self._construir_variables()
         self._construir_interfaz()
@@ -718,12 +719,12 @@ class Aplicacion(_Raiz):
         registrar = lambda m: self._cola.put(("log", m))  # noqa: E731
         try:
             resultado = adaptar_programacion(prog, opciones, api_key=clave, registrar=registrar)
-            self._cola.put(("acis_ia_ok", (prog, resultado)))
+            self._cola.put(("acis_ia_ok", (prog, resultado, opciones.referencia_curriculo)))
         except Exception as exc:  # noqa: BLE001
             self._cola.put(("acis_ia_error", str(exc)))
 
-    def _acis_ia_aplicar(self, prog, resultado: dict) -> None:
-        materia = resultado_a_materia(prog, resultado)
+    def _acis_ia_aplicar(self, prog, resultado: dict, referencia_curriculo: str = "") -> None:
+        materia = resultado_a_materia(prog, resultado, referencia_curriculo=referencia_curriculo)
         campos = {
             "competencias": materia.competencias,
             "criterios_evaluacion": materia.criterios_evaluacion,
@@ -741,7 +742,11 @@ class Aplicacion(_Raiz):
                 self.acis_txt["secuenciacion"],
                 "\n".join(f"{t} | {p}" if p else t for t, p in materia.secuenciacion),
             )
-        for aviso in resultado.get("avisos", []):
+        # Se guardan para que `_acis_generar` los incluya en el .docx final:
+        # el docente puede editar los campos de texto antes de generar, pero
+        # los avisos de coherencia siguen siendo válidos (no dependen de ellos).
+        self._acis_avisos_ia = list(materia.avisos_ia)
+        for aviso in materia.avisos_ia:
             self._log(f"  AVISO: {aviso}")
         uso = resultado.get("_uso") or {}
         self._log(
@@ -784,6 +789,7 @@ class Aplicacion(_Raiz):
             unidades=_txt("unidades"),
             seguimiento=_txt("seguimiento"),
             secuenciacion=secuenciacion,
+            avisos_ia=list(self._acis_avisos_ia),
         )
         datos = DatosACIS(materias=[materia])
 
@@ -1050,10 +1056,10 @@ class Aplicacion(_Raiz):
                     self._fin()
                     messagebox.showerror("No se pudo adaptar", str(carga))
                 elif tipo == "acis_ia_ok":
-                    prog, resultado = carga
+                    prog, resultado, referencia_curriculo = carga
                     self._fin()
                     try:
-                        self._acis_ia_aplicar(prog, resultado)
+                        self._acis_ia_aplicar(prog, resultado, referencia_curriculo)
                     except Exception as exc:  # noqa: BLE001
                         self._log(f"ERROR al volcar el resultado: {exc}")
                 elif tipo == "acis_ia_error":

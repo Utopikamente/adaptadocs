@@ -9,7 +9,7 @@ from docx import Document
 from docx.text.paragraph import Paragraph
 
 from .aplicar_ia import aplicar_resultado
-from .ia import Bloque, OpcionesIA, adaptar_contenido
+from .ia import Bloque, OpcionesIA, adaptar_contenido, es_cabecera_datos_alumno
 from .transformador import (
     OpcionesAdaptacion,
     _es_titulo,
@@ -27,6 +27,10 @@ def _extraer_bloques(doc) -> tuple[list[Bloque], dict[int, Paragraph]]:
     for i, parrafo in enumerate(doc.paragraphs):
         texto = parrafo.text.strip()
         if not texto:
+            continue
+        if es_cabecera_datos_alumno(texto):
+            # Cabecera de examen/ficha con datos del alumno (nombre, NIA,
+            # fecha de nacimiento...): nunca se manda a la IA, se deja igual.
             continue
         if _es_titulo(parrafo):
             tipo = "titulo"

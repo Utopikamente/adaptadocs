@@ -60,6 +60,12 @@ class MateriaACIS:
     seguimiento: str = ""            # calendario de seguimiento y revisión
     # Lista de (unidad didáctica, trimestre)
     secuenciacion: list[tuple[str, str]] = field(default_factory=list)
+    # Avisos del borrador generado con IA: los que la propia IA declara (no
+    # sabe decidir algo) más los de coherencia IA↔programación que calcula
+    # `core.acis_ia._avisos_coherencia` (p. ej. faltan competencias, o un
+    # criterio no se localiza en el currículo de referencia). Van siempre en
+    # el documento, no solo en el registro de la app.
+    avisos_ia: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -203,6 +209,20 @@ def _tabla_materia(doc, materia: MateriaACIS, textos: dict) -> None:
 
     _fila_completa(tabla, c["titulo"], textos, titulo=True)
     _fila_completa(tabla, f"{c['materia']} {_linea(materia.materia, 55)}", textos)
+
+    if materia.avisos_ia:
+        fila = tabla.add_row()
+        celda = fila.cells[0].merge(fila.cells[3])
+        _sombrear(celda, "FFE699")
+        celda.text = ""
+        p = celda.paragraphs[0]
+        r = p.add_run(textos["cuerpo"]["avisos_ia_tit"])
+        r.bold = True
+        r.font.size = Pt(9)
+        for aviso in materia.avisos_ia:
+            item = celda.add_paragraph(f"⚠ {aviso}")
+            for run in item.runs:
+                run.font.size = Pt(9)
 
     fila = tabla.add_row()
     _texto_celda(fila.cells[0], f"{c['profesor']} {_linea(materia.profesor, 25)}")
