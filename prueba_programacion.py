@@ -145,6 +145,24 @@ def main() -> int:
     if not any("La ciudad" in t for t in titulos):
         fallos.append("prosa: no reconoce «Tema 3. …» como unidad")
 
+    # --- Competencias numeradas con el prefijo "CE" (p. ej. "CE1.") ---- #
+    ruta_ce = os.path.join(trabajo, "prefijo_ce.docx")
+    d = Document()
+    d.add_paragraph("COMPETENCIAS ESPECÍFICAS DE LA MATERIA")
+    tabla_ce = d.add_table(rows=1, cols=3)
+    tabla_ce.rows[0].cells[0].text = "COMPETENCIAS ESPECÍFICAS"
+    tabla_ce.rows[0].cells[1].text = "DESCRIPTORES"
+    tabla_ce.rows[0].cells[2].text = "CRITERIOS DE EVALUACIÓN"
+    fila = tabla_ce.add_row().cells
+    fila[0].text = "CE1. Comprender textos orales y escritos sencillos."
+    fila[1].text = "CCL2"
+    fila[2].text = "1.1. Extraer el sentido global de textos claros."
+    d.save(ruta_ce)
+    p3 = leer_programacion(ruta_ce)
+    if not p3.competencias or p3.competencias[0].numero != "CE1":
+        numero_visto = p3.competencias[0].numero if p3.competencias else None
+        fallos.append(f"prefijo CE: número de la 1.ª competencia = {numero_visto!r} (esperado 'CE1')")
+
     # --- Documento sin ningún apartado curricular ------------------ #
     ruta_mala = os.path.join(trabajo, "sin_apartados.docx")
     d = Document()

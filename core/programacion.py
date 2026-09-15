@@ -62,7 +62,14 @@ def _norm(texto: str) -> str:
 
 
 _RE_CRITERIO = re.compile(r"(?m)^\s*(\d+\.\d+\.?)\s+")
-_RE_COMPETENCIA_NUM = re.compile(r"^\s*(\d+)[.\-)]?\s+(.*)", re.DOTALL)
+# El número de competencia puede llevar el prefijo "CE" (p. ej. "CE1.") o no
+# (p. ej. "1."), según la costumbre de cada profesor. Se reconocen las dos
+# formas; `_numero_competencia` reconstruye el número tal como venía.
+_RE_COMPETENCIA_NUM = re.compile(r"^\s*(CE|C\.E\.)?\s*(\d+)[.\-)]?\s+(.*)", re.IGNORECASE | re.DOTALL)
+
+
+def _numero_competencia(m: re.Match) -> str:
+    return ("CE" + m.group(2)) if m.group(1) else m.group(2)
 _RE_BLOQUE = re.compile(r"^([A-Z])\.\s+(.+)")
 _RE_NUM_TITULO = re.compile(r"^\s*\d+[.\)]\s*")
 
@@ -127,11 +134,11 @@ def _competencias_de_texto(texto: str) -> list[Competencia]:
         t = linea.strip()
         if not t:
             continue
-        m = re.match(r"^(\d+)[.\-)]\s+(.{15,})", t)
+        m = re.match(r"^(CE|C\.E\.)?\s*(\d+)[.\-)]\s+(.{15,})", t, re.IGNORECASE)
         if m:
             if actual:
                 comps.append(actual)
-            actual = Competencia(numero=m.group(1), texto=m.group(2).strip())
+            actual = Competencia(numero=_numero_competencia(m), texto=m.group(3).strip())
         elif actual and not _RE_CRITERIO.match(t):
             actual.texto = (actual.texto + " " + t).strip()
     if actual:
@@ -183,7 +190,7 @@ def _parsear_tabla_centro(prog: Programacion, tabla) -> None:
         m = _RE_COMPETENCIA_NUM.match(textos[0])
         if not m:
             continue
-        comp = Competencia(numero=m.group(1), texto=" ".join(m.group(2).split()))
+        comp = Competencia(numero=_numero_competencia(m), texto=" ".join(m.group(3).split()))
         if len(celdas) >= 3:
             comp.descriptores = _descriptores(celdas[1].text)
             comp.criterios = _trocear_criterios(celdas[2].text)
