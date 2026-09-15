@@ -33,6 +33,12 @@ _CICLOS = {
 _CURSO_A_CICLO = {"1.º": "Primer ciclo", "2.º": "Primer ciclo", "3.º": "Segundo ciclo",
                   "4.º": "Segundo ciclo", "5.º": "Tercer ciclo", "6.º": "Tercer ciclo"}
 
+_CURSO_ESO_RX = {
+    "1": ("1.º", "1º", "primero"), "2": ("2.º", "2º", "segundo"),
+    "3": ("3.º", "3º", "tercero"), "4": ("4.º", "4º", "cuarto"),
+}
+_INTRO_LIMITE = 900  # la introducción de la materia se recorta más que el resto: da contexto, no es la parte operativa
+
 _LIMITE = 7000  # caracteres máximos de un trozo de currículo en el panel
 
 
@@ -84,30 +90,78 @@ def detectar_area_primaria(nombre_materia: str, textos: dict) -> str | None:
 
 
 def detectar_materia_eso(nombre_materia: str, curriculo_eso: dict) -> str | None:
+    """Empareja por las palabras clave de cada materia oficial. Antes devolvía
+    la primera materia con ALGUNA palabra en común (p. ej. «Educación en
+    Valores Cívicos y Éticos» caía en «Educación Física» por compartir
+    «educación»). Ahora se prefiere la materia cuyas palabras clave coinciden
+    TODAS, y solo si ninguna coincide por completo se admite la de mayor
+    solapamiento parcial."""
     bajo = (nombre_materia or "").lower()
     if not bajo:
         return None
     materias = list(curriculo_eso.get("materias", {}))
-    # coincidencia por palabras clave de la clave oficial
+
+    def _palabras(clave: str) -> list[str]:
+        return [p for p in clave.lower().replace(",", " ").split() if len(p) > 3
+                and p not in ("y", "de", "la", "en")]
+
+    completas = []
+    parciales = []
     for clave in materias:
-        palabras = [p for p in clave.lower().replace(",", " ").split() if len(p) > 3
-                    and p not in ("y", "de", "la", "en")]
-        if palabras and any(p in bajo for p in palabras):
-            return clave
+        palabras = _palabras(clave)
+        if not palabras:
+            continue
+        score = sum(1 for p in palabras if p in bajo)
+        if score == len(palabras):
+            completas.append((score, clave))
+        elif score:
+            parciales.append((score, clave))
+    if completas:
+        completas.sort(key=lambda x: -x[0])
+        return completas[0][1]
+    if parciales:
+        parciales.sort(key=lambda x: -x[0])
+        return parciales[0][1]
     return None
 
 
-def _texto_eso(nombre, curriculo_eso, textos) -> str:
+def detectar_curso_eso(nivel_objetivo: str) -> str | None:
+    """«1.º ESO», «2º de la ESO», «tercero de ESO»… -> "1".."4". None si no hay
+    curso reconocible (o el nivel es de Primaria)."""
+    n = (nivel_objetivo or "").lower()
+    if es_nivel_primaria(nivel_objetivo):
+        return None
+    for curso, formas in _CURSO_ESO_RX.items():
+        if any(f in n for f in formas):
+            return curso
+    return None
+
+
+def _texto_eso(nombre, curriculo_eso, textos, nivel_objetivo: str = "") -> str:
     clave = detectar_materia_eso(nombre, curriculo_eso)
     if not clave:
         return ""
-    trozo = curriculo_eso.get("materias", {}).get(clave, "")
-    if not trozo:
-        return ""
+    entrada = curriculo_eso.get("materias", {}).get(clave, "")
     cab = textos["orientaciones"].get(
         "encabezado_referencia_eso",
         "Currículo oficial de ESO (Decreto 65/2022, Anexo II) — {materia}:",
     ).format(materia=clave)
+    # esquema nuevo: {introduccion, competencias_especificas, cursos: {"1".."4": texto}}
+    if isinstance(entrada, dict):
+        curso = detectar_curso_eso(nivel_objetivo)
+        partes = [entrada.get("introduccion", "")[:_INTRO_LIMITE], entrada.get("competencias_especificas", "")]
+        if curso and entrada.get("cursos", {}).get(curso):
+            partes.append(entrada["cursos"][curso])
+            cab = cab.rstrip(":") + f", {curso}.º ESO:"
+        else:
+            # sin curso reconocido: se incluyen todos los cursos disponibles (se recorta más abajo)
+            partes.extend(entrada.get("cursos", {}).values())
+        trozo = "\n\n".join(p for p in partes if p)
+    else:
+        # esquema antiguo (texto plano por materia): compatibilidad
+        trozo = entrada
+    if not trozo:
+        return ""
     return f"{cab}\n{_recortar(trozo, 'core/curriculo_eso.json')}"
 
 
@@ -130,7 +184,7 @@ def texto_referencia(nombre_materia: str, nivel_objetivo: str) -> str:
     y, si el nivel baja a Primaria y se reconoce el área, el de Primaria."""
     textos = cargar_textos()
     trozos = [
-        _texto_eso(nombre_materia, cargar_curriculo_eso(), textos),
+        _texto_eso(nombre_materia, cargar_curriculo_eso(), textos, nivel_objetivo),
         _texto_primaria(nombre_materia, nivel_objetivo, textos, cargar_curriculo_primaria()),
     ]
     return "\n\n".join(t for t in trozos if t)
@@ -178,7 +232,7 @@ def orientaciones(
         bloque_comps = ("No se han podido leer las competencias de la programación adjunta. "
                         "Consúltalas en el currículo oficial (abajo).")
 
-    ref_eso = _texto_eso(nombre, ce, textos)
+    ref_eso = _texto_eso(nombre, ce, textos, nivel_objetivo)
     ref_primaria = _texto_primaria(nombre, nivel_objetivo, textos, cp)
 
     # Referencia del curso destino (lo que se haya podido leer de su programación)
