@@ -25,13 +25,14 @@ Esquema de salida (una entrada por materia, 21 materias):
           "competencias_especificas": "CE1. ... Descriptores: ...\n\nCE2. ...",
           "cursos": {"1": "CRITERIOS DE EVALUACIÓN (1.º ESO)\n...\n\nSABERES BÁSICOS (1.º ESO)\n..."}
         }, ...
-        "EDUCACIÓN EN VALORES CÍVICOS Y ÉTICOS": {"introduccion": "...", "competencias_especificas": "", "cursos": {}}
       }
     }
 
-«Educación en Valores Cívicos y Éticos» no tiene currículo propio en el
-Decreto 65/2022: remite al Real Decreto 217/2022 (BOE), que esta herramienta
-no procesa; se conserva solo el párrafo de remisión.
+"Educación en Valores Cívicos y Éticos" es un caso especial: el Decreto
+65/2022 no desarrolla currículo propio para ella y remite al Real Decreto
+217/2022 (BOE). Su contenido no sale de este PDF sino de
+`herramientas/valores_civicos_rd217.json` (extraído del PDF consolidado del
+BOE con el mismo método sin OCR) — ver `_cargar_valores()`.
 
 Las erratas del propio decreto (numeraciones que no casan, p. ej. Biología y
 Geología numerando dos competencias como «5», o Matemáticas imprimiendo un
@@ -47,6 +48,7 @@ funcionando si por lo que sea no se regenera.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 
@@ -307,13 +309,18 @@ def texto_curso(curso_key: str, cursodata: dict) -> str:
     return "\n".join(out).strip()
 
 
-VALORES_REMITE = (
-    "Las orientaciones metodológicas, las competencias específicas, los criterios de evaluación y los "
-    "contenidos para la materia Educación en Valores Cívicos y Éticos se recogen en el Real Decreto "
-    "217/2022, de 29 de marzo, al que se añadirá en el bloque B de contenidos: «La Constitución española de "
-    "1978 y sus valores como norma fundamental de todos los españoles. Principios. Derechos y deberes "
-    "fundamentales y sus implicaciones.»"
-)
+# El Decreto 65/2022 de Madrid no desarrolla currículo propio para "Educación
+# en Valores Cívicos y Éticos": remite al Real Decreto 217/2022 (BOE), que sí
+# lo define en su Anexo II, y solo añade un saber al bloque B (la Constitución
+# de 1978). Como esta materia no viene del PDF del Decreto 65/2022 que procesa
+# este script, sus datos (extraídos del PDF consolidado del BOE con el mismo
+# método sin OCR) viven aparte, en herramientas/valores_civicos_rd217.json.
+_VALORES_JSON = os.path.join(os.path.dirname(__file__), "valores_civicos_rd217.json")
+
+
+def _cargar_valores() -> dict:
+    with open(_VALORES_JSON, encoding="utf-8") as f:
+        return json.load(f)
 
 
 # El Decreto 65/2022 numera como «5» dos competencias específicas distintas de
@@ -351,7 +358,12 @@ def construir_json(datos: dict) -> dict:
     materias_out: dict = {}
     for nombre in [m for m in MATERIAS if m not in ("MATEMÁTICAS A", "MATEMÁTICAS B")]:
         if nombre == "EDUCACIÓN EN VALORES CÍVICOS Y ÉTICOS":
-            materias_out[nombre] = {"introduccion": VALORES_REMITE, "competencias_especificas": "", "cursos": {}}
+            v = _cargar_valores()
+            materias_out[nombre] = {
+                "introduccion": v["intro"],
+                "competencias_especificas": texto_ce(v["ce"]),
+                "cursos": {ck: texto_curso(ck, cd) for ck, cd in v["cursos"].items()},
+            }
             continue
         M = datos.get(nombre)
         entrada = {"introduccion": M.get("intro", "") if M else "",
@@ -368,14 +380,17 @@ def construir_json(datos: dict) -> dict:
         materias_out[nombre] = entrada
 
     anomalias = {n: datos[n]["anomalias"] for n in materias_out if datos.get(n) and datos[n].get("anomalias")}
+    valores_anomalias = _cargar_valores().get("anomalias")
+    if valores_anomalias:
+        anomalias["EDUCACIÓN EN VALORES CÍVICOS Y ÉTICOS"] = valores_anomalias
     return {
         "fuente": ("Decreto 65/2022, de 20 de julio — ANEXO II (Currículo de materias de la ESO). Texto "
                    "oficial extraído de la capa de texto del PDF del BOCM (sin OCR, sin heurística de "
-                   "reflujo de columnas), reproducido literalmente."),
+                   "reflujo de columnas), reproducido literalmente. Educación en Valores Cívicos y Éticos es "
+                   "la excepción: su texto procede del Real Decreto 217/2022 (BOE), ver anomalías."),
         "nota": ("Cada materia trae su introducción, sus competencias específicas con los descriptores del "
                  "perfil de salida y, por curso, los criterios de evaluación y los saberes básicos, en "
-                 "texto oficial. Educación en Valores Cívicos y Éticos remite al Real Decreto 217/2022 (no "
-                 "incluido aquí). Referencia para la adaptación curricular; editable."),
+                 "texto oficial. Referencia para la adaptación curricular; editable."),
         "anomalias_del_decreto": anomalias,
         "materias": materias_out,
     }
