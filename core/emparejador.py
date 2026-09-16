@@ -70,25 +70,32 @@ def _titulo_bloque(clave: str) -> str:
 @dataclass
 class CriterioEmparejado:
     """Un criterio de la programación de origen, con su equivalente en el
-    nivel de referencia si existe."""
+    nivel de referencia si existe. Tres estados posibles: `encontrado` (cita
+    literal del decreto), `adaptado` (sin equivalente literal, pero con una
+    propuesta generada por IA a partir del criterio de origen -ver
+    `core.emparejador_ia`-), o ninguno de los dos (pendiente, sin generar
+    todavía)."""
 
     numero: str                 # tal como venía en la programación, p. ej. "1.1."
     competencia: str            # "CE1"
     texto_origen: str
     encontrado: bool
-    texto_referencia: str = ""  # texto literal del criterio de referencia (si se encontró)
-    referencia: str = ""        # cita al decreto (si se encontró)
+    adaptado: bool = False       # True si `texto_referencia` es una propuesta de IA, no cita literal
+    texto_referencia: str = ""  # texto literal o adaptado del criterio de referencia
+    referencia: str = ""        # cita al decreto, o nota de que es una propuesta adaptada
 
 
 @dataclass
 class SaberEmparejado:
     """Un bloque de saberes básicos de la programación de origen, con su
-    equivalente en el nivel de referencia si existe (por título, no por letra)."""
+    equivalente en el nivel de referencia si existe (por título, no por
+    letra). Mismos tres estados que `CriterioEmparejado`."""
 
     bloque_origen: str                             # clave tal como venía, p. ej. "A. Comunicación"
     titulo: str                                    # "Comunicación"
     items_origen: list[str] = field(default_factory=list)
     encontrado: bool = False
+    adaptado: bool = False
     items_referencia: list[str] = field(default_factory=list)
     referencia: str = ""
 
@@ -173,9 +180,9 @@ def emparejar_saberes(
 
 def texto_criterios(resultado: list[CriterioEmparejado]) -> str:
     """Texto para `MateriaACIS.criterios_evaluacion`: agrupado por
-    competencia específica, cada criterio marcado como cita literal o, si no
-    hay equivalente, como pendiente de adaptar -nunca en blanco-, y siempre
-    con el hueco de redacción alternativa del profesor."""
+    competencia específica, cada criterio marcado como cita literal,
+    adaptado por IA o pendiente -nunca en blanco-, y siempre con el hueco de
+    redacción alternativa del profesor."""
     if not resultado:
         return ""
     bloques: dict[str, list[CriterioEmparejado]] = {}
@@ -189,6 +196,9 @@ def texto_criterios(resultado: list[CriterioEmparejado]) -> str:
             if r.encontrado:
                 lineas.append(f"  {r.numero} ({r.referencia} — CITA LITERAL)")
                 lineas.append(f"      {r.texto_referencia}")
+            elif r.adaptado:
+                lineas.append(f"  {r.numero} ({r.referencia})")
+                lineas.append(f"      {r.texto_referencia}")
             else:
                 lineas.append(f"  {r.numero} (SIN EQUIVALENTE en el nivel de referencia)")
                 lineas.append(f"      {_PENDIENTE_IA}")
@@ -199,15 +209,20 @@ def texto_criterios(resultado: list[CriterioEmparejado]) -> str:
 
 def texto_saberes(resultado: list[SaberEmparejado]) -> str:
     """Texto para `MateriaACIS.contenidos`, con el mismo criterio que
-    `texto_criterios`: cita literal, pendiente si no hay equivalente, y
-    siempre con el hueco de redacción alternativa."""
+    `texto_criterios`: cita literal, adaptado por IA o pendiente, y siempre
+    con el hueco de redacción alternativa."""
     if not resultado:
         return ""
     partes: list[str] = []
     for r in resultado:
-        etiqueta = "CITA LITERAL" if r.encontrado else "SIN EQUIVALENTE en el nivel de referencia"
-        lineas = [f"{r.bloque_origen} ({etiqueta})"]
         if r.encontrado:
+            etiqueta = "CITA LITERAL"
+        elif r.adaptado:
+            etiqueta = r.referencia
+        else:
+            etiqueta = "SIN EQUIVALENTE en el nivel de referencia"
+        lineas = [f"{r.bloque_origen} ({etiqueta})"]
+        if r.encontrado or r.adaptado:
             lineas += [f"  − {it}" for it in r.items_referencia]
         else:
             lineas.append(f"  {_PENDIENTE_IA}")
@@ -217,17 +232,34 @@ def texto_saberes(resultado: list[SaberEmparejado]) -> str:
 
 
 def avisos(criterios: list[CriterioEmparejado], saberes: list[SaberEmparejado]) -> list[str]:
-    """Un aviso por cada criterio o saber sin equivalente literal, para el
-    panel amarillo del Anexo III.b (ver `MateriaACIS.avisos_ia`)."""
+    """Un aviso por cada criterio o saber adaptado por IA o todavía
+    pendiente, para el panel amarillo del Anexo III.b (`MateriaACIS.avisos_ia`).
+    Los literales (cita del decreto) no llevan aviso."""
     lista: list[str] = []
     for r in criterios:
-        if not r.encontrado:
+        if r.encontrado:
+            continue
+        if r.adaptado:
+            lista.append(
+                f"El criterio {r.numero} (competencia {r.competencia}) no tiene equivalente literal en "
+                "el nivel de referencia: se ha generado una propuesta adaptada. Revísala y edítala si no "
+                "encaja con el nivel real del alumno."
+            )
+        else:
             lista.append(
                 f"El criterio {r.numero} (competencia {r.competencia}) no tiene equivalente literal "
                 "en el nivel de referencia: falta generar una propuesta adaptada, o redactarla a mano."
             )
     for r in saberes:
-        if not r.encontrado:
+        if r.encontrado:
+            continue
+        if r.adaptado:
+            lista.append(
+                f"El bloque de saberes básicos «{r.titulo}» no tiene equivalente literal en el nivel de "
+                "referencia: se ha generado una propuesta adaptada. Revísala y edítala si no encaja con "
+                "el nivel real del alumno."
+            )
+        else:
             lista.append(
                 f"El bloque de saberes básicos «{r.titulo}» no tiene equivalente literal en el nivel de "
                 "referencia: falta generar una propuesta adaptada, o redactarla a mano."
