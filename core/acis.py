@@ -162,6 +162,33 @@ def _sombrear(celda, fill: str) -> None:
     tcPr.append(shd)
 
 
+def _sombrear_parrafo(parrafo, fill: str) -> None:
+    """Como `_sombrear`, pero para UN párrafo suelto dentro de una celda con
+    más texto alrededor (p. ej. una sola línea de "redacción alternativa")."""
+    pPr = parrafo._p.get_or_add_pPr()
+    shd = OxmlElement("w:shd")
+    shd.set(qn("w:val"), "clear")
+    shd.set(qn("w:color"), "auto")
+    shd.set(qn("w:fill"), fill)
+    pPr.append(shd)
+
+
+# Marca interna para que `_texto_celda` resalte una línea en azul claro: un
+# hueco para que el profesor proponga su propia redacción en vez de la
+# propuesta (literal o adaptada) de encima. No debe aparecer nunca en texto
+# real, por eso usa los símbolos "§".
+_MARCA_REDACCION = "§REDACCION§"
+_AZUL_REDACCION = "DDEBF7"
+
+
+def redaccion_alternativa() -> str:
+    """Línea marcada para insertar tras un criterio o saber básico: al
+    renderizarla, `_texto_celda` la resalta en azul claro para que nadie la
+    confunda con la propuesta de la herramienta ni se le olvide borrarla."""
+    return (_MARCA_REDACCION + "Redacción alternativa del profesor (déjalo en "
+            "blanco si aceptas la propuesta anterior): " + "_" * 40)
+
+
 def _texto_celda(celda, texto: str, *, negrita: bool = False, size: int = 9,
                  alineacion=None) -> None:
     celda.text = ""
@@ -170,6 +197,9 @@ def _texto_celda(celda, texto: str, *, negrita: bool = False, size: int = 9,
         p.alignment = alineacion
     for i, trozo in enumerate(str(texto).split("\n")):
         par = p if i == 0 else celda.add_paragraph()
+        if trozo.startswith(_MARCA_REDACCION):
+            trozo = trozo[len(_MARCA_REDACCION):]
+            _sombrear_parrafo(par, _AZUL_REDACCION)
         run = par.add_run(trozo)
         run.bold = negrita
         run.font.size = Pt(size)

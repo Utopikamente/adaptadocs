@@ -11,12 +11,17 @@ from __future__ import annotations
 
 import sys
 
+from core.acis import DatosACIS, MateriaACIS, generar_acis
 from core.emparejador import (
+    avisos,
     cargar_tabla_curriculo,
     emparejar_criterios,
+    emparejar_programacion,
     emparejar_saberes,
+    texto_criterios,
+    texto_saberes,
 )
-from core.programacion import Competencia
+from core.programacion import Competencia, Programacion
 
 
 def main() -> int:
@@ -103,6 +108,60 @@ def main() -> int:
     if r_real[1].encontrado:
         fallos.append("(datos reales) 2.2 de Matemáticas NO debería tener equivalente en 1.º ESO")
 
+    # --- Texto para el documento: cita literal, pendiente si no hay
+    # equivalente (nunca en blanco), y el hueco de redacción alternativa. ---
+    texto_cr = texto_criterios(resultado)
+    if "CITA LITERAL" not in texto_cr or "Conocer y aplicar las herramientas básicas" not in texto_cr:
+        fallos.append("texto_criterios no muestra el texto literal del criterio encontrado")
+    if "SIN EQUIVALENTE" not in texto_cr or "pendiente de generar" not in texto_cr:
+        fallos.append("texto_criterios no marca como pendiente el criterio sin equivalente")
+    if texto_cr.count("Redacción alternativa del profesor") != 2:
+        fallos.append("texto_criterios debería llevar un hueco de redacción alternativa POR CADA criterio")
+
+    texto_sa = texto_saberes(r_sab + r_sab2)
+    if "CITA LITERAL" not in texto_sa or "Perímetros y áreas" not in texto_sa:
+        fallos.append("texto_saberes no muestra el texto literal del bloque encontrado")
+    if "SIN EQUIVALENTE" not in texto_sa:
+        fallos.append("texto_saberes no marca como pendiente el bloque sin equivalente")
+
+    lista_avisos = avisos(resultado, r_sab + r_sab2)
+    if len(lista_avisos) != 2:  # el criterio 2.2 y el bloque de Probabilidad y estadística
+        fallos.append(f"avisos() debería devolver 2 avisos (uno por hueco), salieron {len(lista_avisos)}")
+    if not any("2.2" in a for a in lista_avisos) or not any("Probabilidad y estadística" in a for a in lista_avisos):
+        fallos.append("los avisos no identifican claramente qué criterio/bloque falta")
+
+    # --- emparejar_programacion(): junta todo en una MateriaACIS real, y el
+    # documento final la recoge (incluida la marca de redacción alternativa,
+    # que no debe verse como texto suelto -debe quedar resaltada, no impresa
+    # tal cual "§REDACCION§..."). ---
+    prog = Programacion(
+        materia="Matemáticas", curso="3.º ESO",
+        competencias=origen,
+        saberes_basicos=saberes_origen | saberes_sin_equivalente,
+    )
+    base = MateriaACIS(materia="Matemáticas", profesor="—", departamento="Matemáticas", acs_determinada=True)
+    materia_final = emparejar_programacion("MATEMÁTICAS", prog, "1.º ESO", tabla, base)
+    if not materia_final.avisos_ia:
+        fallos.append("emparejar_programacion no traslada los avisos a la MateriaACIS")
+    if "§REDACCION§" not in materia_final.criterios_evaluacion:
+        fallos.append("emparejar_programacion debería dejar la marca interna en el texto (la quita el renderizador)")
+
+    import os
+    import tempfile
+    from docx import Document
+    trabajo = tempfile.mkdtemp(prefix="adaptadocs-emparejador-")
+    ruta = os.path.join(trabajo, "ACIS.docx")
+    generar_acis(ruta, DatosACIS(materias=[materia_final]))
+    doc = Document(ruta)
+    texto_documento = "\n".join(p.text for tabla_doc in doc.tables for fila in tabla_doc.rows
+                                 for c in fila.cells for p in c.paragraphs)
+    if "§REDACCION§" in texto_documento:
+        fallos.append("la marca interna «§REDACCION§» no debería verse en el documento final, solo el resaltado")
+    if "Redacción alternativa del profesor" not in texto_documento:
+        fallos.append("el hueco de redacción alternativa no llega al documento final")
+    if "SIN EQUIVALENTE" not in texto_documento:
+        fallos.append("el aviso de «sin equivalente» no llega al documento final")
+
     if fallos:
         print("PRUEBA EMPAREJADOR FALLIDA:")
         for f in fallos:
@@ -110,7 +169,8 @@ def main() -> int:
         return 1
 
     print("PRUEBA EMPAREJADOR OK — emparejamiento literal, criterios sin equivalente, "
-          "prefijo CE opcional, saberes básicos por título y caso real de Matemáticas.")
+          "prefijo CE opcional, saberes básicos por título, caso real de Matemáticas, "
+          "texto del documento, avisos y MateriaACIS completa.")
     return 0
 
 

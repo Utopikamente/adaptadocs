@@ -13,6 +13,11 @@ para reutilizar `core.acis_ia`- que todavía no se conecta desde este módulo.
 Los saberes básicos no tienen letra de bloque estable entre cursos (a
 diferencia de las competencias, ver commit de "Matemáticas A/B"): se
 emparejan por el TÍTULO del bloque, no por su letra.
+
+`emparejar_programacion()` junta todo en una `MateriaACIS` lista para
+`core.acis.generar_acis`: cada criterio/saber sale marcado como cita literal
+o, si no hay equivalente, como pendiente de adaptar -nunca en blanco, nunca
+inventado- con su aviso correspondiente en el panel amarillo del documento.
 """
 
 from __future__ import annotations
@@ -22,9 +27,16 @@ import os
 import re
 from dataclasses import dataclass, field
 
-from .programacion import Competencia
+from .acis import MateriaACIS, redaccion_alternativa
+from .programacion import Competencia, Programacion
 
 _RUTA_TABLA = os.path.join(os.path.dirname(__file__), "tabla_curriculo_eso.json")
+
+# Todavía no se genera aquí una propuesta adaptada con IA para los huecos
+# (criterios o saberes sin equivalente literal): se deja explícito, nunca en
+# blanco, a la espera de conectar ese paso (pensado sobre `core.acis_ia`).
+_PENDIENTE_IA = ("[Sin equivalente literal en el nivel de referencia — pendiente de generar "
+                 "una propuesta adaptada con IA, o redactarla a mano]")
 
 _RE_TITULO_BLOQUE = re.compile(r"^[A-Z]\.\s+(.+)$")
 
@@ -153,3 +165,94 @@ def emparejar_saberes(
                 bloque_origen=clave, titulo=titulo, items_origen=list(items), encontrado=False,
             ))
     return resultado
+
+
+# --------------------------------------------------------------------------- #
+# Texto para el Anexo III.b (todavía sin IA: los huecos quedan pendientes)
+# --------------------------------------------------------------------------- #
+
+def texto_criterios(resultado: list[CriterioEmparejado]) -> str:
+    """Texto para `MateriaACIS.criterios_evaluacion`: agrupado por
+    competencia específica, cada criterio marcado como cita literal o, si no
+    hay equivalente, como pendiente de adaptar -nunca en blanco-, y siempre
+    con el hueco de redacción alternativa del profesor."""
+    if not resultado:
+        return ""
+    bloques: dict[str, list[CriterioEmparejado]] = {}
+    for r in resultado:
+        bloques.setdefault(r.competencia, []).append(r)
+
+    partes: list[str] = []
+    for ce, items in bloques.items():
+        lineas = [f"Competencia específica {ce}"]
+        for r in items:
+            if r.encontrado:
+                lineas.append(f"  {r.numero} ({r.referencia} — CITA LITERAL)")
+                lineas.append(f"      {r.texto_referencia}")
+            else:
+                lineas.append(f"  {r.numero} (SIN EQUIVALENTE en el nivel de referencia)")
+                lineas.append(f"      {_PENDIENTE_IA}")
+            lineas.append(redaccion_alternativa())
+        partes.append("\n".join(lineas))
+    return "\n\n".join(partes)
+
+
+def texto_saberes(resultado: list[SaberEmparejado]) -> str:
+    """Texto para `MateriaACIS.contenidos`, con el mismo criterio que
+    `texto_criterios`: cita literal, pendiente si no hay equivalente, y
+    siempre con el hueco de redacción alternativa."""
+    if not resultado:
+        return ""
+    partes: list[str] = []
+    for r in resultado:
+        etiqueta = "CITA LITERAL" if r.encontrado else "SIN EQUIVALENTE en el nivel de referencia"
+        lineas = [f"{r.bloque_origen} ({etiqueta})"]
+        if r.encontrado:
+            lineas += [f"  − {it}" for it in r.items_referencia]
+        else:
+            lineas.append(f"  {_PENDIENTE_IA}")
+        lineas.append(redaccion_alternativa())
+        partes.append("\n".join(lineas))
+    return "\n\n".join(partes)
+
+
+def avisos(criterios: list[CriterioEmparejado], saberes: list[SaberEmparejado]) -> list[str]:
+    """Un aviso por cada criterio o saber sin equivalente literal, para el
+    panel amarillo del Anexo III.b (ver `MateriaACIS.avisos_ia`)."""
+    lista: list[str] = []
+    for r in criterios:
+        if not r.encontrado:
+            lista.append(
+                f"El criterio {r.numero} (competencia {r.competencia}) no tiene equivalente literal "
+                "en el nivel de referencia: falta generar una propuesta adaptada, o redactarla a mano."
+            )
+    for r in saberes:
+        if not r.encontrado:
+            lista.append(
+                f"El bloque de saberes básicos «{r.titulo}» no tiene equivalente literal en el nivel de "
+                "referencia: falta generar una propuesta adaptada, o redactarla a mano."
+            )
+    return lista
+
+
+def emparejar_programacion(
+    materia: str,
+    programacion: Programacion,
+    curso_referencia: str,
+    tabla: dict,
+    base: MateriaACIS | None = None,
+) -> MateriaACIS:
+    """Compone una `MateriaACIS` a partir del emparejamiento determinista de
+    `programacion` contra el nivel de referencia. Todavía sin IA: los
+    criterios y saberes sin equivalente literal quedan marcados como
+    pendientes de adaptar (nunca en blanco, nunca inventados), con su aviso
+    correspondiente. `base` aporta materia, profesor, departamento y la
+    casilla `acs_determinada` (que decide una persona)."""
+    resultado_cr = emparejar_criterios(materia, programacion.competencias, curso_referencia, tabla)
+    resultado_sa = emparejar_saberes(materia, programacion.saberes_basicos, curso_referencia, tabla)
+
+    m = base or MateriaACIS(materia=materia)
+    m.criterios_evaluacion = texto_criterios(resultado_cr)
+    m.contenidos = texto_saberes(resultado_sa)
+    m.avisos_ia = list(m.avisos_ia) + avisos(resultado_cr, resultado_sa)
+    return m
