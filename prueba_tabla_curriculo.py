@@ -54,14 +54,34 @@ def main() -> int:
                              "saberes": []}},
             "anomalias": [], "intro": "...",
         },
+        # Matemáticas A/B (4.º ESO) no llevan marcador de curso propio en el
+        # decreto -son de un único curso- así que el parser las etiqueta como
+        # "curso único" ("0"), no como "4". Además, a veces queda una entrada
+        # "4" residual pero VACÍA (sin criterios ni saberes): no debe ganarle
+        # a la de "0", que es la que tiene contenido de verdad.
+        "MATEMÁTICAS A": {
+            "ce": [], "anomalias": [], "intro": "",
+            "cursos": {
+                "4": {"criterios": [], "saberes": []},
+                "0": {"criterios": [{"ce": "CE1", "id": "1.1", "texto": "Resolver un problema aplicado."}],
+                      "saberes": [{"b": "A", "t": "Aplicaciones", "items": ["Interés simple y compuesto."]}]},
+            },
+        },
+        "MATEMÁTICAS B": {
+            "ce": [], "anomalias": [], "intro": "",
+            "cursos": {
+                "0": {"criterios": [{"ce": "CE1", "id": "1.1", "texto": "Demostrar una propiedad matemática."}],
+                      "saberes": [{"b": "A", "t": "Demostraciones", "items": ["Métodos de demostración."]}]},
+            },
+        },
     }
 
     tabla = construir_tabla(datos, ["LENGUA CASTELLANA Y LITERATURA", "MATEMÁTICAS"])
 
-    if len(tabla["criterios"]) != 3:
-        fallos.append(f"criterios = {len(tabla['criterios'])} (esperados 3: 2 de Lengua + 1 de Matemáticas)")
-    if len(tabla["saberes"]) != 2:
-        fallos.append(f"saberes = {len(tabla['saberes'])} (esperados 2)")
+    if len(tabla["criterios"]) != 5:
+        fallos.append(f"criterios = {len(tabla['criterios'])} (esperados 5: 2 Lengua + 1 Matemáticas + 1 Mat.A + 1 Mat.B)")
+    if len(tabla["saberes"]) != 4:
+        fallos.append(f"saberes = {len(tabla['saberes'])} (esperados 4: 1 Lengua + 1 Matemáticas + 1 Mat.A + 1 Mat.B)")
     if any(f["materia"] == "MÚSICA" for f in tabla["criterios"] + tabla["saberes"]):
         fallos.append("Música no se pidió y no debería aparecer en la tabla")
 
@@ -86,6 +106,29 @@ def main() -> int:
         fallos.append(f"_nombre_legible mal capitalizado: «{_nombre_legible('LENGUA CASTELLANA Y LITERATURA')}»")
     if "y Literatura" not in _referencia("LENGUA CASTELLANA Y LITERATURA", "1"):
         fallos.append("la referencia no respeta la minúscula del conector «y»")
+    # La "A"/"B" de las variantes es un identificador, no la preposición "a".
+    if _nombre_legible("MATEMÁTICAS A") != "Matemáticas A":
+        fallos.append(f"_nombre_legible confunde la variante «A» con la preposición: «{_nombre_legible('MATEMÁTICAS A')}»")
+
+    # Matemáticas A/B (4.º ESO): deben aparecer con sus propias filas, curso
+    # "4.º ESO" (no "curso único"), y heredando el texto de la competencia de
+    # "MATEMÁTICAS" (el decreto no la repite). La entrada "4" vacía de A no
+    # debe ganarle a la de "0", que es la que tiene contenido real.
+    fila_a = next((f for f in tabla["criterios"] if f["materia"] == "MATEMÁTICAS A"), None)
+    fila_b = next((f for f in tabla["criterios"] if f["materia"] == "MATEMÁTICAS B"), None)
+    if fila_a is None or fila_b is None:
+        fallos.append("Matemáticas A y/o B no aparecen en la tabla (4.º ESO se quedaría sin filas)")
+    else:
+        for nombre, fila in (("A", fila_a), ("B", fila_b)):
+            if fila["curso"] != "4.º ESO":
+                fallos.append(f"Matemáticas {nombre}: curso «{fila['curso']}» (esperado «4.º ESO»)")
+            if fila["competencia_texto"] != "Resolver problemas.":
+                fallos.append(f"Matemáticas {nombre}: no hereda el texto de la competencia de MATEMÁTICAS")
+            if "Matemáticas " + nombre not in fila["referencia"]:
+                fallos.append(f"Matemáticas {nombre}: la referencia no dice «Matemáticas {nombre}»: «{fila['referencia']}»")
+    saberes_a = [f for f in tabla["saberes"] if f["materia"] == "MATEMÁTICAS A"]
+    if not saberes_a:
+        fallos.append("los saberes básicos de Matemáticas A no llegan a la tabla")
 
     if fallos:
         print("PRUEBA TABLA CURRÍCULO FALLIDA:")

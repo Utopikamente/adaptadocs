@@ -1511,6 +1511,420 @@
    "criterio_id": "10.2",
    "criterio_texto": "Participar en el reparto de tareas que deban desarrollarse en equipo, aportando valor, favoreciendo la inclusión, la escucha activa, asumiendo el rol asignado y responsabilizándose de la propia contribución al equipo.",
    "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas, 3.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE1",
+   "competencia_texto": "Interpretar, modelizar y resolver problemas de la vida cotidiana y propios de las matemáticas, aplicando diferentes estrategias y formas de razonamiento para explorar distintas maneras de proceder y obtener soluciones posibles.",
+   "criterio_id": "1.1",
+   "criterio_texto": "Reformular problemas matemáticos de forma verbal y gráfica, interpretando los datos, las relaciones entre ellos y las preguntas planteadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE1",
+   "competencia_texto": "Interpretar, modelizar y resolver problemas de la vida cotidiana y propios de las matemáticas, aplicando diferentes estrategias y formas de razonamiento para explorar distintas maneras de proceder y obtener soluciones posibles.",
+   "criterio_id": "1.2",
+   "criterio_texto": "Seleccionar herramientas y estrategias elaboradas valorando su eficacia e idoneidad en la resolución de problemas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE1",
+   "competencia_texto": "Interpretar, modelizar y resolver problemas de la vida cotidiana y propios de las matemáticas, aplicando diferentes estrategias y formas de razonamiento para explorar distintas maneras de proceder y obtener soluciones posibles.",
+   "criterio_id": "1.3",
+   "criterio_texto": "Obtener todas las posibles soluciones matemáticas de un problema activando los conocimientos y utilizando las herramientas tecnológicas necesarias.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE2",
+   "competencia_texto": "Analizar las soluciones de un problema usando diferentes técnicas y herramientas, evaluando las respuestas obtenidas, para verificar su validez e idoneidad desde un punto de vista lógico y su repercusión global.",
+   "criterio_id": "2.1",
+   "criterio_texto": "Comprobar la corrección matemática de las soluciones de un problema.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE2",
+   "competencia_texto": "Analizar las soluciones de un problema usando diferentes técnicas y herramientas, evaluando las respuestas obtenidas, para verificar su validez e idoneidad desde un punto de vista lógico y su repercusión global.",
+   "criterio_id": "2.2",
+   "criterio_texto": "Seleccionar las soluciones óptimas de un problema valorando tanto la corrección matemática como sus implicaciones desde diferentes perspectivas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE3",
+   "competencia_texto": "Formular y comprobar conjeturas sencillas o plantear problemas de forma autónoma, reconociendo el valor del razonamiento y la argumentación para generar nuevo conocimiento.",
+   "criterio_id": "3.1",
+   "criterio_texto": "Formular, comprobar e investigar conjeturas de forma guiada estudiando patrones, propiedades y relaciones.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE3",
+   "competencia_texto": "Formular y comprobar conjeturas sencillas o plantear problemas de forma autónoma, reconociendo el valor del razonamiento y la argumentación para generar nuevo conocimiento.",
+   "criterio_id": "3.2",
+   "criterio_texto": "Crear variantes de un problema dado, modificando alguno de sus datos y observando la relación entre los diferentes resultados obtenidos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE3",
+   "competencia_texto": "Formular y comprobar conjeturas sencillas o plantear problemas de forma autónoma, reconociendo el valor del razonamiento y la argumentación para generar nuevo conocimiento.",
+   "criterio_id": "3.3",
+   "criterio_texto": "Emplear herramientas tecnológicas adecuadas en la investigación y comprobación de conjeturas o problemas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE4",
+   "competencia_texto": "Utilizar los principios del pensamiento computacional organizando datos, descomponiendo en partes, reconociendo patrones, interpretando, modificando y creando algoritmos, para modelizar situaciones y resolver problemas de forma eficaz.",
+   "criterio_id": "4.1",
+   "criterio_texto": "Reconocer e investigar patrones, organizar datos y descomponer un problema en partes más simples facilitando su interpretación y su tratamiento computacional.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE4",
+   "competencia_texto": "Utilizar los principios del pensamiento computacional organizando datos, descomponiendo en partes, reconociendo patrones, interpretando, modificando y creando algoritmos, para modelizar situaciones y resolver problemas de forma eficaz.",
+   "criterio_id": "4.2",
+   "criterio_texto": "Modelizar situaciones y resolver problemas de forma eficaz interpretando, modificando y creando algoritmos sencillos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE5",
+   "competencia_texto": "Reconocer y utilizar conexiones entre los diferentes elementos matemáticos interconectando conceptos y procedimientos para desarrollar una visión de las matemáticas como un todo integrado.",
+   "criterio_id": "5.1",
+   "criterio_texto": "Deducir relaciones entre los conocimientos y experiencias matemáticas, formando un todo coherente.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE5",
+   "competencia_texto": "Reconocer y utilizar conexiones entre los diferentes elementos matemáticos interconectando conceptos y procedimientos para desarrollar una visión de las matemáticas como un todo integrado.",
+   "criterio_id": "5.2",
+   "criterio_texto": "Analizar y poner en práctica conexiones entre diferentes procesos matemáticos aplicando conocimientos y experiencias previas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE6",
+   "competencia_texto": "Identificar las matemáticas implicadas en otras materias y en situaciones reales susceptibles de ser abordadas en términos matemáticos, interrelacionando conceptos y procedimientos, para aplicarlos en situaciones diversas.",
+   "criterio_id": "3.4",
+   "criterio_texto": "Proponer situaciones susceptibles de ser formuladas y resueltas mediante herramientas y estrategias matemáticas, estableciendo y aplicando conexiones entre el mundo real y las matemáticas, y usando los procesos inherentes a la investigación científica y matemática: inferir, medir, comunicar, clasificar y predecir.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE6",
+   "competencia_texto": "Identificar las matemáticas implicadas en otras materias y en situaciones reales susceptibles de ser abordadas en términos matemáticos, interrelacionando conceptos y procedimientos, para aplicarlos en situaciones diversas.",
+   "criterio_id": "6.2",
+   "criterio_texto": "Identificar y aplicar conexiones coherentes entre las matemáticas y otras materias realizando un análisis crítico.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE6",
+   "competencia_texto": "Identificar las matemáticas implicadas en otras materias y en situaciones reales susceptibles de ser abordadas en términos matemáticos, interrelacionando conceptos y procedimientos, para aplicarlos en situaciones diversas.",
+   "criterio_id": "6.3",
+   "criterio_texto": "Valorar la aportación de las matemáticas al progreso de la humanidad y su contribución en la superación de los retos que demanda la sociedad actual.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE7",
+   "competencia_texto": "Representar, de forma individual y colectiva, conceptos, procedimientos y resultados matemáticos usando diferentes tecnologías, para visualizar ideas y estructurar procesos matemáticos.",
+   "criterio_id": "7.1",
+   "criterio_texto": "Representar matemáticamente la información más relevante de un problema, conceptos, procedimientos y resultados matemáticos visualizando ideas y estructurando procesos matemáticos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE7",
+   "competencia_texto": "Representar, de forma individual y colectiva, conceptos, procedimientos y resultados matemáticos usando diferentes tecnologías, para visualizar ideas y estructurar procesos matemáticos.",
+   "criterio_id": "7.2",
+   "criterio_texto": "Seleccionar entre diferentes herramientas, incluidas las digitales, y formas de representación (pictórica, gráfica, verbal o simbólica) valorando su utilidad para compartir información.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE8",
+   "competencia_texto": "Comunicar de forma individual y colectiva conceptos, procedimientos y argumentos matemáticos usando lenguaje oral, escrito o gráfico, utilizando la terminología matemática apropiada, para dar significado y coherencia a las ideas matemáticas.",
+   "criterio_id": "8.1",
+   "criterio_texto": "Comunicar ideas, conclusiones, conjeturas y razonamientos matemáticos, utilizando diferentes medios, incluidos los digitales, con coherencia, claridad y terminología apropiada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE8",
+   "competencia_texto": "Comunicar de forma individual y colectiva conceptos, procedimientos y argumentos matemáticos usando lenguaje oral, escrito o gráfico, utilizando la terminología matemática apropiada, para dar significado y coherencia a las ideas matemáticas.",
+   "criterio_id": "8.2",
+   "criterio_texto": "Reconocer y emplear el lenguaje matemático presente en la vida cotidiana y en diversos contextos comunicando mensajes con contenido matemático con precisión y rigor.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE9",
+   "competencia_texto": "Desarrollar destrezas personales, identificando y gestionando emociones, poniendo en práctica estrategias de aceptación del error como parte del proceso de aprendizaje y adaptándose ante situaciones de incertidumbre, para mejorar la perseverancia en la consecución de objetivos y el disfrute en el aprendizaje de las matemáticas.",
+   "criterio_id": "9.1",
+   "criterio_texto": "Identificar y gestionar las emociones propias y desarrollar el autoconcepto matemático generando expectativas positivas ante nuevos retos matemáticos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE9",
+   "competencia_texto": "Desarrollar destrezas personales, identificando y gestionando emociones, poniendo en práctica estrategias de aceptación del error como parte del proceso de aprendizaje y adaptándose ante situaciones de incertidumbre, para mejorar la perseverancia en la consecución de objetivos y el disfrute en el aprendizaje de las matemáticas.",
+   "criterio_id": "9.2",
+   "criterio_texto": "Mostrar una actitud positiva y perseverante al hacer frente a las diferentes situaciones de aprendizaje de las matemáticas aceptando la crítica razonada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE10",
+   "competencia_texto": "Desarrollar destrezas sociales reconociendo y respetando las emociones y experiencias de los demás, participando activa y reflexivamente en proyectos en equipos heterogéneos con roles asignados, para construir una identidad positiva como estudiante de matemáticas, fomentar el bienestar personal y grupal y crear relaciones saludables.",
+   "criterio_id": "10.1",
+   "criterio_texto": "Colaborar activamente y construir relaciones trabajando con las matemáticas en equipos heterogéneos, respetando diferentes opiniones, comunicándose de manera efectiva, pensando de forma crítica y creativa, tomando decisiones y realizando juicios informados.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "competencia_id": "CE10",
+   "competencia_texto": "Desarrollar destrezas sociales reconociendo y respetando las emociones y experiencias de los demás, participando activa y reflexivamente en proyectos en equipos heterogéneos con roles asignados, para construir una identidad positiva como estudiante de matemáticas, fomentar el bienestar personal y grupal y crear relaciones saludables.",
+   "criterio_id": "10.2",
+   "criterio_texto": "Gestionar el reparto de tareas en el trabajo en equipo, aportando valor, favoreciendo la inclusión, la escucha activa, responsabilizándose del rol asignado y de la propia contribución al equipo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE1",
+   "competencia_texto": "Interpretar, modelizar y resolver problemas de la vida cotidiana y propios de las matemáticas, aplicando diferentes estrategias y formas de razonamiento para explorar distintas maneras de proceder y obtener soluciones posibles.",
+   "criterio_id": "1.1",
+   "criterio_texto": "Reformular de forma verbal y gráfica problemas matemáticos, interpretando los datos, las relaciones entre ellos y las preguntas planteadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE1",
+   "competencia_texto": "Interpretar, modelizar y resolver problemas de la vida cotidiana y propios de las matemáticas, aplicando diferentes estrategias y formas de razonamiento para explorar distintas maneras de proceder y obtener soluciones posibles.",
+   "criterio_id": "1.2",
+   "criterio_texto": "Analizar y seleccionar diferentes herramientas y estrategias elaboradas para resolver un mismo problema valorando su eficiencia.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE1",
+   "competencia_texto": "Interpretar, modelizar y resolver problemas de la vida cotidiana y propios de las matemáticas, aplicando diferentes estrategias y formas de razonamiento para explorar distintas maneras de proceder y obtener soluciones posibles.",
+   "criterio_id": "1.3",
+   "criterio_texto": "Obtener todas las posibles soluciones matemáticas de un problema movilizando los conocimientos y utilizando las herramientas tecnológicas necesarias.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE2",
+   "competencia_texto": "Analizar las soluciones de un problema usando diferentes técnicas y herramientas, evaluando las respuestas obtenidas, para verificar su validez e idoneidad desde un punto de vista lógico y su repercusión global.",
+   "criterio_id": "2.1",
+   "criterio_texto": "Comprobar la corrección matemática de las soluciones de un problema.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE2",
+   "competencia_texto": "Analizar las soluciones de un problema usando diferentes técnicas y herramientas, evaluando las respuestas obtenidas, para verificar su validez e idoneidad desde un punto de vista lógico y su repercusión global.",
+   "criterio_id": "2.2",
+   "criterio_texto": "Justificar las soluciones óptimas de un problema desde diferentes perspectivas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE3",
+   "competencia_texto": "Formular y comprobar conjeturas sencillas o plantear problemas de forma autónoma, reconociendo el valor del razonamiento y la argumentación para generar nuevo conocimiento.",
+   "criterio_id": "3.1",
+   "criterio_texto": "Formular, comprobar e investigar conjeturas de forma guiada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE3",
+   "competencia_texto": "Formular y comprobar conjeturas sencillas o plantear problemas de forma autónoma, reconociendo el valor del razonamiento y la argumentación para generar nuevo conocimiento.",
+   "criterio_id": "3.2",
+   "criterio_texto": "Plantear variantes de un problema que lleven a una generalización.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE3",
+   "competencia_texto": "Formular y comprobar conjeturas sencillas o plantear problemas de forma autónoma, reconociendo el valor del razonamiento y la argumentación para generar nuevo conocimiento.",
+   "criterio_id": "3.3",
+   "criterio_texto": "Emplear herramientas tecnológicas adecuadas en la investigación y comprobación de conjeturas o problemas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE4",
+   "competencia_texto": "Utilizar los principios del pensamiento computacional organizando datos, descomponiendo en partes, reconociendo patrones, interpretando, modificando y creando algoritmos, para modelizar situaciones y resolver problemas de forma eficaz.",
+   "criterio_id": "4.1",
+   "criterio_texto": "Generalizar patrones y proporcionar una representación computacional de situaciones problematizadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE4",
+   "competencia_texto": "Utilizar los principios del pensamiento computacional organizando datos, descomponiendo en partes, reconociendo patrones, interpretando, modificando y creando algoritmos, para modelizar situaciones y resolver problemas de forma eficaz.",
+   "criterio_id": "4.2",
+   "criterio_texto": "Modelizar situaciones y resolver problemas de forma eficaz interpretando, modificando, generalizando y creando algoritmos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE5",
+   "competencia_texto": "Reconocer y utilizar conexiones entre los diferentes elementos matemáticos interconectando conceptos y procedimientos para desarrollar una visión de las matemáticas como un todo integrado.",
+   "criterio_id": "5.1",
+   "criterio_texto": "Deducir relaciones entre los conocimientos y experiencias matemáticas, formando un todo coherente.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE5",
+   "competencia_texto": "Reconocer y utilizar conexiones entre los diferentes elementos matemáticos interconectando conceptos y procedimientos para desarrollar una visión de las matemáticas como un todo integrado.",
+   "criterio_id": "5.2",
+   "criterio_texto": "Analizar y poner en práctica conexiones entre diferentes procesos matemáticos aplicando conocimientos y experiencias previas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE6",
+   "competencia_texto": "Identificar las matemáticas implicadas en otras materias y en situaciones reales susceptibles de ser abordadas en términos matemáticos, interrelacionando conceptos y procedimientos, para aplicarlos en situaciones diversas.",
+   "criterio_id": "3.4",
+   "criterio_texto": "Proponer situaciones susceptibles de ser formuladas y resueltas mediante herramientas y estrategias matemáticas, estableciendo y aplicando conexiones entre el mundo real y las matemáticas, y usando los procesos inherentes a la investigación científica y matemática: inferir, medir, comunicar, clasificar y predecir.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE6",
+   "competencia_texto": "Identificar las matemáticas implicadas en otras materias y en situaciones reales susceptibles de ser abordadas en términos matemáticos, interrelacionando conceptos y procedimientos, para aplicarlos en situaciones diversas.",
+   "criterio_id": "6.2",
+   "criterio_texto": "Analizar y aplicar conexiones coherentes entre las matemáticas y otras materias realizando un análisis crítico.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE6",
+   "competencia_texto": "Identificar las matemáticas implicadas en otras materias y en situaciones reales susceptibles de ser abordadas en términos matemáticos, interrelacionando conceptos y procedimientos, para aplicarlos en situaciones diversas.",
+   "criterio_id": "6.3",
+   "criterio_texto": "Valorar la aportación de las matemáticas al progreso de la humanidad y su contribución a la superación de los retos que demanda la sociedad actual.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE7",
+   "competencia_texto": "Representar, de forma individual y colectiva, conceptos, procedimientos y resultados matemáticos usando diferentes tecnologías, para visualizar ideas y estructurar procesos matemáticos.",
+   "criterio_id": "7.1",
+   "criterio_texto": "Representar matemáticamente la información más relevante de un problema, conceptos, procedimientos y resultados matemáticos visualizando ideas y estructurando procesos matemáticos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE7",
+   "competencia_texto": "Representar, de forma individual y colectiva, conceptos, procedimientos y resultados matemáticos usando diferentes tecnologías, para visualizar ideas y estructurar procesos matemáticos.",
+   "criterio_id": "7.2",
+   "criterio_texto": "Seleccionar entre diferentes herramientas, incluidas las digitales, y formas de representación (pictórica, gráfica, verbal o simbólica) valorando su utilidad para compartir información.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE8",
+   "competencia_texto": "Comunicar de forma individual y colectiva conceptos, procedimientos y argumentos matemáticos usando lenguaje oral, escrito o gráfico, utilizando la terminología matemática apropiada, para dar significado y coherencia a las ideas matemáticas.",
+   "criterio_id": "8.1",
+   "criterio_texto": "Comunicar ideas, conclusiones, conjeturas y razonamientos matemáticos, utilizando diferentes medios, incluidos los digitales, con coherencia, claridad y terminología apropiada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE8",
+   "competencia_texto": "Comunicar de forma individual y colectiva conceptos, procedimientos y argumentos matemáticos usando lenguaje oral, escrito o gráfico, utilizando la terminología matemática apropiada, para dar significado y coherencia a las ideas matemáticas.",
+   "criterio_id": "8.2",
+   "criterio_texto": "Reconocer y emplear el lenguaje matemático presente en la vida cotidiana y en diversos contextos comunicando mensajes con contenido matemático con precisión y rigor.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE9",
+   "competencia_texto": "Desarrollar destrezas personales, identificando y gestionando emociones, poniendo en práctica estrategias de aceptación del error como parte del proceso de aprendizaje y adaptándose ante situaciones de incertidumbre, para mejorar la perseverancia en la consecución de objetivos y el disfrute en el aprendizaje de las matemáticas.",
+   "criterio_id": "9.1",
+   "criterio_texto": "Identificar y gestionar las emociones propias y desarrollar el autoconcepto matemático generando expectativas positivas ante nuevos retos matemáticos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE9",
+   "competencia_texto": "Desarrollar destrezas personales, identificando y gestionando emociones, poniendo en práctica estrategias de aceptación del error como parte del proceso de aprendizaje y adaptándose ante situaciones de incertidumbre, para mejorar la perseverancia en la consecución de objetivos y el disfrute en el aprendizaje de las matemáticas.",
+   "criterio_id": "9.2",
+   "criterio_texto": "Mostrar una actitud positiva y perseverante al hacer frente a las diferentes situaciones de aprendizaje de las matemáticas aceptando la crítica razonada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE10",
+   "competencia_texto": "Desarrollar destrezas sociales reconociendo y respetando las emociones y experiencias de los demás, participando activa y reflexivamente en proyectos en equipos heterogéneos con roles asignados, para construir una identidad positiva como estudiante de matemáticas, fomentar el bienestar personal y grupal y crear relaciones saludables.",
+   "criterio_id": "10.1",
+   "criterio_texto": "Colaborar activamente y construir relaciones trabajando con las matemáticas en equipos heterogéneos, respetando diferentes opiniones, comunicándose de manera efectiva, pensando de forma crítica y creativa, tomando decisiones y realizando juicios informados.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "competencia_id": "CE10",
+   "competencia_texto": "Desarrollar destrezas sociales reconociendo y respetando las emociones y experiencias de los demás, participando activa y reflexivamente en proyectos en equipos heterogéneos con roles asignados, para construir una identidad positiva como estudiante de matemáticas, fomentar el bienestar personal y grupal y crear relaciones saludables.",
+   "criterio_id": "10.2",
+   "criterio_texto": "Gestionar el reparto de tareas en el trabajo en equipo, aportando valor, favoreciendo la inclusión, la escucha activa, responsabilizándose del rol asignado y de la propia contribución al equipo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
   }
  ],
  "saberes": [
@@ -5601,6 +6015,1278 @@
    "bloque_titulo": "Actitudes y aprendizaje",
    "item": "Reconocimiento de la contribución de las matemáticas al desarrollo de los distintos ámbitos del conocimiento humano.",
    "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas, 3.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Resolución de situaciones y problemas de la vida cotidiana en los que sea conveniente el empleo de estrategias para el recuento sistemático (diagrama de árbol, técnicas de combinatoria, etc.).",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Realización de estimaciones en diversos contextos analizando y acotando el error cometido.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Expresión de cantidades mediante números reales para expresar situaciones de la vida cotidiana con la precisión requerida.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Identificación de los conjuntos numéricos como forma de responder a diferentes necesidades: contar, medir, comparar, etc.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Operaciones con números reales en la resolución de situaciones contextualizadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Propiedades de las operaciones aritméticas: cálculos con números reales, incluyendo con herramientas digitales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Utilización de las propiedades de los números reales y de la jerarquía de las operaciones para la realización de cálculos aritméticos combinados en papel.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Potencias de exponente racional. Repaso del concepto de número irracional. Racionalización. Propiedades, cálculos básicos y aplicaciones.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Definición de logaritmo. Comprensión de la importancia, en ciertos contextos, del concepto de orden de magnitud.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Algunos números irracionales en situaciones de la vida cotidiana. La importancia del número π y de la proporción aurea.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Patrones y regularidades numéricas en las que intervengan números reales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Orden en la recta numérica. Representación de números irracionales sobre la misma. Estudio del significado de diferente tipo de intervalos (abiertos, cerrados o mixtos).",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Consolidación de estrategias para enfrentarse a situaciones de proporcionalidad directa e inversa en diferentes contextos: desarrollo y análisis de métodos para la resolución de problemas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Consolidación de estrategias y métodos de resolución de problemas relacionados con aumentos y disminuciones porcentuales, intereses y tasas en contextos financieros, valorando críticamente los resultados obtenidos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Deducción y aplicación de la pendiente y su relación con un ángulo en situaciones sencillas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Repaso de las razones trigonométricas básicas: seno, coseno y tangente.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Ecuación fundamental de la trigonometría.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Estudio gráfico del crecimiento y decrecimiento de funciones en contextos de la vida cotidiana con el apoyo de herramientas tecnológicas: tasas de variación absoluta, relativa y media.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Propiedades geométricas de objetos de la vida cotidiana: investigación con programas de geometría dinámica.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Transformaciones elementales en la vida cotidiana: investigación con herramientas tecnológicas como programas de geometría dinámica, realidad aumentada, etc.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Realización de modelos geométricos para representar y explicar relaciones numéricas y algebraicas en situaciones diversas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Modelización de elementos geométricos de la vida cotidiana con herramientas tecnológicas como programas de geometría dinámica, realidad aumentada, etc.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Elaboración y comprobación de conjeturas sobre propiedades geométricas utilizando programas de geometría dinámica u otras herramientas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Patrones, pautas y regularidades: observación, generalización y término general en casos sencillos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Modelización y resolución de problemas de la vida cotidiana mediante representaciones matemáticas y lenguaje algebraico, haciendo uso de distintos tipos de funciones elementales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Expresiones algebraicas: profundización y aplicación de las mismas a la modelización de situaciones cotidianas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Estrategias de deducción y análisis de conclusiones razonables de una situación de la vida cotidiana a partir de un modelo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Continuación y profundización en el cálculo con polinomios.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Operaciones combinadas con polinomios.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "División de polinomios. Regla de Ruffini. Teorema del Resto.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Factorización de polinomios y aplicación de la misma a la simplificación de fracciones algebraicas y operaciones sencillas como la suma.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Variables: asociación de expresiones simbólicas al contexto del problema y diferentes usos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Características del cambio en la representación gráfica de relaciones lineales y cuadráticas",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Relaciones lineales, cuadráticas y de proporcionalidad inversa en situaciones de la vida cotidiana o matemáticamente relevantes: expresión mediante álgebra simbólica.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Resolución de ecuaciones polinómicas de grado superior a dos. Introducción a la resolución de ecuaciones bicuadradas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Formas equivalentes de expresiones algebraicas en la resolución de ecuaciones lineales y cuadráticas, y sistemas de ecuaciones e inecuaciones lineales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Inecuaciones de primer grado con una variable: representación sobre la recta real.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Inecuaciones de primer grado con dos variables: identificar, tras la representación gráfica de una recta, qué condiciones de desigualdad satisfacen cada una de las dos regiones en que queda dividido el plano cartesiano por la misma.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Estrategias de discusión y búsqueda de soluciones en ecuaciones lineales y cuadráticas en situaciones de la vida cotidiana.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Ecuaciones, sistemas de ecuaciones e inecuaciones: resolución mediante el uso de la tecnología.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Otro tipo de ecuaciones: planteamiento e introducción a la resolución de ecuaciones sencillas que contienen fracciones algebraicas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Estrategias, aplicando cuando proceda la definición de logaritmo, para la resolución de ecuaciones exponenciales sencillas que requieran despejar la incógnita del exponente de una igualdad con potencias.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Relaciones cuantitativas en situaciones de la vida cotidiana y clases de funciones que las modelizan.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Relaciones lineales y no lineales: identificación y comparación de diferentes modos de representación, tablas, gráficas o expresiones algebraicas, y sus propiedades a partir de ellas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Representación gráfica de las funciones elementales estudiadas: interpretación y análisis crítico de sus propiedades en situaciones de la vida cotidiana.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Dominio de definición e imagen de una función.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Crecimiento y decrecimiento, máximos y mínimos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Tasa de variación media como medida de la variación de una función en un intervalo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Funciones lineales, cuadráticas y de proporcionalidad inversa.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Funciones definidas a trozos a partir de funciones lineales y cuadráticas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Funciones continuas y discontinuas. Tipos de discontinuidad.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Aproximación a la derivación de funciones. Derivación de constantes, potencias, logaritmos, polinomios, funciones trigonométricas, sumas, productos y cocientes.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Resolución de problemas mediante la descomposición en partes, la automatización y el pensamiento algorítmico.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Estrategias en la interpretación, modificación y creación de algoritmos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Formulación y análisis de problemas de la vida cotidiana mediante programas y otras herramientas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Estrategias de recogida y organización de datos de situaciones de la vida cotidiana que involucren una variable bidimensional. Tablas de contingencia.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Análisis e interpretación de tablas y gráficos estadísticos de una y dos variables cualitativas, cuantitativas discretas y cuantitativas continuas en contextos reales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Medidas de localización y dispersión: interpretación y análisis de la variabilidad.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "· Calculo de medidas correspondientes a conjuntos de datos estadísticos diversos (variable cualitativa, cuantitativa discreta y continua). Profundización en su análisis, organización y representación de los mismos, y aplicación a la resolución de problemas cotidianos: media, moda, mediana, rango o recorrido, desviación típica y varianza.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "· Parámetros de posición: obtención e interpretación. Mediana y cuartiles.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Gráficos estadísticos de una y dos variables: representación mediante diferentes tecnologías (calculadora, hoja de cálculo, aplicaciones...), análisis, interpretación y obtención de conclusiones razonadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Interpretación de la relación entre dos variables, valorando gráficamente con herramientas tecnológicas la pertinencia de realizar una regresión lineal. Ajuste lineal con herramientas tecnológicas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Experimentos compuestos: planificación, realización y análisis de la incertidumbre asociada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Probabilidad: cálculo aplicando la regla de Laplace y técnicas de recuento en experimentos simples y compuestos (mediante diagramas de árbol, tablas…) y aplicación a la toma de decisiones fundamentadas. Hallar el espacio muestral.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Álgebra de conjuntos: unión, intersección y complementario.”",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Diferentes etapas del diseño de estudios estadísticos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Estrategias y herramientas de presentación e interpretación de datos relevantes en investigaciones estadísticas mediante herramientas digitales adecuadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Análisis del alcance de las conclusiones de un estudio estadístico valorando la representatividad de la muestra.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Introducción a los números combinatorios: comprensión de la diferencia entre variaciones, permutaciones y combinaciones. Aplicación a la resolución de problemas cotidianos sencillos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Gestión emocional: emociones que intervienen en el aprendizaje de las matemáticas. Autoconciencia y autorregulación. Superación de bloqueos emocionales en el aprendizaje de las matemáticas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Estrategias de fomento de la curiosidad, la iniciativa, la perseverancia y la resiliencia en el aprendizaje de las matemáticas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Estrategias de fomento de la flexibilidad cognitiva: apertura a cambios de estrategia y transformación del error en oportunidad de aprendizaje.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Asunción de responsabilidades y participación activa optimizando el trabajo en equipo. Estrategias de gestión de conflictos: pedir, dar y gestionar ayuda.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Métodos para la gestión y la toma de decisiones adecuadas en la resolución de situaciones propias del quehacer matemático en el trabajo en equipo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS A",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "La contribución de las matemáticas al desarrollo de los distintos ámbitos del conocimiento humano.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas A, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Realización de estimaciones en diversos contextos analizando y acotando el error cometido.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Expresión de cantidades mediante números reales en contextos cotidianos con la precisión requerida.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Diferentes representaciones de una misma cantidad.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Uso de las propiedades de las operaciones aritméticas con números reales en la resolución de situaciones contextualizadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Propiedades y relaciones inversas de las operaciones: cálculos con números reales, incluyendo este con herramientas digitales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Utilización correcta de las propiedades de los números reales y de la jerarquía de las operaciones para la realización de cálculos aritméticos combinados en papel.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Expresión de los números irracionales como potencias de exponente racional. Racionalización, propiedades de los radicales y aplicaciones.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Logaritmos: definición y propiedades. Aplicación a contextos sencillos como la escala de pH o la escala Ritcher, valorando el concepto de orden de magnitud.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Algunos números irracionales en situaciones de la vida cotidiana. La importancia del número pi y de la proporción aurea.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Los conjuntos numéricos (naturales, enteros, racionales y reales): relaciones entre ellos y propiedades.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Orden en la recta numérica. Representación de números irracionales sobre ella. Intervalos (abiertos, cerrados, mixtos y semirrectas).",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "A",
+   "bloque_titulo": "Números y operaciones",
+   "item": "Situaciones de proporcionalidad directa e inversa en diferentes contextos: desarrollo y análisis de métodos para la resolución de problemas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Reconocimiento de las razones trigonométricas de un ángulo agudo: aplicación a la resolución de problemas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Medida de ángulos en el sistema sexagesimal y en radianes.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Relaciones métricas en los triángulos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Razones trigonométricas completas y funciones trigonométricas inversas: seno, coseno, tangente, secante, cosecante, cotangente, arcoseno, arcocoseno y arcotangente.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Teoría del seno y del coseno.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "B",
+   "bloque_titulo": "Medida y geometría",
+   "item": "Estudio gráfico del crecimiento y decrecimiento de funciones en contextos de la vida cotidiana diversos con el apoyo de herramientas tecnológicas: tasas de variación absoluta, relativa y media.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Propiedades geométricas de objetos matemáticos y de la vida cotidiana: investigación con programas de geometría dinámica.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Razón entre longitudes, áreas y volúmenes de cuerpos semejantes; aplicación a la resolución de problemas geométricos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Relaciones trigonométricas de un ángulo cualquiera: comprensión y reducción al estudio de un ángulo agudo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Figuras y objetos geométricas de dos dimensiones: representación y análisis de sus propiedades utilizando la geometría analítica.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Coordenadas, puntos y vectores.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Conocimiento de las diferentes expresiones algebraicas de una recta: selección de la más adecuada en función de la situación a resolver.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Estudio y discusión analítica de las diferentes posiciones relativas de un par de rectas en el plano: incidencia.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Transformaciones elementales en la vida cotidiana: investigación con herramientas tecnológicas como programas de geometría dinámica, realidad aumentada…",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Modelos geométricos: representación y explicación de relaciones numéricas y algebraicas en situaciones diversas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Modelización de elementos geométricos con herramientas tecnológicas como programas de geometría dinámica, realidad aumentada…",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "C",
+   "bloque_titulo": "Geometría en el plano y el espacio",
+   "item": "Elaboración y comprobación de conjeturas sobre propiedades geométricas mediante programas de geometría dinámica u otras herramientas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Patrones, pautas y regularidades: observación, generalización y término general en casos sencillos. Profundización en la resolución de problemas que impliquen series numéricas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Introducción intuitiva al concepto de límite. El número irracional e.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Modelización y resolución de problemas de la vida cotidiana mediante representaciones matemáticas y lenguaje algebraico, haciendo uso de distintos tipos de funciones.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Estrategias de deducción y análisis de conclusiones razonables de una situación de la vida cotidiana a partir de un modelo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Variables: asociación de expresiones simbólicas al contexto del problema y diferentes usos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Relaciones entre cantidades y sus tasas de cambio.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Uso del álgebra simbólica: representación de relaciones funcionales en contextos diversos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Profundización en el cálculo con polinomios.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Cálculo de potencias de exponente mayor que dos de un binomio.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Fracciones algebraicas: simplificación y operaciones.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Búsqueda activa de formas equivalentes de expresiones algebraicas en la resolución de ecuaciones, sistemas de ecuaciones e inecuaciones lineales y no lineales sencillas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Estrategias de discusión y búsqueda de soluciones en ecuaciones lineales y no lineales sencillas en situaciones de la vida cotidiana.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Resolución de ecuaciones polinómicas de grado superior a dos. Ecuaciones bicuadradas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Otro tipo de ecuaciones: planteamiento y resolución de ecuaciones que contienen radicales o fracciones algebraicas. Estrategias para la resolución de ecuaciones exponenciales y logarítmicas sencillas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Inecuaciones de primer y segundo grado: interpretación gráfica de las soluciones.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Sistemas de inecuaciones sencillos con una y dos variables: interpretación gráfica según corresponda sobre la recta o el plano.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Sistemas de ecuaciones no lineales: Planteamiento y resolución de problemas de contexto real mediante sistemas de ecuaciones no lineales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Ecuaciones, sistemas e inecuaciones: resolución mediante el uso de la tecnología.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Relaciones cuantitativas en situaciones de la vida cotidiana y las clases de funciones que las modelizan.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Relaciones lineales y no lineales: identificación y comparación de diferentes modos de representación, tablas, gráficas o expresiones algebraicas, y sus propiedades a partir de ellas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Representación de funciones: interpretación de sus propiedades en situaciones de la vida cotidiana y otros contextos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Dominio de definición e imagen de una función.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Crecimiento y decrecimiento: máximos y mínimos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Simetría. Funciones pares e impares.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Tasa de variación media como medida de la variación de una función en un intervalo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Funciones lineales, cuadráticas y de proporcionalidad inversa.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Funciones definidas a trozos a partir de funciones lineales y cuadráticas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Funciones exponenciales y logarítmicas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "· Funciones trigonométricas: identificación de funciones periódicas y sus parámetros. Periodo y frecuencia.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Aproximación a la derivación de funciones. Derivación de constantes, potencias, logaritmos, polinomios, funciones trigonométricas, funciones arco, sumas, productos y cocientes.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Resolución de problemas mediante la descomposición en partes, la automatización y el pensamiento algorítmico.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Estrategias en la interpretación, modificación y creación de algoritmos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "D",
+   "bloque_titulo": "Álgebra",
+   "item": "Formulación y análisis de problemas de la vida cotidiana mediante programas y otras herramientas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Estrategias de recogida y organización de datos de situaciones de la vida cotidiana que involucren una variable estadística bidimensional, discreta o continua. Tablas de contingencia.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Análisis e interpretación de tablas y gráficos estadísticos de una y dos variables cualitativas, cuantitativas discretas y cuantitativas continuas en contextos reales.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Medidas de localización y dispersión: interpretación y análisis de la variabilidad.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "· Profundización en su análisis y aplicación a la resolución de problemas cotidianos: media, moda, mediana, rango o recorrido, desviación típica y varianza.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "· Parámetros de posición: obtención e interpretación. Mediana y cuartiles.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Gráficos estadísticos de una y dos variables: representación mediante diferentes tecnologías (calculadora, hoja de cálculo, aplicaciones…), análisis, interpretación y obtención de conclusiones razonadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Interpretación de la relación entre dos variables, valorando gráficamente con herramientas tecnológicas la pertinencia de realizar una regresión lineal. Ajuste lineal con herramientas tecnológicas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Experimentos compuestos: planificación, realización y análisis de la incertidumbre asociada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Probabilidad: cálculo aplicando la regla de Laplace y técnicas de recuento en experimentos simples y compuestos (mediante diagramas de árbol, tablas…) y aplicación a la toma de decisiones fundamentadas. Hallar el espacio muestral.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Álgebra de conjuntos: unión, intersección y complementario.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Diferentes etapas del diseño de estudios estadísticos.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Estrategias y herramientas de presentación e interpretación de datos relevantes en investigaciones estadísticas mediante herramientas digitales adecuadas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Análisis del alcance de las conclusiones de un estudio estadístico valorando la representatividad de la muestra.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Números combinatorios: variaciones, permutaciones y combinaciones. Aplicación a la resolución de problemas.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Sucesos dependientes e independientes.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Tablas de contingencia y diagramas de árbol para la asignación de probabilidades.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "E",
+   "bloque_titulo": "Estadística",
+   "item": "Probabilidad condicionada.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Gestión emocional: emociones que intervienen en el aprendizaje de las matemáticas. Autoconciencia y autorregulación.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Estrategias de fomento de la flexibilidad cognitiva: apertura a cambios de estrategia y transformación del error en oportunidad de aprendizaje.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Asunción de responsabilidades y participación activa, optimizando el trabajo en equipo. Estrategias de gestión de conflictos: pedir, dar y gestionar ayuda.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "Métodos para la gestión y la toma de decisiones adecuadas en la resolución de situaciones propias del quehacer matemático en el trabajo en equipo.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
+  },
+  {
+   "materia": "MATEMÁTICAS B",
+   "curso": "4.º ESO",
+   "bloque_id": "F",
+   "bloque_titulo": "Actitudes y aprendizaje",
+   "item": "La contribución de las matemáticas al desarrollo de los distintos ámbitos del conocimiento humano.",
+   "referencia": "Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — Matemáticas B, 4.º ESO"
   }
  ],
  "anomalias": {

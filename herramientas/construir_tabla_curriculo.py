@@ -36,15 +36,55 @@ _CONECTORES = {"y", "e", "o", "de", "del", "la", "las", "los", "a", "en"}
 def _nombre_legible(materia: str) -> str:
     """"LENGUA CASTELLANA Y LITERATURA" -> "Lengua Castellana y Literatura"
     (los conectores como "y"/"de" se dejan en minúscula, igual que hace el
-    Taller de Programaciones con `bancoNombre()`)."""
+    Taller de Programaciones con `bancoNombre()`). Una última palabra de una
+    sola letra ("MATEMÁTICAS A") es el identificador de la variante, no un
+    conector ("Y"/"A" en medio del nombre sí lo son): se deja en mayúscula.
+    Se distingue por posición, no por la letra: el identificador de variante
+    siempre va al final: un conector nunca."""
+    originales = materia.split()
     palabras = materia.lower().split()
-    return " ".join(p if p in _CONECTORES else p.capitalize() for p in palabras)
+    ultimo = len(originales) - 1
+    return " ".join(
+        orig if (i == ultimo and len(orig) == 1) else (p if p in _CONECTORES else p.capitalize())
+        for i, (orig, p) in enumerate(zip(originales, palabras))
+    )
 
 
 def _referencia(materia: str, curso_key: str) -> str:
     curso = NOM_CURSO.get(curso_key, curso_key)
     return (f"Decreto 65/2022, de 20 de julio (BOCM 26/07/2022), Anexo II — "
             f"{_nombre_legible(materia)}, {curso}")
+
+
+def _filas_de_materia(nombre: str, M: dict, textos_ce: dict[str, str]) -> tuple[list[dict], list[dict]]:
+    """Filas de criterios y saberes de UNA materia ya parseada, con `nombre`
+    como etiqueta (permite usar el nombre real de una variante, p. ej.
+    "MATEMÁTICAS A", aunque sus competencias se hereden de "MATEMÁTICAS")."""
+    filas_criterios: list[dict] = []
+    filas_saberes: list[dict] = []
+    for curso_key, curso in M.get("cursos", {}).items():
+        ref = _referencia(nombre, curso_key)
+        for cr in curso.get("criterios", []):
+            filas_criterios.append({
+                "materia": nombre,
+                "curso": NOM_CURSO.get(curso_key, curso_key),
+                "competencia_id": cr["ce"],
+                "competencia_texto": textos_ce.get(cr["ce"], ""),
+                "criterio_id": cr["id"],
+                "criterio_texto": cr["texto"],
+                "referencia": ref,
+            })
+        for bloque in curso.get("saberes", []):
+            for item in bloque.get("items", []):
+                filas_saberes.append({
+                    "materia": nombre,
+                    "curso": NOM_CURSO.get(curso_key, curso_key),
+                    "bloque_id": bloque["b"],
+                    "bloque_titulo": bloque["t"],
+                    "item": item,
+                    "referencia": ref,
+                })
+    return filas_criterios, filas_saberes
 
 
 def construir_tabla(datos: dict, materias: list[str]) -> dict:
@@ -54,6 +94,15 @@ def construir_tabla(datos: dict, materias: list[str]) -> dict:
     competencia_texto, criterio_id, criterio_texto, referencia.
     Cada fila de `saberes` trae: materia, curso, bloque_id, bloque_titulo,
     item, referencia.
+
+    Caso especial: en 4.º ESO, Matemáticas se desdobla oficialmente en dos
+    asignaturas distintas -Matemáticas A y Matemáticas B- con sus propios
+    criterios y saberes básicos, aunque comparten las competencias
+    específicas de "Matemáticas" (el decreto no las repite). Si se pide
+    "MATEMÁTICAS", se añaden también sus filas de 4.º ESO bajo esos dos
+    nombres (así lo verá el emparejador, con el nombre real que trae una
+    programación de 4.º); si no, la tabla se queda sin ninguna fila de 4.º
+    para Matemáticas, que es un hueco real y no un error de extracción.
     """
     filas_criterios: list[dict] = []
     filas_saberes: list[dict] = []
@@ -67,28 +116,36 @@ def construir_tabla(datos: dict, materias: list[str]) -> dict:
             anomalias[materia] = M["anomalias"]
 
         textos_ce = {c["id"]: c["texto"] for c in M.get("ce", [])}
-        for curso_key, curso in M.get("cursos", {}).items():
-            ref = _referencia(materia, curso_key)
-            for cr in curso.get("criterios", []):
-                filas_criterios.append({
-                    "materia": materia,
-                    "curso": NOM_CURSO.get(curso_key, curso_key),
-                    "competencia_id": cr["ce"],
-                    "competencia_texto": textos_ce.get(cr["ce"], ""),
-                    "criterio_id": cr["id"],
-                    "criterio_texto": cr["texto"],
-                    "referencia": ref,
-                })
-            for bloque in curso.get("saberes", []):
-                for item in bloque.get("items", []):
-                    filas_saberes.append({
-                        "materia": materia,
-                        "curso": NOM_CURSO.get(curso_key, curso_key),
-                        "bloque_id": bloque["b"],
-                        "bloque_titulo": bloque["t"],
-                        "item": item,
-                        "referencia": ref,
-                    })
+        cr, sa = _filas_de_materia(materia, M, textos_ce)
+        filas_criterios += cr
+        filas_saberes += sa
+
+        if materia == "MATEMÁTICAS":
+            for variante in ("MATEMÁTICAS A", "MATEMÁTICAS B"):
+                V = datos.get(variante)
+                if not V:
+                    continue
+                # Matemáticas A/B solo existen en 4.º ESO; al no llevar el
+                # marcador "4º ESO." delante (el decreto no lo repite para una
+                # materia de un único curso), el parser las etiqueta como
+                # "curso único" ("0"). Aquí sabemos que ese "0" es 4.º ESO.
+                # (Ojo: puede existir una entrada "4" vacía -sin criterios ni
+                # saberes-, que no sirve de nada aunque el diccionario en sí
+                # no esté vacío; por eso se comprueba el contenido, no solo
+                # si la clave existe.)
+                def _con_contenido(cd):
+                    return bool(cd and (cd.get("criterios") or cd.get("saberes")))
+
+                cursos_v = V.get("cursos", {})
+                if _con_contenido(cursos_v.get("4")):
+                    curso4 = cursos_v["4"]
+                elif _con_contenido(cursos_v.get("0")):
+                    curso4 = cursos_v["0"]
+                else:
+                    continue
+                cr, sa = _filas_de_materia(variante, {"cursos": {"4": curso4}}, textos_ce)
+                filas_criterios += cr
+                filas_saberes += sa
 
     return {"criterios": filas_criterios, "saberes": filas_saberes, "anomalias": anomalias}
 
