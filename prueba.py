@@ -73,6 +73,39 @@ def main() -> int:
     if not any("glucosa" in t.lower() for t in resaltadas):
         fallos.append(f"no se resaltó 'glucosa'; resaltadas: {resaltadas}")
 
+    # --- Sopa de letras / crucigrama: no se le toca la fuente ni el
+    # espaciado a una celda de una sola letra (encontrado con un documento
+    # real: pasar de Arial Black 11,5 pt a Verdana 14 pt en una celda
+    # estrecha desajustaba la cuadrícula del ejercicio). --------------- #
+    from docx.shared import Pt as _Pt
+
+    from core.transformador import aplicar_formato
+
+    d_letras = Document()
+    tabla = d_letras.add_table(rows=1, cols=2)
+    celda_letra = tabla.rows[0].cells[0]
+    run_letra = celda_letra.paragraphs[0].add_run("G")
+    run_letra.font.name = "Arial Black"
+    run_letra.font.size = _Pt(11.5)
+    celda_normal = tabla.rows[0].cells[1]
+    celda_normal.paragraphs[0].add_run("Instrucciones del ejercicio.")
+    ruta_letras = os.path.join(trabajo, "letras.docx")
+    d_letras.save(ruta_letras)
+
+    d_letras2 = Document(ruta_letras)
+    aplicar_formato(d_letras2, opciones_de_perfil("Dislexia"))
+    celda_letra2 = d_letras2.tables[0].rows[0].cells[0]
+    run_tras = celda_letra2.paragraphs[0].runs[0]
+    if run_tras.font.name != "Arial Black" or not _aprox(run_tras.font.size.pt, 11.5, 0.1):
+        fallos.append(
+            f"la celda de una sola letra ha cambiado: fuente={run_tras.font.name} "
+            f"tamaño={run_tras.font.size}"
+        )
+    celda_normal2 = d_letras2.tables[0].rows[0].cells[1]
+    run_normal2 = celda_normal2.paragraphs[0].runs[0]
+    if run_normal2.font.name != "Verdana":
+        fallos.append("la celda con una instrucción normal debería sí cambiar de fuente")
+
     # --- Perfil TDAH: viñetas -> lista numerada --------------------- #
     salida_tdah = os.path.join(trabajo, "tdah.docx")
     resumen_tdah = adaptar_documento(origen, salida_tdah, opciones_de_perfil("TDAH"))
@@ -195,8 +228,8 @@ def main() -> int:
         return 1
 
     print(
-        "PRUEBA OK — formato, resaltado, viñetas, pasos, preguntas "
-        "y original intacto."
+        "PRUEBA OK — formato, resaltado, viñetas, pasos, preguntas, "
+        "celdas de una sola letra sin tocar y original intacto."
     )
     return 0
 

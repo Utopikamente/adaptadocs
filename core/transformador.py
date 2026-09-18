@@ -141,6 +141,16 @@ def _es_vineta(parrafo: Paragraph) -> bool:
     return any(m in nombre for m in _MARCAS_VINETA)
 
 
+def _es_letra_suelta(parrafo: Paragraph) -> bool:
+    """Una sola letra o dígito en una celda de tabla -típico de una sopa de
+    letras o un crucigrama, donde cada celda es muy estrecha-: agrandar la
+    fuente o el espaciado no la hace "más legible", solo rompe la cuadrícula
+    del ejercicio (encontrado con un documento real: Arial Black 11,5 pt en
+    una celda de menos de 1 cm pasaba a Verdana 14 pt y desajustaba la
+    tabla). No se le tocan ni la fuente ni el espaciado."""
+    return len(parrafo.text.strip()) == 1
+
+
 def _nivel_num(nombre_estilo: str) -> int:
     m = re.search(r"(\d+)", nombre_estilo)
     return int(m.group(1)) if m else 0
@@ -581,6 +591,14 @@ def aplicar_formato(
     for contenedor in _contenedores(doc):
         for parrafo in _iter_parrafos(contenedor):
             resumen["parrafos"] += 1
+
+            if _es_letra_suelta(parrafo):
+                # No se le cambia ni la fuente ni el espaciado (ver
+                # _es_letra_suelta), pero sí se resalta si coincidiera con
+                # una palabra buscada.
+                if patron is not None:
+                    resumen["resaltados"] += _resaltar_en_parrafo(parrafo, patron, color)
+                continue
 
             if opciones.convertir_vinetas_en_pasos and _es_vineta(parrafo):
                 try:
