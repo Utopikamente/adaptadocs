@@ -69,6 +69,12 @@ class Bloque:
     id: int
     tipo: str  # "titulo" | "parrafo" | "lista"
     texto: str
+    # Solo se usa en bloques (titulo): si además es "candidato a resumen"
+    # (el docente lo ha marcado como una sección de verdad, no una etiqueta
+    # decorativa como "Actividades" repetida en cada ejercicio). Por defecto
+    # True para no cambiar el comportamiento donde no se use la selección de
+    # niveles (ver `core.transformador.detectar_niveles_titulo`).
+    resumen_candidato: bool = True
 
 
 # --------------------------------------------------------------------------- #
@@ -194,7 +200,12 @@ def _mensaje_usuario(bloques: list[Bloque], o: OpcionesIA) -> str:
         "",
     ]
     for b in bloques:
-        lineas.append(f"[{b.id}] ({b.tipo}) {b.texto}")
+        # Un título que el docente NO ha marcado como sección de verdad (p.
+        # ej. una etiqueta decorativa como "Actividades" repetida en cada
+        # ejercicio) se etiqueta aparte para que no genere su propio resumen,
+        # aunque sigue protegido de la simplificación igual que cualquier título.
+        etiqueta = "titulo_secundario" if b.tipo == "titulo" and not b.resumen_candidato else b.tipo
+        lineas.append(f"[{b.id}] ({etiqueta}) {b.texto}")
     lineas += [
         "",
         f"NIVEL DE LECTURA OBJETIVO: {o.nivel} — {NIVELES.get(o.nivel, '')}.",
@@ -205,9 +216,9 @@ def _mensaje_usuario(bloques: list[Bloque], o: OpcionesIA) -> str:
     if o.simplificar:
         lineas.append(
             "- parrafos_simplificados: reescribe al nivel objetivo SOLO los bloques "
-            "(parrafo) y (lista). No toques los (titulo). Devuelve un elemento por "
-            "bloque que cambies, con su id y el texto nuevo. Si un bloque ya es "
-            "suficientemente sencillo, no lo incluyas."
+            "(parrafo) y (lista). No toques los (titulo) ni los (titulo_secundario). "
+            "Devuelve un elemento por bloque que cambies, con su id y el texto nuevo. "
+            "Si un bloque ya es suficientemente sencillo, no lo incluyas."
         )
     if o.pasos:
         lineas.append(

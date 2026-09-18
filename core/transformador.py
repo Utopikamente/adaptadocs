@@ -141,6 +141,36 @@ def _es_vineta(parrafo: Paragraph) -> bool:
     return any(m in nombre for m in _MARCAS_VINETA)
 
 
+def _nivel_num(nombre_estilo: str) -> int:
+    m = re.search(r"(\d+)", nombre_estilo)
+    return int(m.group(1)) if m else 0
+
+
+def detectar_niveles_titulo(doc) -> list[dict]:
+    """Un elemento por cada ESTILO de título/encabezado presente en `doc`
+    (p. ej. "Heading 1", "Heading 4"...), con un ejemplo real de texto y
+    cuántas veces aparece: {"estilo", "ejemplo", "veces"}. Pensado para que
+    el docente decida qué niveles son secciones de verdad y cuáles son solo
+    una etiqueta repetida (p. ej. "Actividades" en cada ejercicio) antes de
+    generar el resumen (ver `core.ia.Bloque.resumen_candidato`). Se devuelve
+    ordenado por nivel (1, 2, 3...) cuando el nombre del estilo lo indica."""
+    vistos: dict[str, dict] = {}
+    orden: list[str] = []
+    for p in doc.paragraphs:
+        if not _es_titulo(p):
+            continue
+        texto = p.text.strip()
+        if not texto:
+            continue
+        nombre = p.style.name if p.style else "?"
+        if nombre not in vistos:
+            vistos[nombre] = {"estilo": nombre, "ejemplo": texto, "veces": 0}
+            orden.append(nombre)
+        vistos[nombre]["veces"] += 1
+    orden.sort(key=_nivel_num)
+    return [vistos[n] for n in orden]
+
+
 def _formatear_parrafo(parrafo: Paragraph, o: OpcionesAdaptacion) -> None:
     pf = parrafo.paragraph_format
     if o.interlineado:

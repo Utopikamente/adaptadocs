@@ -15,8 +15,9 @@ import tempfile
 from docx import Document
 
 from core.aplicar_ia import aplicar_resultado
-from core.ia import es_cabecera_datos_alumno
+from core.ia import OpcionesIA, _mensaje_usuario, es_cabecera_datos_alumno
 from core.pipeline import _extraer_bloques
+from core.transformador import detectar_niveles_titulo
 import crear_ejemplo
 
 
@@ -144,6 +145,38 @@ def main() -> int:
     if "¿Qué usa la planta del suelo?" not in textos3 or "¿Qué usa la planta del aire?" not in textos3:
         fallos.append("no se ven las dos subpreguntas en el documento")
 
+    # Niveles de título elegibles para el resumen: el docente puede decidir
+    # que un nivel de encabezado (p. ej. los "Heading 2" de cada ejercicio)
+    # no genere su propio mini-resumen, sin perder la protección de no
+    # simplificarlo. `crear_ejemplo.docx` tiene 1 "Heading 1" y 4 "Heading 2".
+    doc4 = Document(f"{trabajo}/ejemplo.docx")
+    niveles = detectar_niveles_titulo(doc4)
+    niveles_por_estilo = {n["estilo"]: n for n in niveles}
+    if "Heading 1" not in niveles_por_estilo or "Heading 2" not in niveles_por_estilo:
+        fallos.append(f"detectar_niveles_titulo no encuentra los dos niveles esperados: {niveles}")
+    elif niveles_por_estilo["Heading 2"]["veces"] != 4:
+        fallos.append(f"Heading 2 debería aparecer 4 veces, salió {niveles_por_estilo['Heading 2']['veces']}")
+    elif niveles_por_estilo["Heading 1"]["ejemplo"] != "La fotosíntesis":
+        fallos.append(f"el ejemplo de Heading 1 no es el esperado: «{niveles_por_estilo['Heading 1']['ejemplo']}»")
+
+    bloques4, _ = _extraer_bloques(doc4, niveles_resumen={"Heading 1"})
+    titulos4 = {b.texto: b.resumen_candidato for b in bloques4 if b.tipo == "titulo"}
+    if titulos4.get("La fotosíntesis") is not True:
+        fallos.append("el título de nivel elegido (Heading 1) debería ser candidato a resumen")
+    if titulos4.get("Vocabulario importante") is not False:
+        fallos.append("el título de nivel NO elegido (Heading 2) no debería ser candidato a resumen")
+
+    msg = _mensaje_usuario(bloques4, OpcionesIA(resumen=True))
+    if "(titulo_secundario) Vocabulario importante" not in msg:
+        fallos.append("el mensaje a la IA no etiqueta como titulo_secundario el nivel no elegido")
+    if "(titulo) La fotosíntesis" not in msg:
+        fallos.append("el mensaje a la IA no mantiene (titulo) en el nivel elegido")
+
+    # Sin elegir niveles (comportamiento de siempre): todos los títulos son candidatos.
+    bloques4b, _ = _extraer_bloques(doc4)
+    if not all(b.resumen_candidato for b in bloques4b if b.tipo == "titulo"):
+        fallos.append("sin elegir niveles, todos los títulos deberían seguir siendo candidatos (compatibilidad)")
+
     # Cabeceras con datos del alumno: nunca deben mandarse a la IA
     positivos = [
         "Nombre y apellidos: ___________________ Curso: ____ Fecha: ___",
@@ -179,7 +212,8 @@ def main() -> int:
 
     print(
         "PRUEBA IA (sin red) OK — reescritura, pasos, glosario, resumen, preguntas, "
-        "preguntas divididas y exclusión de cabeceras con datos del alumno."
+        "preguntas divididas, exclusión de cabeceras con datos del alumno y "
+        "selección de niveles de título candidatos a resumen."
     )
     return 0
 

@@ -11,6 +11,8 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
+from docx import Document
+
 from core import claves
 from core.acis import (
     DatosACIS,
@@ -46,7 +48,7 @@ from core.ia import MODELOS, MODELO_POR_DEFECTO, NIVELES, NIVEL_POR_DEFECTO, Opc
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 from core.pipeline import adaptar_documento_completo
 from core.programacion import ProgramacionNoReconocida, leer_programacion
-from core.transformador import OpcionesAdaptacion, adaptar_documento
+from core.transformador import OpcionesAdaptacion, _nivel_num, adaptar_documento, detectar_niveles_titulo
 
 # Arrastrar y soltar es opcional: si tkinterdnd2 no está instalado, se usa
 # solo el botón "Examinar".
@@ -1123,6 +1125,55 @@ class Aplicacion(_Raiz):
         self.registro.see("end")
         self.registro.configure(state="disabled")
 
+    def _elegir_niveles_resumen(self, niveles: list[dict]) -> set[str] | None:
+        """Ventana modal: una casilla por nivel de título presente en el
+        documento (con un ejemplo real y cuántas veces aparece), para que el
+        docente decida cuáles son secciones de verdad para el resumen y
+        cuáles son solo una etiqueta repetida (p. ej. «Actividades» en cada
+        ejercicio). Devuelve los estilos marcados, o `None` si se cancela."""
+        ventana = tk.Toplevel(self)
+        ventana.title("¿Qué títulos son secciones para el resumen?")
+        ventana.transient(self)
+        ventana.grab_set()
+        ttk.Label(
+            ventana,
+            text="Marca los niveles de título que son secciones de verdad (tendrán su propio "
+                 "resumen). Deja sin marcar los que sean solo una etiqueta repetida (p. ej. "
+                 "«Actividades» en cada ejercicio) — seguirán protegidos de que la IA les "
+                 "cambie el texto, solo no generarán su propio resumen.",
+            wraplength=480, justify="left",
+        ).pack(padx=12, pady=(12, 8), anchor="w")
+
+        variables: dict[str, tk.BooleanVar] = {}
+        marco = ttk.Frame(ventana)
+        marco.pack(padx=12, pady=4, fill="x")
+        for nivel in niveles:
+            var = tk.BooleanVar(value=_nivel_num(nivel["estilo"]) in (1, 2))
+            variables[nivel["estilo"]] = var
+            texto = f"{nivel['estilo']} — {nivel['veces']} veces — ejemplo: «{nivel['ejemplo'][:70]}»"
+            ttk.Checkbutton(marco, text=texto, variable=var).pack(anchor="w", pady=2)
+
+        resultado: dict[str, object] = {"valor": None}
+
+        def _aceptar() -> None:
+            resultado["valor"] = {estilo for estilo, var in variables.items() if var.get()}
+            ventana.destroy()
+
+        def _cancelar() -> None:
+            resultado["valor"] = None
+            ventana.destroy()
+
+        botones = ttk.Frame(ventana)
+        botones.pack(pady=(8, 12))
+        ttk.Button(botones, text="Cancelar", command=_cancelar).pack(side="left", padx=6)
+        ttk.Button(botones, text="Continuar", command=_aceptar).pack(side="left", padx=6)
+        ventana.protocol("WM_DELETE_WINDOW", _cancelar)
+
+        ventana.update_idletasks()
+        ventana.geometry(f"+{self.winfo_rootx() + 60}+{self.winfo_rooty() + 60}")
+        self.wait_window(ventana)
+        return resultado["valor"]
+
     def _lanzar(self) -> None:
         if self._procesando:
             return
@@ -1149,6 +1200,7 @@ class Aplicacion(_Raiz):
 
         opciones_ia = self._recoger_opciones_ia()
         clave = self.var_ia_clave.get().strip() or None
+        niveles_resumen = None
         if opciones_ia is not None:
             if not clave:
                 messagebox.showerror(
@@ -1157,6 +1209,15 @@ class Aplicacion(_Raiz):
                     "en la pestaña «Contenido con IA».",
                 )
                 return
+            if opciones_ia.resumen:
+                try:
+                    niveles = detectar_niveles_titulo(Document(entrada))
+                except Exception:  # noqa: BLE001
+                    niveles = []
+                if len(niveles) > 1:
+                    niveles_resumen = self._elegir_niveles_resumen(niveles)
+                    if niveles_resumen is None:
+                        return
             if not messagebox.askyesno(
                 "Enviar texto a la IA",
                 "El texto del documento se enviará a Anthropic (Claude) para adaptarlo.\n\n"
@@ -1168,17 +1229,19 @@ class Aplicacion(_Raiz):
         self.boton.configure(state="disabled", text="Procesando…")
         self._log("─" * 40)
         threading.Thread(
-            target=self._trabajo, args=(entrada, salida, opciones, opciones_ia, clave),
+            target=self._trabajo,
+            args=(entrada, salida, opciones, opciones_ia, clave, niveles_resumen),
             daemon=True,
         ).start()
 
-    def _trabajo(self, entrada, salida, opciones, opciones_ia, clave) -> None:
+    def _trabajo(self, entrada, salida, opciones, opciones_ia, clave, niveles_resumen=None) -> None:
         registrar = lambda m: self._cola.put(("log", m))  # noqa: E731
         try:
             resumen_ia: dict = {}
             if opciones_ia is not None:
                 res = adaptar_documento_completo(
-                    entrada, salida, opciones, opciones_ia, api_key=clave, registrar=registrar
+                    entrada, salida, opciones, opciones_ia, api_key=clave, registrar=registrar,
+                    niveles_resumen=niveles_resumen,
                 )
                 ia, fmt = res["ia"], res["formato"]
                 resumen_ia, resumen_fmt = ia, fmt

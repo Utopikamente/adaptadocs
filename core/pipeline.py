@@ -19,9 +19,17 @@ from .transformador import (
 )
 
 
-def _extraer_bloques(doc) -> tuple[list[Bloque], dict[int, Paragraph]]:
+def _extraer_bloques(
+    doc, niveles_resumen: set[str] | None = None,
+) -> tuple[list[Bloque], dict[int, Paragraph]]:
     """Numera los párrafos de primer nivel (no entra en tablas) y los prepara
-    para enviarlos a la IA."""
+    para enviarlos a la IA.
+
+    `niveles_resumen`: nombres de estilo (p. ej. "Heading 2") que el docente
+    ha marcado como secciones de verdad para el resumen (ver
+    `core.transformador.detectar_niveles_titulo`). Si es `None`, todos los
+    títulos son candidatos a resumen (comportamiento de antes, para quien no
+    use la selección de niveles)."""
     bloques: list[Bloque] = []
     por_id: dict[int, Paragraph] = {}
     for i, parrafo in enumerate(doc.paragraphs):
@@ -32,13 +40,17 @@ def _extraer_bloques(doc) -> tuple[list[Bloque], dict[int, Paragraph]]:
             # Cabecera de examen/ficha con datos del alumno (nombre, NIA,
             # fecha de nacimiento...): nunca se manda a la IA, se deja igual.
             continue
+        resumen_candidato = True
         if _es_titulo(parrafo):
             tipo = "titulo"
+            if niveles_resumen is not None:
+                nombre_estilo = parrafo.style.name if parrafo.style else ""
+                resumen_candidato = nombre_estilo in niveles_resumen
         elif _es_vineta(parrafo) or "list" in (parrafo.style.name or "").lower():
             tipo = "lista"
         else:
             tipo = "parrafo"
-        bloques.append(Bloque(id=i, tipo=tipo, texto=texto))
+        bloques.append(Bloque(id=i, tipo=tipo, texto=texto, resumen_candidato=resumen_candidato))
         por_id[i] = parrafo
     return bloques, por_id
 
@@ -50,9 +62,12 @@ def adaptar_documento_completo(
     opciones_ia: OpcionesIA | None = None,
     api_key: str | None = None,
     registrar: Callable[[str], None] = lambda mensaje: None,
+    niveles_resumen: set[str] | None = None,
 ) -> dict:
     """Abre el documento, aplica (si procede) la adaptación de contenido con IA,
-    luego la de formato, y guarda. Devuelve `{"ia": ..., "formato": ...}`."""
+    luego la de formato, y guarda. Devuelve `{"ia": ..., "formato": ...}`.
+
+    `niveles_resumen`: ver `_extraer_bloques`."""
 
     _validar_rutas(ruta_entrada, ruta_salida)
 
@@ -61,7 +76,7 @@ def adaptar_documento_completo(
 
     resumen_ia: dict = {}
     if opciones_ia is not None and opciones_ia.alguna():
-        bloques, por_id = _extraer_bloques(doc)
+        bloques, por_id = _extraer_bloques(doc, niveles_resumen)
         if not bloques:
             registrar("El documento no tiene texto que adaptar con IA.")
         else:
