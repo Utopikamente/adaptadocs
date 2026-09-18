@@ -14,7 +14,7 @@ import tempfile
 
 from docx import Document
 
-from core.aplicar_ia import aplicar_resultado
+from core.aplicar_ia import _anadir_titulo, aplicar_resultado
 from core.ia import OpcionesIA, _mensaje_usuario, es_cabecera_datos_alumno
 from core.pipeline import _extraer_bloques
 from core.transformador import detectar_niveles_titulo
@@ -177,6 +177,26 @@ def main() -> int:
     if not all(b.resumen_candidato for b in bloques4b if b.tipo == "titulo"):
         fallos.append("sin elegir niveles, todos los títulos deberían seguir siendo candidatos (compatibilidad)")
 
+    # `_anadir_titulo` (usado por glosario y preguntas) no debe romperse si
+    # el documento no tiene el estilo "Heading 1" definido -pasó con un
+    # documento real: `doc.add_heading` daba un KeyError y se perdía toda la
+    # adaptación después de haber costado ya la llamada a la IA-.
+    doc5 = Document(f"{trabajo}/ejemplo.docx")
+    for nombre in ("Heading 1", "Heading 2"):
+        try:
+            estilo = doc5.styles[nombre]
+            estilo._element.getparent().remove(estilo._element)
+        except KeyError:
+            pass
+    try:
+        _anadir_titulo(doc5, "Glosario")
+    except KeyError as exc:
+        fallos.append(f"_anadir_titulo rompe si falta el estilo de título: {exc}")
+    else:
+        textos5 = [p.text for p in doc5.paragraphs]
+        if "Glosario" not in textos5:
+            fallos.append("_anadir_titulo no añade el texto cuando no hay estilo de título")
+
     # Cabeceras con datos del alumno: nunca deben mandarse a la IA
     positivos = [
         "Nombre y apellidos: ___________________ Curso: ____ Fecha: ___",
@@ -212,8 +232,9 @@ def main() -> int:
 
     print(
         "PRUEBA IA (sin red) OK — reescritura, pasos, glosario, resumen, preguntas, "
-        "preguntas divididas, exclusión de cabeceras con datos del alumno y "
-        "selección de niveles de título candidatos a resumen."
+        "preguntas divididas, exclusión de cabeceras con datos del alumno, "
+        "selección de niveles de título candidatos a resumen, y glosario/preguntas "
+        "sin el estilo «Heading 1»."
     )
     return 0
 

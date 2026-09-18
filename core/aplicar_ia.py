@@ -49,12 +49,25 @@ def _estilo_disponible(doc, *nombres: str) -> str | None:
     return None
 
 
+def _anadir_titulo(doc, texto: str) -> None:
+    """Añade `texto` como título de nivel 1, sin asumir que el estilo
+    "Heading 1" existe en el documento -algunos .docx no lo definen aunque
+    sus párrafos se vean como títulos, y entonces `doc.add_heading` falla
+    con un `KeyError`-: si no hay ningún estilo de título disponible, se
+    añade en negrita como párrafo normal en vez de romper la generación."""
+    estilo = _estilo_disponible(doc, "Heading 1", "Título 1", "Heading 2", "Título 2")
+    if estilo:
+        doc.add_paragraph(texto, style=estilo)
+    else:
+        doc.add_paragraph().add_run(texto).bold = True
+
+
 # --------------------------------------------------------------------------- #
 # Secciones nuevas
 # --------------------------------------------------------------------------- #
 
 def _anadir_glosario(doc, glosario: list[dict]) -> int:
-    doc.add_heading("Glosario", level=1)
+    _anadir_titulo(doc, "Glosario")
     for entrada in glosario:
         termino = str(entrada.get("termino", "")).strip()
         definicion = str(entrada.get("definicion", "")).strip()
@@ -67,7 +80,7 @@ def _anadir_glosario(doc, glosario: list[dict]) -> int:
 
 
 def _anadir_preguntas(doc, preguntas: list[str]) -> int:
-    doc.add_heading("Preguntas de comprensión", level=1)
+    _anadir_titulo(doc, "Preguntas de comprensión")
     estilo = _estilo_disponible(doc, "List Number") or "Normal"
     for i, pregunta in enumerate(preguntas, start=1):
         texto = str(pregunta).strip()
