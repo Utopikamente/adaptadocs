@@ -318,12 +318,21 @@ def adaptar_contenido(
 
     if respuesta.stop_reason == "refusal":
         raise RuntimeError("Claude ha rechazado adaptar este documento.")
+    if respuesta.stop_reason == "max_tokens":
+        raise RuntimeError(
+            "La respuesta se ha cortado por ser demasiado larga (el documento tiene mucho texto "
+            "para las tareas pedidas). Prueba a desmarcar alguna tarea (p. ej. glosario o "
+            "preguntas) o a adaptar el documento por partes más pequeñas."
+        )
 
     texto = next((b.text for b in respuesta.content if b.type == "text"), "")
     try:
         datos = json.loads(texto)
     except json.JSONDecodeError as exc:
-        raise RuntimeError("No se pudo interpretar la respuesta de la IA.") from exc
+        raise RuntimeError(
+            "No se pudo interpretar la respuesta de la IA (no era JSON válido). Prueba otra vez; "
+            "si se repite, dímelo con el documento para revisarlo."
+        ) from exc
 
     for clave_lista in (
         "parrafos_simplificados",

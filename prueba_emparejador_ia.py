@@ -70,6 +70,22 @@ def main() -> int:
     if not pendiente_sa.adaptado or pendiente_sa.items_referencia != ["Formas geométricas básicas del entorno."]:
         fallos.append("aplicar_adaptacion no ha volcado los items adaptados del bloque de saberes")
 
+    # La IA no siempre repite el número/título EXACTAMENTE como se le mandó
+    # (en una llamada real devolvió "2.2" sin el punto final que sí lleva
+    # `core.programacion`, y con eso la propuesta se perdía en silencio):
+    # debe seguir emparejando aunque cambien el punto final o las mayúsculas.
+    pendiente_cr2 = CriterioEmparejado(numero="3.4.", competencia="CE3", texto_origen="...", encontrado=False)
+    pendiente_sa2 = SaberEmparejado(bloque_origen="D. Álgebra", titulo="Álgebra", items_origen=[], encontrado=False)
+    resultado_sin_punto = {
+        "criterios_adaptados": [{"numero": "3.4", "texto": "Texto adaptado sin el punto final."}],
+        "saberes_adaptados": [{"titulo": "ÁLGEBRA.", "items": ["Item con título en mayúsculas y con punto."]}],
+    }
+    aplicar_adaptacion("3.º ESO", "1.º ESO", [pendiente_cr2], [pendiente_sa2], resultado_sin_punto)
+    if not pendiente_cr2.adaptado or pendiente_cr2.texto_referencia != "Texto adaptado sin el punto final.":
+        fallos.append("se pierde la propuesta si la IA devuelve el número del criterio sin el punto final")
+    if not pendiente_sa2.adaptado or pendiente_sa2.items_referencia != ["Item con título en mayúsculas y con punto."]:
+        fallos.append("se pierde la propuesta si la IA devuelve el título del bloque en mayúsculas o con punto")
+
     # Si la IA no propone nada para un elemento, se queda pendiente -no se inventa nada-.
     otro_pendiente = CriterioEmparejado(numero="9.9.", competencia="CE9", texto_origen="...", encontrado=False)
     aplicar_adaptacion("3.º ESO", "1.º ESO", [otro_pendiente], [], {"criterios_adaptados": [], "saberes_adaptados": []})

@@ -23,6 +23,7 @@ from .acis import MateriaACIS
 from .emparejador import (
     CriterioEmparejado,
     SaberEmparejado,
+    _normalizar_criterio_id,
     avisos,
     emparejar_criterios,
     emparejar_saberes,
@@ -177,12 +178,20 @@ def adaptar_huecos(
 
     if respuesta.stop_reason == "refusal":
         raise RuntimeError("Claude ha rechazado adaptar estos elementos.")
+    if respuesta.stop_reason == "max_tokens":
+        raise RuntimeError(
+            "La respuesta se ha cortado por ser demasiado larga (demasiados criterios/saberes "
+            "sin equivalente a la vez). Prueba con menos huecos de golpe, o dímelo para revisarlo."
+        )
 
     texto = next((b.text for b in respuesta.content if b.type == "text"), "")
     try:
         datos = json.loads(texto)
     except json.JSONDecodeError as exc:
-        raise RuntimeError("No se pudo interpretar la respuesta de la IA.") from exc
+        raise RuntimeError(
+            "No se pudo interpretar la respuesta de la IA (no era JSON válido). Prueba otra vez; "
+            "si se repite, dímelo para revisarlo."
+        ) from exc
 
     datos.setdefault("criterios_adaptados", [])
     datos.setdefault("saberes_adaptados", [])
@@ -210,9 +219,15 @@ def aplicar_adaptacion(
     `adaptado=True` y se rellena con la propuesta, dejando claro en la
     referencia que NO es cita literal del decreto. Si la IA no propone nada
     para alguno, se queda igual (pendiente), no se inventa nada aquí."""
-    por_numero = {c.get("numero"): c for c in resultado.get("criterios_adaptados", [])}
+    # La IA puede devolver el número sin el punto final ("2.2" en vez de
+    # "2.2.", que es como lo guarda `core.programacion`): se normaliza antes
+    # de comparar, igual que hace `core.emparejador` con la tabla del
+    # currículo, para no perder en silencio una propuesta ya generada.
+    por_numero = {
+        _normalizar_criterio_id(c.get("numero", "")): c for c in resultado.get("criterios_adaptados", [])
+    }
     for r in pendientes_cr:
-        propuesta = por_numero.get(r.numero)
+        propuesta = por_numero.get(_normalizar_criterio_id(r.numero))
         texto = str(propuesta.get("texto", "")).strip() if propuesta else ""
         if texto:
             r.adaptado = True
@@ -222,9 +237,14 @@ def aplicar_adaptacion(
                 f"un criterio equivalente en el Decreto 65/2022 para {curso_referencia}."
             )
 
-    por_titulo = {s.get("titulo"): s for s in resultado.get("saberes_adaptados", [])}
+    # Mismo motivo que arriba: comparar sin espacios/punto final ni
+    # mayúsculas de más, no confiar en que la IA repita el título exacto.
+    def _normalizar_titulo(t: str) -> str:
+        return (t or "").strip().rstrip(".").casefold()
+
+    por_titulo = {_normalizar_titulo(s.get("titulo", "")): s for s in resultado.get("saberes_adaptados", [])}
     for r in pendientes_sa:
-        propuesta = por_titulo.get(r.titulo)
+        propuesta = por_titulo.get(_normalizar_titulo(r.titulo))
         items = [str(it).strip() for it in propuesta.get("items", [])] if propuesta else []
         items = [it for it in items if it]
         if items:
