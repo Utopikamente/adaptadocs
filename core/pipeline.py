@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import os
 from typing import Callable
 
@@ -17,6 +18,17 @@ from .transformador import (
     _validar_rutas,
     aplicar_formato,
 )
+
+
+def _terminos_glosario(datos: dict) -> list[str]:
+    """Los términos que el glosario de la IA acaba de definir, listos para
+    resaltarlos también en el propio texto, donde aparecen (además de la
+    lista de palabras que el docente haya escrito a mano)."""
+    return [
+        str(entrada.get("termino", "")).strip()
+        for entrada in datos.get("glosario", [])
+        if str(entrada.get("termino", "")).strip()
+    ]
 
 
 def _extraer_bloques(
@@ -75,6 +87,7 @@ def adaptar_documento_completo(
     doc = Document(ruta_entrada)
 
     resumen_ia: dict = {}
+    opciones_formato_final = opciones_formato
     if opciones_ia is not None and opciones_ia.alguna():
         bloques, por_id = _extraer_bloques(doc, niveles_resumen)
         if not bloques:
@@ -84,8 +97,20 @@ def adaptar_documento_completo(
             resumen_ia = aplicar_resultado(doc, datos, por_id, registrar=registrar)
             resumen_ia["_uso"] = datos.get("_uso", {})
 
+            # Las palabras que el glosario acaba de definir se resaltan
+            # también donde aparecen en el propio texto: así el alumno las
+            # ve marcadas en su sitio, no solo explicadas al final -DUA:
+            # varias formas de representación a la vez-.
+            terminos_glosario = _terminos_glosario(datos)
+            if terminos_glosario:
+                opciones_formato_final = dataclasses.replace(
+                    opciones_formato,
+                    resaltar_palabras=list(opciones_formato.resaltar_palabras) + terminos_glosario,
+                )
+                registrar(f"Resaltando en el texto las {len(terminos_glosario)} palabras del glosario…")
+
     registrar("Aplicando el formato…")
-    resumen_formato = aplicar_formato(doc, opciones_formato, registrar)
+    resumen_formato = aplicar_formato(doc, opciones_formato_final, registrar)
 
     carpeta = os.path.dirname(os.path.abspath(ruta_salida))
     os.makedirs(carpeta, exist_ok=True)

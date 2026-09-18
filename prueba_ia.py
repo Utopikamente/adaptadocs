@@ -16,8 +16,8 @@ from docx import Document
 
 from core.aplicar_ia import _anadir_titulo, aplicar_resultado
 from core.ia import OpcionesIA, _mensaje_usuario, es_cabecera_datos_alumno
-from core.pipeline import _extraer_bloques
-from core.transformador import detectar_niveles_titulo
+from core.pipeline import _extraer_bloques, _terminos_glosario
+from core.transformador import OpcionesAdaptacion, aplicar_formato, detectar_niveles_titulo
 import crear_ejemplo
 
 
@@ -81,6 +81,22 @@ def main() -> int:
     # el resumen debe ir cerca del principio, no al final
     if "Resumen" in textos and textos.index("Resumen") > textos.index("Glosario"):
         fallos.append("el resumen no está al principio")
+
+    # Las palabras del glosario ("glucosa", "oxígeno") se resaltan también
+    # donde aparecen en el propio texto (p. ej. en "Vocabulario importante",
+    # que no ha tocado la IA), no solo se explican al final -DUA: varias
+    # formas de representación a la vez, no una lista de palabras aislada-.
+    if _terminos_glosario(datos) != ["glucosa", "oxígeno"]:
+        fallos.append(f"_terminos_glosario no extrae los términos esperados: {_terminos_glosario(datos)}")
+    resumen_formato = aplicar_formato(doc, OpcionesAdaptacion(resaltar_palabras=_terminos_glosario(datos)))
+    if resumen_formato["resaltados"] < 2:
+        fallos.append(
+            f"deberían resaltarse al menos 2 apariciones de las palabras del glosario, "
+            f"salieron {resumen_formato['resaltados']}"
+        )
+    parrafo_vocab = next(p for p in doc.paragraphs if "Recuerda estas palabras" in p.text)
+    if not any(run.font.highlight_color is not None for run in parrafo_vocab.runs):
+        fallos.append("«glucosa» no queda resaltada en el párrafo de vocabulario que no tocó la IA")
 
     # Prueba de 'pasos': un párrafo se convierte en varias entradas de lista
     doc2 = Document(f"{trabajo}/ejemplo.docx")
@@ -233,7 +249,8 @@ def main() -> int:
     print(
         "PRUEBA IA (sin red) OK — reescritura, pasos, glosario, resumen, preguntas, "
         "preguntas divididas, exclusión de cabeceras con datos del alumno, "
-        "selección de niveles de título candidatos a resumen, y glosario/preguntas "
+        "selección de niveles de título candidatos a resumen, resaltado automático "
+        "de las palabras del glosario, y glosario/preguntas "
         "sin el estilo «Heading 1»."
     )
     return 0
