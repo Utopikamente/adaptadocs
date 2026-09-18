@@ -26,8 +26,22 @@ from core.acis_ia import (
     expandir_categoria,
     resultado_a_materia,
 )
+from core.acis_orientaciones import (
+    cargar_curriculo_eso,
+    detectar_curso_eso,
+    detectar_materia_eso,
+)
 from core.acis_orientaciones import orientaciones as _acis_orientaciones
 from core.acis_orientaciones import texto_referencia as _acis_texto_referencia
+from core.emparejador import (
+    avisos as _emparejador_avisos,
+    cargar_tabla_curriculo,
+    emparejar_criterios,
+    emparejar_saberes,
+    texto_criterios,
+    texto_saberes,
+)
+from core.emparejador_ia import adaptar_huecos, aplicar_adaptacion
 from core.ia import MODELOS, MODELO_POR_DEFECTO, NIVELES, NIVEL_POR_DEFECTO, OpcionesIA
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 from core.pipeline import adaptar_documento_completo
@@ -455,7 +469,17 @@ class Aplicacion(_Raiz):
                    command=self._acis_leer_programaciones).pack(side="left", padx=(0, 6))
         self.boton_acis_ia = ttk.Button(botonera, text="Generar ACIS con IA ▸",
                                         command=self._acis_ia_generar)
-        self.boton_acis_ia.pack(side="left")
+        self.boton_acis_ia.pack(side="left", padx=(0, 6))
+        self.boton_acis_emparejar = ttk.Button(
+            botonera, text="Emparejar con el currículo oficial ▸",
+            command=self._acis_emparejar_generar)
+        self.boton_acis_emparejar.pack(side="left")
+        ttk.Label(
+            m1, text="«Emparejar con el currículo oficial»: usa cita literal del decreto cuando "
+            "existe (con su referencia) y solo pide a la IA una propuesta para lo que no tiene "
+            "equivalente exacto; hoy solo cubre Lengua Castellana y Literatura y Matemáticas.",
+            foreground="#666", wraplength=560,
+        ).grid(row=3, column=0, columnspan=3, sticky="w", padx=6, pady=(0, 4))
 
         # --- 2. Materia ------------------------------------------- #
         m2 = ttk.LabelFrame(raiz_scroll, text="2. Materia")
@@ -754,7 +778,163 @@ class Aplicacion(_Raiz):
             f".docx. Tokens: {uso.get('entrada', 0)} entrada / {uso.get('salida', 0)} salida."
         )
 
+    def _acis_emparejar_generar(self) -> None:
+        """Como `_acis_ia_generar`, pero para competencias/criterios/saberes
+        usa el emparejador (cita literal del decreto cuando existe, IA solo
+        en los huecos) en vez de reformularlo todo con IA. Metodología,
+        instrumentos y seguimiento siguen viniendo del flujo con IA de
+        siempre, ajustados al perfil de accesibilidad."""
+        if self._procesando:
+            return
+        prog = self._acis_leer_una(self.var_acis_prog_materia.get())
+        if prog is None or not prog.competencias:
+            messagebox.showerror(
+                "Falta la programación de la materia",
+                "Adjunta la programación de la materia (el curso actual del alumno), con las "
+                "competencias y sus criterios agrupados debajo -es lo que necesita el "
+                "emparejador para casarlos con el nivel de referencia.",
+            )
+            return
+
+        nivel = self.var_acis_nivel.get().strip()
+        curso_num = detectar_curso_eso(nivel)
+        if not curso_num:
+            messagebox.showerror(
+                "Nivel de referencia no reconocido",
+                "El emparejador necesita el nivel de referencia como un curso de la ESO "
+                "(p. ej. «1.º ESO»). Corrígelo en «Nivel de competencia objetivo».",
+            )
+            return
+        curso_referencia = f"{curso_num}.º ESO"
+
+        nombre = self.var_acis_materia.get().strip() or prog.materia
+        materia_tabla = detectar_materia_eso(nombre, cargar_curriculo_eso())
+        tabla = cargar_tabla_curriculo()
+        if not materia_tabla or not any(f["materia"] == materia_tabla for f in tabla.get("criterios", [])):
+            messagebox.showerror(
+                "Materia no cubierta todavía",
+                f"«{nombre}» no está todavía en la tabla del emparejador (por ahora solo Lengua "
+                "Castellana y Literatura y Matemáticas). Usa «Generar ACIS con IA» para esta materia.",
+            )
+            return
+
+        resultado_cr = emparejar_criterios(materia_tabla, prog.competencias, curso_referencia, tabla)
+        resultado_sa = emparejar_saberes(materia_tabla, prog.saberes_basicos, curso_referencia, tabla)
+        pendientes_cr = [r for r in resultado_cr if not r.encontrado]
+        pendientes_sa = [r for r in resultado_sa if not r.encontrado]
+
+        clave = self.var_ia_clave.get().strip() or claves.leer_clave()
+        if not clave:
+            messagebox.showerror(
+                "Falta la clave de API",
+                "Guarda tu clave de API de Anthropic en la pestaña «Contenido con IA».",
+            )
+            return
+
+        aviso_huecos = ""
+        if pendientes_cr or pendientes_sa:
+            aviso_huecos = (
+                f"\n\nAdemás, {len(pendientes_cr) + len(pendientes_sa)} criterios/saberes no tienen "
+                "equivalente literal en el nivel de referencia: se le pedirá a la IA una propuesta "
+                "adaptada para cada uno, marcada como tal (no como cita literal)."
+            )
+        if not messagebox.askyesno(
+            "Enviar a la IA",
+            "Se enviará la programación de la materia (sin datos del alumno) a Anthropic (Claude) "
+            "para generar la metodología, los instrumentos y el seguimiento, ajustados al perfil de "
+            f"accesibilidad.{aviso_huecos}\n\n¿Continuar?",
+        ):
+            return
+
+        nombre_referencia = self.var_acis_materia.get().strip() or prog.materia
+        try:
+            referencia = _acis_texto_referencia(nombre_referencia, nivel)
+        except Exception:  # noqa: BLE001
+            referencia = ""
+        necesidades = expandir_categoria(self.var_acis_categoria.get())
+        opciones = OpcionesAdaptacionCurricular(
+            nivel_objetivo=nivel, necesidades=necesidades, referencia_curriculo=referencia,
+            modelo=MODELO_A_ID.get(self.var_ia_modelo.get(), "claude-opus-5"),
+        )
+
+        self._procesando = True
+        self.boton_acis_emparejar.configure(state="disabled", text="Generando…")
+        self._log("─" * 40)
+        threading.Thread(
+            target=self._acis_emparejar_trabajo,
+            args=(prog, materia_tabla, curso_referencia, resultado_cr, resultado_sa,
+                  pendientes_cr, pendientes_sa, opciones, clave),
+            daemon=True,
+        ).start()
+
+    def _acis_emparejar_trabajo(
+        self, prog, materia_tabla, curso_referencia, resultado_cr, resultado_sa,
+        pendientes_cr, pendientes_sa, opciones, clave,
+    ) -> None:
+        registrar = lambda m: self._cola.put(("log", m))  # noqa: E731
+        try:
+            if pendientes_cr or pendientes_sa:
+                anclas_cr = [r for r in resultado_cr if r.encontrado]
+                anclas_sa = [r for r in resultado_sa if r.encontrado]
+                datos_huecos = adaptar_huecos(
+                    materia_tabla, prog.curso, curso_referencia,
+                    pendientes_cr, pendientes_sa, anclas_cr, anclas_sa,
+                    api_key=clave, modelo=opciones.modelo, registrar=registrar,
+                )
+                aplicar_adaptacion(prog.curso, curso_referencia, pendientes_cr, pendientes_sa, datos_huecos)
+
+            resultado_ia = adaptar_programacion(prog, opciones, api_key=clave, registrar=registrar)
+            self._cola.put((
+                "acis_emparejar_ok",
+                (prog, resultado_cr, resultado_sa, resultado_ia, opciones.referencia_curriculo),
+            ))
+        except Exception as exc:  # noqa: BLE001
+            self._cola.put(("acis_emparejar_error", str(exc)))
+
+    def _acis_emparejar_aplicar(
+        self, prog, resultado_cr, resultado_sa, resultado_ia: dict, referencia_curriculo: str = "",
+    ) -> None:
+        # Solo se usan metodologia/instrumentos/seguimiento/unidades de este
+        # resultado: las competencias/criterios/contenidos del emparejador
+        # (con cita literal cuando existe) sustituyen a los que también
+        # devuelve `adaptar_programacion`, que aquí se descartan.
+        materia_ia = resultado_a_materia(prog, resultado_ia, referencia_curriculo=referencia_curriculo)
+        campos = {
+            "criterios_evaluacion": texto_criterios(resultado_cr),
+            "contenidos": texto_saberes(resultado_sa),
+            "metodologia": materia_ia.metodologia,
+            "instrumentos": materia_ia.instrumentos,
+            "unidades": materia_ia.unidades,
+            "seguimiento": materia_ia.seguimiento,
+        }
+        for clave, texto in campos.items():
+            if texto:
+                self._acis_fijar_texto(self.acis_txt[clave], texto)
+        if materia_ia.secuenciacion:
+            self._acis_fijar_texto(
+                self.acis_txt["secuenciacion"],
+                "\n".join(f"{t} | {p}" if p else t for t, p in materia_ia.secuenciacion),
+            )
+        self._acis_avisos_ia = _emparejador_avisos(resultado_cr, resultado_sa)
+        for aviso in self._acis_avisos_ia:
+            self._log(f"  AVISO: {aviso}")
+        uso = resultado_ia.get("_uso") or {}
+        self._log(
+            "Emparejador + IA: apartados rellenados. Revísalos y edítalos antes de generar el "
+            f".docx. Tokens (metodología/instrumentos/seguimiento): {uso.get('entrada', 0)} entrada / "
+            f"{uso.get('salida', 0)} salida."
+        )
+
     def _acis_generar(self) -> None:
+        if self._procesando:
+            messagebox.showwarning(
+                "Todavía se está generando",
+                "El borrador con IA (o el emparejador) todavía se está generando en segundo "
+                "plano -mira el registro de abajo-. Si generas el documento ahora, los apartados "
+                "que todavía no han llegado saldrán como pendientes. Espera a que el registro "
+                "diga que ha terminado.",
+            )
+            return
         if not self.var_acis_acs_determinada.get() and not messagebox.askyesno(
             "Casilla de ACS sin marcar",
             "No has marcado que el equipo de orientación haya determinado la ACS para esta "
@@ -1066,6 +1246,18 @@ class Aplicacion(_Raiz):
                     self._log(f"ERROR: {carga}")
                     self._fin()
                     messagebox.showerror("No se pudo generar la ACIS con IA", str(carga))
+                elif tipo == "acis_emparejar_ok":
+                    prog, resultado_cr, resultado_sa, resultado_ia, referencia_curriculo = carga
+                    self._fin()
+                    try:
+                        self._acis_emparejar_aplicar(
+                            prog, resultado_cr, resultado_sa, resultado_ia, referencia_curriculo)
+                    except Exception as exc:  # noqa: BLE001
+                        self._log(f"ERROR al volcar el resultado: {exc}")
+                elif tipo == "acis_emparejar_error":
+                    self._log(f"ERROR: {carga}")
+                    self._fin()
+                    messagebox.showerror("No se pudo emparejar con el currículo", str(carga))
         except queue.Empty:
             pass
         self.after(100, self._vaciar_cola)
@@ -1075,6 +1267,8 @@ class Aplicacion(_Raiz):
         self.boton.configure(state="normal", text="Adaptar documento")
         if hasattr(self, "boton_acis_ia"):
             self.boton_acis_ia.configure(state="normal", text="Generar ACIS con IA ▸")
+        if hasattr(self, "boton_acis_emparejar"):
+            self.boton_acis_emparejar.configure(state="normal", text="Emparejar con el currículo oficial ▸")
 
     @staticmethod
     def _abrir_carpeta(ruta: str) -> None:
