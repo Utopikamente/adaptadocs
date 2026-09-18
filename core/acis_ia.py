@@ -292,13 +292,18 @@ def adaptar_programacion(
     cliente = anthropic.Anthropic(api_key=clave)
     registrar("Enviando la programación a Claude para generar el borrador de ACIS…")
     try:
-        respuesta = cliente.messages.create(
+        # Streaming (obligatorio con max_tokens tan alto): no cambia lo que
+        # se recibe al final, solo cómo se pide.
+        with cliente.messages.stream(
             model=opciones.modelo,
-            max_tokens=20000,
+            max_tokens=32000,
             system=_SISTEMA,
             messages=[{"role": "user", "content": _mensaje_usuario(prog, opciones)}],
             output_config={"format": _esquema()},
-        )
+        ) as flujo:
+            for _ in flujo.text_stream:
+                pass
+            respuesta = flujo.get_final_message()
     except anthropic.AuthenticationError as exc:
         raise RuntimeError("La clave de API no es válida.") from exc
     except anthropic.PermissionDeniedError as exc:

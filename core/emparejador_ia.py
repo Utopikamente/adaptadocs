@@ -154,13 +154,18 @@ def adaptar_huecos(
     mensaje = _mensaje_huecos(materia, curso_origen, curso_referencia,
                                pendientes_cr, pendientes_sa, anclas_cr, anclas_sa)
     try:
-        respuesta = cliente.messages.create(
+        # Streaming (obligatorio con max_tokens tan alto): no cambia lo que
+        # se recibe al final, solo cómo se pide.
+        with cliente.messages.stream(
             model=modelo,
-            max_tokens=8000,
+            max_tokens=32000,
             system=_SISTEMA,
             messages=[{"role": "user", "content": mensaje}],
             output_config={"format": _esquema()},
-        )
+        ) as flujo:
+            for _ in flujo.text_stream:
+                pass
+            respuesta = flujo.get_final_message()
     except anthropic.AuthenticationError as exc:
         raise RuntimeError("La clave de API no es válida.") from exc
     except anthropic.PermissionDeniedError as exc:

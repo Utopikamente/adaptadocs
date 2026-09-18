@@ -305,13 +305,19 @@ def adaptar_contenido(
 
     registrar("Enviando el texto a Claude para adaptarlo…")
     try:
-        respuesta = cliente.messages.create(
+        # En modo "streaming" (obligatorio con max_tokens tan alto: la
+        # librería exige poder informar del progreso si la respuesta puede
+        # tardar más de 10 minutos), no cambia lo que se recibe al final.
+        with cliente.messages.stream(
             model=opciones.modelo,
-            max_tokens=16000,
+            max_tokens=32000,
             system=_SISTEMA,
             messages=[{"role": "user", "content": _mensaje_usuario(bloques, opciones)}],
             output_config={"format": _esquema()},
-        )
+        ) as flujo:
+            for _ in flujo.text_stream:
+                pass
+            respuesta = flujo.get_final_message()
     except anthropic.AuthenticationError as exc:
         raise RuntimeError("La clave de API no es válida.") from exc
     except anthropic.PermissionDeniedError as exc:
