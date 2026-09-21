@@ -48,7 +48,13 @@ from core.ia import MODELOS, MODELO_POR_DEFECTO, NIVELES, NIVEL_POR_DEFECTO, Opc
 from core.perfiles import PERFILES, PERFIL_POR_DEFECTO, opciones_de_perfil
 from core.pipeline import adaptar_documento_completo
 from core.programacion import ProgramacionNoReconocida, leer_programacion
-from core.transformador import OpcionesAdaptacion, _nivel_num, adaptar_documento, detectar_niveles_titulo
+from core.transformador import (
+    OpcionesAdaptacion,
+    _nivel_num,
+    adaptar_documento,
+    detectar_maquetacion_compleja,
+    detectar_niveles_titulo,
+)
 
 # Arrastrar y soltar es opcional: si tkinterdnd2 no está instalado, se usa
 # solo el botón "Examinar".
@@ -1197,6 +1203,21 @@ class Aplicacion(_Raiz):
         except (tk.TclError, ValueError):
             messagebox.showerror("Valores no válidos", "Revisa los números de tamaño, espaciado y márgenes.")
             return
+
+        try:
+            avisos_maquetacion = detectar_maquetacion_compleja(Document(entrada), opciones)
+        except Exception:  # noqa: BLE001
+            avisos_maquetacion = []
+        if avisos_maquetacion:
+            if not messagebox.askyesno(
+                "Documento con mucha maquetación manual",
+                "Este documento tiene señales de venir de un PDF con maquetación manual "
+                "(columnas, tablas ajustadas, sangrías grandes...). El formato accesible "
+                "puede no quedar bien:\n\n"
+                + "\n".join(f"• {a}" for a in avisos_maquetacion)
+                + "\n\n¿Continuar de todas formas?",
+            ):
+                return
 
         opciones_ia = self._recoger_opciones_ia()
         clave = self.var_ia_clave.get().strip() or None

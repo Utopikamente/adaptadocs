@@ -15,7 +15,7 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_COLOR_INDEX
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Cm, Pt, RGBColor
+from docx.shared import Cm, Pt, RGBColor, Twips
 from docx.text.paragraph import Paragraph
 from docx.text.run import Run
 
@@ -154,6 +154,117 @@ def _es_letra_suelta(parrafo: Paragraph) -> bool:
 def _nivel_num(nombre_estilo: str) -> int:
     m = re.search(r"(\d+)", nombre_estilo)
     return int(m.group(1)) if m else 0
+
+
+# Por debajo de esto, agrandar la letra no deja sitio para ni una palabra
+# corta: es mejor no tocarla que forzarla a partirse por sílabas.
+_UMBRAL_ANCHO_CM = 3.0
+
+
+def _ancho_columna_cm(parrafo: Paragraph, doc, o: OpcionesAdaptacion) -> float | None:
+    """Ancho disponible real para el texto de `parrafo`, en cm: el de la
+    celda de tabla si está dentro de una, o el de la página menos márgenes y
+    sangrías si es un párrafo normal del cuerpo. `None` si no se puede
+    calcular (se trata entonces como "hay sitio de sobra").
+
+    Pensado para no agrandar la letra donde no hay sitio -encontrado en un
+    documento real: una sangría derecha de más de 14 cm dejaba solo 1 cm de
+    columna, y al agrandar la fuente Word partía "Comunidad" en sílabas en
+    líneas distintas-."""
+    tc = parrafo._p.getparent()
+    while tc is not None and tc.tag != qn("w:tc"):
+        tc = tc.getparent()
+    if tc is not None:
+        tcPr = tc.find(qn("w:tcPr"))
+        tcW = tcPr.find(qn("w:tcW")) if tcPr is not None else None
+        if tcW is not None and tcW.get(qn("w:type")) == "dxa":
+            try:
+                return Twips(int(tcW.get(qn("w:w")))).cm
+            except (TypeError, ValueError):
+                return None
+        return None  # celda sin ancho fijo declarado: no arriesgar
+
+    try:
+        seccion = doc.sections[0]
+        ancho_pagina = seccion.page_width.cm
+        margen_izq = Cm(o.margenes_cm).cm if o.margenes_cm is not None else seccion.left_margin.cm
+        margen_der = Cm(o.margenes_cm).cm if o.margenes_cm is not None else seccion.right_margin.cm
+        pf = parrafo.paragraph_format
+        sangria_izq = pf.left_indent.cm if pf.left_indent is not None else 0.0
+        sangria_der = pf.right_indent.cm if pf.right_indent is not None else 0.0
+    except (AttributeError, TypeError):
+        return None
+    return ancho_pagina - margen_izq - margen_der - sangria_izq - sangria_der
+
+
+def _columna_demasiado_estrecha(parrafo: Paragraph, doc, o: OpcionesAdaptacion) -> bool:
+    ancho = _ancho_columna_cm(parrafo, doc, o)
+    return ancho is not None and ancho < _UMBRAL_ANCHO_CM
+
+
+# --------------------------------------------------------------------------- #
+# Aviso de maquetación compleja
+# --------------------------------------------------------------------------- #
+
+# Umbrales de "cuántas veces tiene que aparecer la señal para avisar":
+# un par de casos sueltos es normal en cualquier documento, muchos casos
+# indican un documento con maquetación de tipo PDF (columnas, cajas de
+# texto, sangrías para dejar sitio a imágenes...).
+_UMBRAL_SECCIONES = 10
+_UMBRAL_LETRAS_SUELTAS = 15
+_UMBRAL_COLUMNAS_ESTRECHAS = 15
+
+
+def detectar_maquetacion_compleja(doc, o: OpcionesAdaptacion) -> list[str]:
+    """Señales de que el documento usa muchos trucos de maquetación manual
+    -típico de un PDF exportado a Word, no de un Word escrito directamente-:
+    muchas secciones, columnas de ancho desigual, celdas de una sola letra,
+    sangrías enormes... En un documento así, el formato accesible puede
+    desajustar el resultado en vez de mejorarlo (encontrado con un documento
+    real: sopa de letras, mapa conceptual y título partido en sílabas, cada
+    uno por una razón distinta). Se avisa ANTES de procesar, para no
+    descubrirlo después de haber gastado en la llamada a la IA."""
+    avisos: list[str] = []
+
+    num_secciones = len(doc.sections)
+    if num_secciones > _UMBRAL_SECCIONES:
+        avisos.append(
+            f"Tiene {num_secciones} secciones: es probable que venga de un "
+            "PDF con maquetación manual, no de un Word escrito normal."
+        )
+
+    columnas_desiguales = 0
+    for seccion in doc.sections:
+        cols = seccion._sectPr.find(qn("w:cols"))
+        if cols is not None and cols.get(qn("w:equalWidth")) == "0":
+            columnas_desiguales += 1
+    if columnas_desiguales:
+        avisos.append(
+            f"Tiene {columnas_desiguales} sección(es) con columnas de ancho "
+            "desigual (típico de un esquema o mapa conceptual): no se van a "
+            "unificar en una sola columna, para no romper esa estructura."
+        )
+
+    letras_sueltas = sum(1 for p in _iter_parrafos(doc) if _es_letra_suelta(p))
+    if letras_sueltas > _UMBRAL_LETRAS_SUELTAS:
+        avisos.append(
+            f"Tiene {letras_sueltas} celdas de una sola letra (típico de una "
+            "sopa de letras o un crucigrama): no se les va a agrandar la "
+            "fuente, para no desajustar la cuadrícula."
+        )
+
+    columnas_estrechas = sum(
+        1 for p in _iter_parrafos(doc)
+        if p.text.strip() and _columna_demasiado_estrecha(p, doc, o)
+    )
+    if columnas_estrechas > _UMBRAL_COLUMNAS_ESTRECHAS:
+        avisos.append(
+            f"Tiene {columnas_estrechas} párrafos con muy poco ancho "
+            "disponible (sangrías grandes o celdas estrechas): no se les va "
+            "a agrandar la fuente, para no partir las palabras por sílabas."
+        )
+
+    return avisos
 
 
 def detectar_niveles_titulo(doc) -> list[dict]:
@@ -507,6 +618,14 @@ def _una_columna(seccion) -> None:
     cols = sectPr.find(qn("w:cols"))
     if cols is None:
         return
+    # Columnas de ancho DESIGUAL (equalWidth="0") casi siempre son un diseño
+    # deliberado -un esquema o mapa conceptual de fin de unidad, con
+    # etiquetas cortas en paralelo, no texto continuo-: forzarlas a una sola
+    # columna destruye esa estructura en vez de hacerla más legible
+    # (encontrado en un documento real). Las de ancho igual sí suelen ser
+    # texto normal repartido en columnas de periódico, y esas se unifican.
+    if cols.get(qn("w:equalWidth")) == "0":
+        return
     cols.set(qn("w:num"), "1")
     for hijo in list(cols):
         cols.remove(hijo)
@@ -592,10 +711,10 @@ def aplicar_formato(
         for parrafo in _iter_parrafos(contenedor):
             resumen["parrafos"] += 1
 
-            if _es_letra_suelta(parrafo):
+            if _es_letra_suelta(parrafo) or _columna_demasiado_estrecha(parrafo, doc, opciones):
                 # No se le cambia ni la fuente ni el espaciado (ver
-                # _es_letra_suelta), pero sí se resalta si coincidiera con
-                # una palabra buscada.
+                # _es_letra_suelta y _columna_demasiado_estrecha), pero sí
+                # se resalta si coincidiera con una palabra buscada.
                 if patron is not None:
                     resumen["resaltados"] += _resaltar_en_parrafo(parrafo, patron, color)
                 continue

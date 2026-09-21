@@ -79,7 +79,7 @@ def main() -> int:
     # estrecha desajustaba la cuadrícula del ejercicio). --------------- #
     from docx.shared import Pt as _Pt
 
-    from core.transformador import aplicar_formato
+    from core.transformador import OpcionesAdaptacion, aplicar_formato
 
     d_letras = Document()
     tabla = d_letras.add_table(rows=1, cols=2)
@@ -105,6 +105,105 @@ def main() -> int:
     run_normal2 = celda_normal2.paragraphs[0].runs[0]
     if run_normal2.font.name != "Verdana":
         fallos.append("la celda con una instrucción normal debería sí cambiar de fuente")
+
+    # --- Columnas de ancho desigual (un esquema/mapa conceptual): no se
+    # aplanan a una sola columna aunque "una_columna" esté activo. Las de
+    # ancho igual (texto normal repartido en columnas) sí se aplanan. ---- #
+    from docx.oxml import OxmlElement as _OxmlElement
+    from docx.oxml.ns import qn as _qn
+
+    def _poner_columnas(doc_, num, igual):
+        sectPr = doc_.sections[0]._sectPr
+        existente = sectPr.find(_qn("w:cols"))
+        if existente is not None:
+            sectPr.remove(existente)
+        cols = _OxmlElement("w:cols")
+        cols.set(_qn("w:num"), str(num))
+        if not igual:
+            cols.set(_qn("w:equalWidth"), "0")
+        sectPr.append(cols)
+
+    d_esquema = Document()
+    d_esquema.add_paragraph("Primario.")
+    _poner_columnas(d_esquema, 3, igual=False)
+    ruta_esquema = os.path.join(trabajo, "esquema.docx")
+    d_esquema.save(ruta_esquema)
+    d_esquema2 = Document(ruta_esquema)
+    aplicar_formato(d_esquema2, OpcionesAdaptacion(una_columna=True))
+    cols_esq = d_esquema2.sections[0]._sectPr.find(_qn("w:cols"))
+    if cols_esq is None or cols_esq.get(_qn("w:num")) != "3":
+        fallos.append(
+            "una sección de columnas de ancho desigual (un esquema) no debería aplanarse: "
+            f"num quedó en {cols_esq.get(_qn('w:num')) if cols_esq is not None else None}"
+        )
+
+    d_periodico = Document()
+    d_periodico.add_paragraph("Texto normal repartido en columnas de periódico.")
+    _poner_columnas(d_periodico, 2, igual=True)
+    ruta_periodico = os.path.join(trabajo, "periodico.docx")
+    d_periodico.save(ruta_periodico)
+    d_periodico2 = Document(ruta_periodico)
+    aplicar_formato(d_periodico2, OpcionesAdaptacion(una_columna=True))
+    cols_per = d_periodico2.sections[0]._sectPr.find(_qn("w:cols"))
+    if cols_per is not None and cols_per.get(_qn("w:num"), "1") != "1":
+        fallos.append("una sección de columnas de ancho igual (texto normal) debería aplanarse a una")
+
+    # --- Sangría enorme (una franja de la página reservada para una imagen
+    # de portada): no se le agranda la fuente, aunque el párrafo tenga
+    # varias palabras -no es una sola letra, así que _es_letra_suelta no lo
+    # detecta; hace falta la comprobación general de ancho disponible-
+    # (encontrado en un documento real: "Comunidad" se partía en sílabas). #
+    from docx.shared import Cm as _Cm
+
+    d_sangria = Document()
+    p_estrecho = d_sangria.add_paragraph("La economía de la Comunidad de Madrid")
+    p_estrecho.paragraph_format.right_indent = _Cm(14.2)
+    p_ancho = d_sangria.add_paragraph("Un párrafo normal sin ninguna sangría especial.")
+    ruta_sangria = os.path.join(trabajo, "sangria.docx")
+    d_sangria.save(ruta_sangria)
+
+    d_sangria2 = Document(ruta_sangria)
+    aplicar_formato(d_sangria2, opciones_de_perfil("Dislexia"))
+    run_estrecho = d_sangria2.paragraphs[0].runs[0]
+    if run_estrecho.font.name == "Verdana":
+        fallos.append("un párrafo con sangría enorme (sin sitio real) no debería agrandarse")
+    run_ancho = d_sangria2.paragraphs[1].runs[0]
+    if run_ancho.font.name != "Verdana":
+        fallos.append("un párrafo normal, sin sangría, sí debería agrandarse")
+
+    # --- Aviso de maquetación compleja: un documento normal no debería
+    # avisar; uno con muchas secciones, celdas de una sola letra, columnas
+    # desiguales y sangrías enormes a la vez sí debería dar las 4 señales. #
+    from core.transformador import (
+        _UMBRAL_COLUMNAS_ESTRECHAS,
+        _UMBRAL_LETRAS_SUELTAS,
+        _UMBRAL_SECCIONES,
+        detectar_maquetacion_compleja,
+    )
+
+    avisos_normal = detectar_maquetacion_compleja(Document(origen), opciones_de_perfil("Dislexia"))
+    if avisos_normal:
+        fallos.append(f"un documento normal no debería dar avisos de maquetación: {avisos_normal}")
+
+    d_complejo = Document()
+    for _ in range(_UMBRAL_SECCIONES + 1):
+        d_complejo.add_section()
+    tabla_complejo = d_complejo.add_table(rows=1, cols=_UMBRAL_LETRAS_SUELTAS + 1)
+    for i in range(_UMBRAL_LETRAS_SUELTAS + 1):
+        tabla_complejo.rows[0].cells[i].paragraphs[0].add_run("A")
+    for _ in range(_UMBRAL_COLUMNAS_ESTRECHAS + 1):
+        p_estrecho_c = d_complejo.add_paragraph("Un párrafo con poco sitio disponible de verdad.")
+        p_estrecho_c.paragraph_format.right_indent = _Cm(14.2)
+    _poner_columnas(d_complejo, 3, igual=False)
+    ruta_complejo = os.path.join(trabajo, "complejo.docx")
+    d_complejo.save(ruta_complejo)
+
+    avisos_complejo = detectar_maquetacion_compleja(Document(ruta_complejo), opciones_de_perfil("Dislexia"))
+    if len(avisos_complejo) < 4:
+        fallos.append(
+            f"esperaba las 4 señales de maquetación compleja (secciones, letras sueltas, "
+            f"columnas desiguales, columnas estrechas); salieron {len(avisos_complejo)}: {avisos_complejo}"
+        )
 
     # --- Perfil TDAH: viñetas -> lista numerada --------------------- #
     salida_tdah = os.path.join(trabajo, "tdah.docx")
@@ -229,7 +328,8 @@ def main() -> int:
 
     print(
         "PRUEBA OK — formato, resaltado, viñetas, pasos, preguntas, "
-        "celdas de una sola letra sin tocar y original intacto."
+        "celdas de una sola letra y columnas desiguales sin tocar, aviso de "
+        "maquetación compleja, y original intacto."
     )
     return 0
 
